@@ -16,14 +16,14 @@
   - 低延迟
 - 调度参数[必需]
   - 格式:
-     - ``` 
-      timer_rate：big/little[可选]：value ```
-     - ```
-      timer_rate：
-      big/little：value
-       ```
+``` 
+timer_rate：big/little[可选]：value
+
+timer_rate：
+big/little：value
+```
 - 示例
-  - ```
+```
 性能
 hispeed_freq：big：1401000
 hispeed_freq：little：902000
