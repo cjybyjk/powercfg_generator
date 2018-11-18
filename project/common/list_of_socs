@@ -10,7 +10,7 @@ sdm636:sd_636:y:cpu0:cpu4
 msm8956:sd_650:y:cpu0:cpu4
 msm8976:sd_652:y:cpu0:cpu4
 msm8976pro:sd_653:y:cpu0:cpu4
-msm8976plus:sd_660:y:cpu0:cpu4
+sdm660:sd_660:y:cpu0:cpu4
 apq8074|msm(8274|8674|8974):sd_801:n:cpu0
 msm8992:sd_808:y:cpu0:cpu4
 msm8994:sd_810:y:cpu0:cpu4
