@@ -52,10 +52,7 @@ platform="unsupported"
 tmpPlatform=$(echo `cat /proc/cpuinfo ; getprop "ro.product.board" ; getprop "ro.board.platform"` | tr '[A-Z]' '[a-z]')
 while read soctext
 do
-	if [ "`echo $tmpPlatform | egrep $(echo $soctext | cut -d : -f 1)`" != "" ]; then
-		platform=$(echo $soctext | cut -d : -f 2)
-		break
-	fi
+	[ "`echo $tmpPlatform | egrep $(echo $soctext | cut -d : -f 1)`" != "" ] && platform=$(echo $soctext | cut -d : -f 2)
 done < ./common/list_of_socs
 
 ui_print "- Platform: $platform"
