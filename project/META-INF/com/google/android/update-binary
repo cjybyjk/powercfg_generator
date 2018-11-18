@@ -44,7 +44,7 @@ mount /data
 
 ui_print "- Extracting files"
 mkdir -p $TMPDIR
-#cd $TMPDIR
+cd $TMPDIR
 unzip -o "$ZIP" > /dev/null
 
 # get platform
