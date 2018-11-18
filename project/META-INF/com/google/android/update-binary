@@ -37,18 +37,6 @@ ui_print " "
 
 TMPDIR=/dev/tmp
 
-# get platform
-platform="unsupported"
-tmpPlatform=$(echo `cat /proc/cpuinfo ; getprop "ro.product.board" ; getprop "ro.board.platform"` | tr '[A-Z]' '[a-z]')
-while read soctext
-do
-	tmparr=(${soctext//:/ })
-	if [ "`echo $tmpPlatform | egrep ${tmparr[0]}`" != "" ]; then
-		platform=${tmparr[1]}
-		break
-	fi
-done < ./common/list_of_socs
-
 ui_print "- Mounting /system, /vendor and /data"
 mount /system
 mount /vendor
@@ -56,8 +44,19 @@ mount /data
 
 ui_print "- Extracting files"
 mkdir -p $TMPDIR
-cd $TMPDIR
+#cd $TMPDIR
 unzip -o "$ZIP" > /dev/null
+
+# get platform
+platform="unsupported"
+tmpPlatform=$(echo `cat /proc/cpuinfo ; getprop "ro.product.board" ; getprop "ro.board.platform"` | tr '[A-Z]' '[a-z]')
+while read soctext
+do
+	if [ "`echo $tmpPlatform | egrep $(echo $soctext | cut -d : -f 1)`" != "" ]; then
+		platform=$(echo $soctext | cut -d : -f 2)
+		break
+	fi
+done < ./common/list_of_socs
 
 ui_print "- Platform: $platform"
 if [ -d "./platforms/$platform/" ]; then
@@ -163,9 +162,6 @@ if [ -d "./platforms/$platform/" ]; then
 	ui_print "  2. Modify /data/perf_mode and reboot"
 else
 	ui_print "! Unsupported device!"
-	ui_print "  Please check this:"
-	ui_print "  Platform: $platformA $platformB $platformC"
-	exitcode=1
 fi
 
 ui_print "- Cleaning files"

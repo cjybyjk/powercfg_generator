@@ -1,5 +1,3 @@
-# 支持的SoC列表,可以自行添加
-# codename:型号:big.LITTLE(y/n):cluster0[:cluster1]
 apq8016|msm8916:sd_410:n:cpu0
 msm8937:sd_430:y:cpu0:cpu4
 msm8940:sd_435:n:cpu0
