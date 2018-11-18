@@ -10,7 +10,10 @@ read -p "请输入版本号:" prjVer
 read -p "请输入versionCode:" prjVerCode
 [ -z $prjVerCode ] && echo "versionCode不能为空" && exit 1
 read -p "请输入zip保存路径(默认为 $basepath/flashable/$project_name.installer.$prjVer.zip):" zipPath
-[ -z $zipPath ] && zipPath="$basepath/flashable/$project_name.installer.$prjVer.zip"
+if [ -z $zipPath ]; then
+	zipPath="$basepath/flashable/$project_name.installer.$prjVer.zip"
+	mkdir $basepath/flashable
+fi
 
 echo "复制文件..."
 mkdir $tmpdir
