@@ -1,6 +1,6 @@
 #!/bin/sh
 
-VER="1.0.3"
+VER="1.0.6"
 basepath=$(cd $(dirname $0); pwd)
 
 function runsh() {
