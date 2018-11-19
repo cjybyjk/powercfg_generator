@@ -13,6 +13,7 @@ read -p "请输入zip保存路径(默认为 $basepath/flashable/$project_name.in
 if [ -z $zipPath ]; then
 	zipPath="$basepath/flashable/$project_name.installer.$prjVer.zip"
 	mkdir $basepath/flashable
+	flagCopyReadme=true
 fi
 
 echo "复制文件..."
@@ -25,6 +26,11 @@ sed -i "s/(your_name)/$project_author/g" `grep "(your_name)" -rl .`
 sed -i "s/(project_name)/$project_name/g" `grep "(project_name)" -rl .`
 sed -i "s/(prj_vercode)/$prjVerCode/g" `grep "(prj_vercode)" -rl .`
 sed -i "s/(prj_ver)/$prjVer/g" `grep "(prj_ver)" -rl .`
+
+if [ $flagCopyReadme ]; then
+	echo "复制 README"
+	cp ./README.md $basepath/flashable/
+fi
 
 echo "打包文件..."
 zip -r "$zipPath" ./*
