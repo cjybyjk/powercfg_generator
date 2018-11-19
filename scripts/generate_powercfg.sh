@@ -118,11 +118,15 @@ read -p "输入SoC型号:" socModel
 platformPath="$basepath/project/platforms/$socModel"
 get_clusters
 
-rm -rf $platformPath
 mkdir -p $platformPath
 cd $platformPath
 
-cp -r $basepath/powercfg_template ./powercfg
+if [ -f "./linkto" ]; then
+	rm ./linkto
+	rm ./NOTICE
+fi	
+
+cp $basepath/powercfg_template ./powercfg
 
 vim ./perf_text
 
@@ -130,7 +134,7 @@ vim ./perf_text
 echo -n "规范化调度参数(y/n):"
 read flag_TextReplace
 if [ "$flag_TextReplace" = "y" ]; then
-	sed -i 's/[A-Z]/\l&/g' ./perf_text
+	cat ./perf_text | tr '[A-Z]' '[a-z]' > ./perf_text
 	sed -i 's/:/：/g' ./perf_text
 	sed -i 's/： /：/g' ./perf_text
 	sed -i 's/：：/：/g' ./perf_text
@@ -197,8 +201,6 @@ done < ./perf_text
 savemode
 
 IFS="$OLD_IFS"
-
-rm ./perf_text
 
 # 写入相关信息
 sed -i "s/(soc_model)/$socModel/g" powercfg
