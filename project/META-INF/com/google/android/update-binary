@@ -50,7 +50,7 @@ unzip -o "$ZIP" > /dev/null
 # get platform
 ui_print "- Checking platform"
 platform="unsupported"
-for tmpPlatform in $(echo `getprop "ro.product.board" ; getprop "ro.board.platform"` | tr '[A-Z]' '[a-z]') 
+for tmpPlatform in $(echo `grep "Hardware" /proc/cpuinfo | awk '{print $NF}' ; getprop "ro.product.board" ; getprop "ro.board.platform"` | tr '[A-Z]' '[a-z]') 
 do
 	if [ "unsupported" = "$platform" ]; then
 		while read soctext
@@ -61,7 +61,7 @@ do
 		done < ./common/list_of_socs
 	fi
 done
-ui_print " Platform: $platform"
+ui_print "   Platform: $platform"
 
 if [ -d "./platforms/$platform/" ]; then
 	# Show notice when flashing
