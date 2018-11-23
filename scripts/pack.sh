@@ -3,7 +3,9 @@
 basepath="$1"
 tmpdir=$basepath/temp
 
-source $basepath/prjinfo.sh
+basepath=$(cd $(dirname $0); pwd)
+
+source $basepath/scripts/set_value.sh
 
 read -p "请输入版本号:" prjVer
 [ -z $prjVer ] && echo "版本号不能为空" && exit 1

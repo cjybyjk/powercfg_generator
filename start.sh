@@ -1,10 +1,12 @@
 #!/bin/sh
 
-VER="1.0.8"
 basepath=$(cd $(dirname $0); pwd)
 
-function runsh() {
-	sh "$1" "$basepath" "$2" "$3"
+source $basepath/scripts/set_value.sh
+get_values
+
+function pause() {
+	read -n 1 -p "按任意键继续..."
 }
 
 function do_linkto() {
@@ -15,7 +17,7 @@ function do_linkto() {
 	target_socs=($targetSoC)
 	for i in ${!target_socs[@]}
 	do
-		runsh scripts/linkto.sh ${target_socs[$i]} $sourceSoC
+		$basepath/scripts/linkto.sh ${target_socs[$i]} $sourceSoC
 	done
 }
 
@@ -25,17 +27,14 @@ function set_linkToData_flag() {
 	else
 		tmpLinkToData=true
 	fi
-	sed -i "s/linkToData=$linkToData/linkToData=$tmpLinkToData/" $basepath/prjinfo.sh
-	echo "linkToData: $linkToData -> $tmpLinkToData"
-	source $basepath/prjinfo.sh
+	set_value "linkToData" "$tmpLinkToData"
 }
 
 function edit_prjinfo() {
 	read -p "输入项目名称(默认为 $project_name):" tmpPrjName
-        [ -z "$tmpPrjName" ] || sed -i "s/project_name=\"$project_name\"/project_name=\"$tmpPrjName\"/" $basepath/prjinfo.sh
+        [ -z "$tmpPrjName" ] || set_value "project_name" "$tmpPrjName"
         read -p "输入项目作者(默认为 $project_author):" tmpPrjAuthor
-        [ -z "$tmpPrjAuthor" ] || sed -i "s/project_author=\"$project_author\"/project_author=\"$tmpPrjAuthor\"/" $basepath/prjinfo.sh
-        source $basepath/prjinfo.sh
+        [ -z "$tmpPrjAuthor" ] || set_value "project_author" "$tmpPrjAuthor"
 }
 
 function rm_all_powercfg() {
@@ -43,14 +42,17 @@ function rm_all_powercfg() {
 	[ "y" = "$flagYN" ] && rm -rf $basepath/project/platforms
 }
 
-source $basepath/prjinfo.sh
-
 while true
 do
 	clear
 	flagNoPause=false
 	read -n 1 -p "powercfg 调度脚本生成工具 VER:$VER
-$prjInfo
+by cjybyjk @ coolapk
+License: GPL v3
+
+项目信息:
+项目名称: $project_name
+项目作者: $project_author
 
 g) 生成powercfg
 l) 指定SoCs共用powercfg (linkto)
@@ -65,8 +67,8 @@ x) 退出
 请选择一个操作: " selected
 	echo ""
 	case "$selected" in
-		"g") runsh $basepath/scripts/generate_powercfg.sh  ;;
-		"z") runsh $basepath/scripts/pack.sh ;;
+		"g") $basepath/scripts/generate_powercfg.sh  ;;
+		"z") $basepath/scripts/pack.sh ;;
 		"s") vim $basepath/project/common/list_of_socs ;;
 		"l") do_linkto ;;
 		"p") edit_prjinfo;;
@@ -76,6 +78,6 @@ x) 退出
 		"x") exit 0 ;;
 		*) flagNoPause=true ;;
 	esac
-	$flagNoPause || read -n 1 -p "按任意键继续..."
+	$flagNoPause || pause
 done
 
