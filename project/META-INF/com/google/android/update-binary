@@ -164,6 +164,25 @@ if [ -d "./platforms/$platform/" ]; then
 	ui_print "- You can choose mode by using this two ways:"
 	ui_print "  1. Enter powercfg \$MODE in terminal"
 	ui_print "  2. Modify /data/perf_mode and reboot"
+	if [ $linkToData ]; then
+		# check Vboot & Scene and link powercfg
+		ui_print "- Checking Vboot & Scene"
+		if [ -d "/data/data/com.omarea.vboot" ]; then
+			ui_print " found:Vboot"
+			if [ ! -f "/data/powercfg" ]; then
+				ui_print "link: /data/powercfg <- /system/bin/powercfg"
+				ln -s /system/powercfg /data/powercfg
+			fi
+		fi
+		if [ -d "/data/data/com.omarea.vtools" ]; then
+			ui_print " found:Scene"
+			if [ ! -f "/data/powercfg.sh" ]; then
+				ui_print "link: /data/powercfg.sh <- /system/bin/powercfg"
+				ln -s /system/powercfg /data/powercfg.sh
+			fi
+		fi
+	fi
+
 else
 	ui_print "! Unsupported device!"
 fi

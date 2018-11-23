@@ -26,6 +26,7 @@ sed -i "s/(your_name)/$project_author/g" `grep "(your_name)" -rl .`
 sed -i "s/(project_name)/$project_name/g" `grep "(project_name)" -rl .`
 sed -i "s/(prj_vercode)/$prjVerCode/g" `grep "(prj_vercode)" -rl .`
 sed -i "s/(prj_ver)/$prjVer/g" `grep "(prj_ver)" -rl .`
+sed -i "s/\$linkToData/$linkToData/g" ./META-INF/com/google/android/update-binary
 
 if [ $flagCopyReadme ]; then
 	echo "复制 README"

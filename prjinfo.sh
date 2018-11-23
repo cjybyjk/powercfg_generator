@@ -1,8 +1,8 @@
 #!/bin/sh
 
-# 在这里修改项目名称和作者
 project_name="(project_name)"
 project_author="(project_author)"
+linkToData=true
 
 prjInfo="
 by cjybyjk @ coolapk

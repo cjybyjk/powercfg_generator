@@ -19,6 +19,17 @@ function do_linkto() {
 	done
 }
 
+function set_linkToData_flag() {
+	if [ "$linkToData" = "true" ]; then
+		tmpLinkToData=false
+	else
+		tmpLinkToData=true
+	fi
+	sed -i "s/linkToData=$linkToData/linkToData=$tmpLinkToData/" $basepath/prjinfo.sh
+	echo "linkToData: $linkToData -> $tmpLinkToData"
+	source $basepath/prjinfo.sh
+}
+
 function edit_prjinfo() {
 	read -p "输入项目名称(默认为 $project_name):" tmpPrjName
         [ -z "$tmpPrjName" ] || sed -i "s/project_name=\"$project_name\"/project_name=\"$tmpPrjName\"/" $basepath/prjinfo.sh
@@ -46,6 +57,7 @@ l) 指定SoCs共用powercfg (linkto)
 z) 制作卡刷包
 s) 查看并编辑支持SoC列表
 p) 编辑项目信息
+t) 切换 将powercfg软链接到/data ($linkToData)
 d) 删除生成的所有powercfg
 x) 退出
 
@@ -57,6 +69,7 @@ x) 退出
 		"s") vim project/common/list_of_socs ;;
 		"l") do_linkto ;;
 		"p") edit_prjinfo;;
+		"t") set_linkToData_flag ;;
 		"d") rm_all_powercfg ;;
 		"x") exit 0 ;;
 		*) flagNoPause=true ;;
