@@ -1,6 +1,6 @@
 #!/bin/sh
 
-VER="1.0.7"
+VER="1.0.8"
 basepath=$(cd $(dirname $0); pwd)
 
 function runsh() {
@@ -58,18 +58,20 @@ z) 制作卡刷包
 s) 查看并编辑支持SoC列表
 p) 编辑项目信息
 t) 切换 将powercfg软链接到/data ($linkToData)
+f) 编辑powercfg模板
 d) 删除生成的所有powercfg
 x) 退出
 
 请选择一个操作: " selected
 	echo ""
 	case "$selected" in
-		"g") runsh scripts/generate_powercfg.sh  ;;
-		"z") runsh scripts/pack.sh ;;
-		"s") vim project/common/list_of_socs ;;
+		"g") runsh $basepath/scripts/generate_powercfg.sh  ;;
+		"z") runsh $basepath/scripts/pack.sh ;;
+		"s") vim $basepath/project/common/list_of_socs ;;
 		"l") do_linkto ;;
 		"p") edit_prjinfo;;
 		"t") set_linkToData_flag ;;
+		"f") vim $basepath/powercfg_template ;;
 		"d") rm_all_powercfg ;;
 		"x") exit 0 ;;
 		*) flagNoPause=true ;;
