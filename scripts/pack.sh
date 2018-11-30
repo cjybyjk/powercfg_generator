@@ -27,7 +27,7 @@ sed -i "s/(project_name)/$project_name/g" `grep "(project_name)" -rl .`
 sed -i "s/(prj_vercode)/$prjVerCode/g" `grep "(prj_vercode)" -rl .`
 sed -i "s/(prj_ver)/$prjVer/g" `grep "(prj_ver)" -rl .`
 
-cp ./README.md $basepath/flashable/
+cp ./README.md $basepath/flashable/README_$project_name.md
 
 echo "打包文件..."
 zip -r "$zipPath" ./*
