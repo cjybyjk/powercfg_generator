@@ -1,0 +1,7 @@
+VER="1.1.0"
+project_id="(unknown)"
+project_name="(未指定项目)"
+project_author="(unknown)"
+param_check="true"
+param_allowance_check="true"
+text_editor="vi"

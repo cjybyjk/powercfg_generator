@@ -2,19 +2,21 @@
 # (project_name)
 # Version: (prj_ver)
 # Author: (your_name)
-# Platform: (soc_model)
-# Generated at (generate_date)
+# Platform: sd_820
+# Generated at Sat Dec  1 02:56:53 CST 2018
 # powercfg template by cjybyjk
 
-C0_GOVERNOR_DIR="/sys/devices/system/cpu/cluster_0/cpufreq/interactive"
-C1_GOVERNOR_DIR="/sys/devices/system/cpu/cluster_1/cpufreq/interactive"
-C0_CPUFREQ_DIR="/sys/devices/system/cpu/cluster_0/cpufreq"
-C1_CPUFREQ_DIR="/sys/devices/system/cpu/cluster_1/cpufreq"
+is_big_little=true
 
-if [ "n" = "is_big_little" ]; then
+C0_GOVERNOR_DIR="/sys/devices/system/cpu/cpu0/cpufreq/interactive"
+C1_GOVERNOR_DIR="/sys/devices/system/cpu/cpu2/cpufreq/interactive"
+C0_CPUFREQ_DIR="/sys/devices/system/cpu/cpu0/cpufreq"
+C1_CPUFREQ_DIR="/sys/devices/system/cpu/cpu2/cpufreq"
+
+if [ ! $is_big_little ]; then
 	C0_GOVERNOR_DIR="/sys/devices/system/cpu/cpufreq/interactive"
 	C1_GOVERNOR_DIR=""
-	C0_CPUFREQ_DIR="/sys/devices/system/cpu/cluster_0/cpufreq"
+	C0_CPUFREQ_DIR="/sys/devices/system/cpu/cpu0/cpufreq"
 	C1_CPUFREQ_DIR=""
 fi
 
@@ -24,23 +26,26 @@ function set_param_little()
 	echo ${2} > ${C0_GOVERNOR_DIR}/${1}
 }
 
-# $1:timer_rate $2:value
 function set_param_big() 
 {
 	echo ${2} > ${C1_GOVERNOR_DIR}/${1}
 }
 
-# $1:timer_rate $2:value
 function set_param_all() 
 {
 	set_param_little ${1} "${2}"
-	[ "y" = "is_big_little" ] && set_param_big ${1} "${2}"
+	[ $is_big_little ] && set_param_big ${1} "${2}"
+}
+
+function set_param_HMP()
+{
+	echo ${2} > /proc/sys/kernel/${1}
 }
 
 # $1:timer_rate
 function print_param() 
 {
-	if [ "y" = "is_big_little" ]; then
+	if [ $is_big_little ]; then
 		print_value "LITTLE: ${1}" ${C0_GOVERNOR_DIR}/${1}
 		print_value "big: ${1}" ${C1_GOVERNOR_DIR}/${1}
 	else
@@ -53,18 +58,21 @@ function before_modify()
 	set_value "interactive" ${C0_CPUFREQ_DIR}/scaling_governor
 	chown 0.0 ${C0_GOVERNOR_DIR}/*
 	chmod 0666 ${C0_GOVERNOR_DIR}/*
-	if [ "y" = "is_big_little" ]; then
-		set_value 1 /sys/devices/system/cpu/cluster_1/online
+	if [ $is_big_little ]; then
+		set_value 1 /sys/devices/system/cpu/cpu2/online
 		set_value "interactive" ${C1_CPUFREQ_DIR}/scaling_governor
 		chown 0.0 ${C1_GOVERNOR_DIR}/*
 		chmod 0666 ${C1_GOVERNOR_DIR}/*
 	fi
+	echo aaa
+	
 }
 
 function after_modify()
 {
 	chmod 0444 ${C0_GOVERNOR_DIR}/*
-	[ "y" = "is_big_little" ] && chmod 0444 ${C1_GOVERNOR_DIR}/*
+	[ $is_big_little ] && chmod 0444 ${C1_GOVERNOR_DIR}/*
+	# after_modify_params
 	verify_param
 }
 
@@ -89,13 +97,13 @@ function verify_param()
 {
 	expected_target=${C0_GOVERNOR_DIR}/target_loads
 	if [ "$action" = "powersave" ]; then
-		expected_value="powersave_tload"
+		expected_value="(powersave_tload)"
 	elif [ "$action" = "balance" ]; then
-		expected_value="balance_tload"
+		expected_value="(40 1612000:64)"
 	elif [ "$action" = "performance" ]; then
-		expected_value="performance_tload"
+		expected_value="(performance_tload)"
 	elif [ "$action" = "fast" ]; then
-		expected_value="fast_tload"
+		expected_value="(fast_tload)"
 	fi
 	if [ "`cat ${expected_target}`" = "${expected_value}" ]; then
 		echo "${action} OK"
@@ -103,6 +111,26 @@ function verify_param()
 		echo "${action} FAIL"
 	fi
 }
+
+function get_mode()
+{
+    expected_target=${C0_GOVERNOR_DIR}/target_loads
+	case "`cat ${expected_target}`" in
+		"(powersave_tload)" ) echo "powersave OK" ;;
+		"(40 1612000:64)" ) echo "balance OK" ;;
+		"(performance_tload)" ) echo "performance OK" ;;
+		"(fast_tload)" ) echo "fast OK" ;;
+	esac
+}
+# RunOnce
+if [ ! -f /dev/perf_runonce ]; then
+	# set flag
+	touch /dev/perf_runonce
+	set_param_HMP sched_upmigrate 65
+	
+	set_value aaaa /s
+	
+fi
 
 action=$1
 if [ ! -n "$action" ]; then
@@ -113,31 +141,37 @@ if [ "$action" = "debug" ]; then
 	echo "(project_name)"
 	echo "Version: (prj_ver)"
 	echo "Author: (your_name)"
-	echo "Platform: (soc_model)"
-	echo "Generated at generate_date"
+	echo "Platform: sd_820"
+	echo "Generated at Sat Dec  1 02:56:53 CST 2018"
 	echo "powercfg template by cjybyjk"
 	echo ""
 	print_param above_hispeed_delay
 	print_param target_loads
+	get_mode
 	exit 0
 fi
 
 before_modify
 
 if [ "$action" = "powersave" ]; then
-	# powersave_params
+	:
 fi
 
 if [ "$action" = "balance" ]; then
-	# balance_params
+	set_param_big hispeed_freq 1401000
+	set_param_little hispeed_freq 902000
+	set_param_big target_loads "40 1804000:59"
+	set_param_little target_loads "40 1612000:64"
+	set_param_all above_hispeed_delay 55000
+	
 fi
 
 if [ "$action" = "performance" ]; then
-	# performance_params
+	:
 fi
 
 if [ "$action" = "fast" ]; then
-	# fast_params
+	:
 fi
 
 after_modify

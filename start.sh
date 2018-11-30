@@ -1,109 +1,134 @@
 #!/bin/sh
+# powercfg_generator
+# by cjybyjk @ coolapk
+# License: GPL v3
 
 basepath=$(cd $(dirname $0); pwd)
+cd $basepath
+source scripts/util_functions.sh
 
-source $basepath/scripts/set_value.sh
-get_values
-
-function pause() {
-	read -n 1 -p "按任意键继续..."
-}
-
-function do_linkto() {
-	read -p "输入源SoC:" sourceSoC
-	[ -z "$sourceSoC" ] && echo "输入不能为空!" && return
-	read -p "输入目标SoCs(使用空格分割):" targetSoC
-        [ -z "$targetSoC" ] && echo "输入不能为空!" && return
-	target_socs=($targetSoC)
-	for i in ${!target_socs[@]}
-	do
-		$basepath/scripts/linkto.sh ${target_socs[$i]} $sourceSoC
-	done
-}
-
-function set_linkToData_flag() {
-	if [ "$linkToData" = "true" ]; then
-		tmpLinkToData=false
-	else
-		tmpLinkToData=true
-	fi
-	set_value "linkToData" "$tmpLinkToData"
-}
-
-function edit_prjinfo() {
-	read -p "输入项目名称(默认为 $project_name):" tmpPrjName
-        [ -z "$tmpPrjName" ] || set_value "project_name" "$tmpPrjName"
-        read -p "输入项目作者(默认为 $project_author):" tmpPrjAuthor
-        [ -z "$tmpPrjAuthor" ] || set_value "project_author" "$tmpPrjAuthor"
-}
-
-function rm_all_powercfg() {
-	read -p "你确定要这么做? (y/n)" flagYN
-	[ "y" = "$flagYN" ] && rm -rf $basepath/project/platforms
-}
-
-function mainMenu() {
-	while true
-	do
-		clear
-		flagNoPause=false
-		read -n 1 -p "powercfg 调度脚本生成工具 VER:$VER
-by cjybyjk @ coolapk
-License: GPL v3
-
-项目信息:
-项目名称: $project_name
-项目作者: $project_author
+function mainMenu()
+{
+    while true
+    do
+        showMenu "$info
+主菜单
 
 g) 生成powercfg
-l) 指定SoCs共用powercfg (linkto)
+l) 指定SoCs共用powercfg
+c) 执行旧生成器兼容性脚本
 z) 制作卡刷包
-s) 一些设置
-d) 删除生成的所有powercfg
-x) 退出
-
-请选择一个操作: " selected
-		echo ""
-		case "$selected" in
-			"g") $basepath/scripts/generate_powercfg.sh  ;;
-			"z") $basepath/scripts/pack.sh ;;
-			"s") settingsMenu ;;
-			"l") do_linkto ;;
-			"d") rm_all_powercfg ;;
-			"x") exit 0 ;;
-			*) flagNoPause=true ;;
-		esac
-		$flagNoPause || pause
-	done
+t) 切换项目
+m) 项目管理
+s) 设置
+x) 退出" "g l c z t m s x"
+        case $selectedKey in
+            "g") sh scripts/generate_powercfg.sh ;;
+            "l") sh scripts/linkto.sh ;;
+            "c") sh scripts/compat_perf.sh ;;
+            "z") sh scripts/pack.sh ;;
+            "t") project_manager toggle ;;
+            "m") prjManageMenu ;;
+            "s") settingMenu ;;
+            "x") exit 0 ;;
+        esac
+    done
 }
 
-function settingsMenu() {
-	while true
-	do
-		clear
-		flagNoPause=false
-		read -n 1 -p "powercfg_generator 设置
+function settingMenu()
+{
+    while true
+    do
+        init
+        showMenu "$info
+设置
 
-s) 查看并编辑支持SoC列表
-p) 编辑项目信息
-t) 切换 将powercfg软链接到/data ($linkToData)
-f) 编辑powercfg模板
-x) 返回
-
-请选择一个操作: " selected
-		echo ""
-		case "$selected" in
-			"s") vim $basepath/project/common/list_of_socs ;;
-			"l") list_values ;;
-			"p") edit_prjinfo;;
-			"t") set_linkToData_flag ;;
-			"f") vim $basepath/powercfg_template ;;
-			"x") flagNoPause=true ; break ;;
-			*) flagNoPause=true ;;
-		esac
-		$flagNoPause || pause
-	done
+c) 检查(interactive)参数有效性: $param_check
+l) 检查(interactive)参数合法性: $param_allowance_check
+e) 编辑SoCs列表
+a) 编辑合法参数列表
+p) 编辑powercfg模板
+v) 修改文本编辑器: $text_editor
+x) 返回" "c l e a p v x"
+        case $selectedKey in
+            "c") write_value "param_check" `toggle_boolean $param_check` ;;
+            "l") write_value "param_allowance_check" `toggle_boolean $param_allowance_check` ;;
+            "e") $text_editor config/list_of_socs ;;
+            "a") $text_editor config/list_of_allowed_params ;;
+            "p") $text_editor template/powercfg_template ;;
+            "v")
+                text_editor=$(readDefault "编辑器" $text_editor)
+                write_value "text_editor" $text_editor ;;
+            "x") return 0 ;;
+        esac 
+    done
 }
 
+# $1:action flag
+function project_manager()
+{
+    local project_id_new=$(readDefault "项目id" $project_id)
+    if [ "rm" = "$1" ]; then
+        yesNo "你确定这么做吗" || return 0
+        rm -rf projects/$project_id_new
+        [ "$prjPtr" = "$project_id_new" ] && rm config/project_pointer
+        return 0
+    elif [ "reset" = "$1" ]; then
+        yesNo "你确定这么做吗" && rm -rf projects/$project_id_new/platforms
+        return 0
+    elif [ "toggle" = "$1" ]; then
+        if [ -f "projects/$project_id_new/project_config.sh" ]; then
+            echo "$project_id_new" > config/project_pointer
+            init
+        else
+            echo "错误: 项目不存在!"
+            pause
+        fi 
+        return 0
+    fi
+    local project_name_new=$(readDefault "项目名称" "$project_name")
+    local project_author_new=$(readDefault "项目作者" "$project_author")
+    if [ "modify" = "$1" ]; then
+        mv projects/$project_id projects/$project_id_new
+        echo "$project_id_new" > config/project_pointer
+    elif [ "new" = "$1" ]; then
+        if [ -f projects/$project_id_new/project_config.sh ]; then
+            echo "错误: 项目已存在!"
+            pause
+            return 1
+        fi
+        mkdir -p projects/$project_id_new
+        touch projects/$project_id_new/project_config.sh
+    fi
+    write_value "project_name" "$project_name_new" "$project_id_new"
+    write_value "project_author" "$project_author_new" "$project_id_new"
+    write_value "project_id" "$project_id_new" "$project_id_new"
+    init
+}
+
+function prjManageMenu()
+{
+    while true
+    do
+        showMenu "$info
+项目管理
+
+i) 修改项目信息
+l) 列出项目
+n) 新建项目
+d) 删除项目
+r) 重置项目
+x) 返回" "i l n d r x"
+    case $selectedKey in
+            "i") project_manager modify ;;
+            "l") ls projects ; pause ;;
+            "n") project_manager new ;;
+            "d") project_manager rm ;;
+            "r") project_manager reset ;;
+            "x") return 0 ;;
+        esac 
+    done
+}
+
+init
 mainMenu
-

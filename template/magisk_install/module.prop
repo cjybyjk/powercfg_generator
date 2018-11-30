@@ -1,7 +1,7 @@
-id=(project_name)
+id=(project_id)
 name=(project_name) Systemless
 version=(prj_ver)
 versionCode=(prj_vercode)
-author=(your_name) & cjybyjk @ coolapk
+author=(project_author)
 description=A Module to insert (project_name) to system. 
 minMagisk=1500

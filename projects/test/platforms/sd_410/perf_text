@@ -1,0 +1,14 @@
+[HMP]
+sched_upmigrate=65
+[balance]
+hispeed_freq=big=1401000
+target_loads=
+big=40 1804000:59
+above_hispeed_delay=55000
+[before_modify]
+echo aaa
+[after_modify]
+
+[runonce]
+set_value aaaa /s
+
