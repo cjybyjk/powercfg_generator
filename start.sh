@@ -43,15 +43,13 @@ function settingMenu()
         showMenu "
 设置
 
-c) 检查(interactive)参数有效性: $param_check
 l) 检查(interactive)参数合法性: $param_allowance_check
 e) 编辑SoCs列表
 a) 编辑合法参数列表
 p) 编辑powercfg模板
 v) 修改文本编辑器: $text_editor
-x) 返回" "c l e a p v x"
+x) 返回" "l e a p v x"
         case $selectedKey in
-            "c") write_value "param_check" `toggle_boolean $param_check` ;;
             "l") write_value "param_allowance_check" `toggle_boolean $param_allowance_check` ;;
             "e") $text_editor config/list_of_socs ;;
             "a") $text_editor config/list_of_allowed_params ;;

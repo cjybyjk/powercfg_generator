@@ -20,6 +20,7 @@ License: GPL v3
 "
 }
 
+# convert strings to lower case
 function lcase()
 {
     echo "$*" | tr '[A-Z]' '[a-z]'
@@ -70,6 +71,7 @@ function write_value()
     return $?
 }
 
+# true -> false and false -> true
 function toggle_boolean()
 {
     if [ "true" = "$1" ]; then

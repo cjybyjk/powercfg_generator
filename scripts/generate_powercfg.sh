@@ -99,6 +99,7 @@ IFS="="
 while read lineinText
 do 
 	[ -z "$lineinText" ] && continue
+	# cut string like [mode]
 	modeTmp=${lineinText#[}
 	modeTmp=${modeTmp%]}
 	if [ "$lineinText" != "$modeTmp" ]; then
@@ -109,7 +110,7 @@ do
 	fi
 	lineinText=${lineinText/\//\\\/}
 	arrCmd=($lineinText)
-	if [ "runonce" == "$mode" ] || [[ "$mode" =~ "modify" ]]; then
+	if [ "runonce" = "$mode" ] || [[ "$mode" =~ "modify" ]]; then
 	    modeText=${modeText}"$lineinText\n	" 
 	else
 	    timer_rate="${arrCmd[0]}"
@@ -133,7 +134,7 @@ do
 	    timer_rate=`echo $timer_rate | tr -d '[ \t]'`
 	    [ -z "$param" ] && continue
 	    [ "HMP" != "$mode" ] && $param_allowance_check && check_timer_rate
-	    [ "$timer_rate" = "target_loads" ] && [ "$cluster" = "little" -o "$is_big_little" = "false" ] && sed -i "s/(${mode}_tload)/$param/g" powercfg
+	    [ "$timer_rate" = "target_loads" ] && [ "$cluster" = "little" -o ! $is_big_little ] && sed -i "s/(${mode}_tload)/$param/g" powercfg
 	    [[ "$param" =~ " " ]] && param="\"$param\""
 	    modeText=${modeText}"set_param_$cluster $timer_rate $param\n	" 
 	fi
