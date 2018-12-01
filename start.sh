@@ -11,7 +11,7 @@ function mainMenu()
 {
     while true
     do
-        showMenu "$info
+        showMenu "
 主菜单
 
 g) 生成powercfg
@@ -40,7 +40,7 @@ function settingMenu()
     while true
     do
         init
-        showMenu "$info
+        showMenu "
 设置
 
 c) 检查(interactive)参数有效性: $param_check
@@ -110,7 +110,7 @@ function prjManageMenu()
 {
     while true
     do
-        showMenu "$info
+        showMenu "
 项目管理
 
 i) 修改项目信息

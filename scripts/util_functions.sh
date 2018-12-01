@@ -10,7 +10,7 @@ function init()
     source $basepath/config/config.sh
     [ -f $basepath/config/project_pointer ] && prjPtr=$(cat $basepath/config/project_pointer)
     [ -f $basepath/projects/$prjPtr/project_config.sh ] && source $basepath/projects/$prjPtr/project_config.sh
-    info="powercfg_generator VER:$VER
+    generatorInfo="powercfg_generator VER:$VER
 by cjybyjk @ coolapk
 License: GPL v3
 
@@ -37,7 +37,7 @@ function showMenu()
     while true
     do
         clear
-        echo -e "${menuItems}\n"
+        echo -e "${generatorInfo}${menuItems}\n"
         read -p "请输入选项: " selected
         selected=$(lcase $selected) 
         for i in ${!keyList[@]}
