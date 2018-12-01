@@ -17,7 +17,7 @@ bash + zip + vim
 2. 执行 start.sh
 3. 编辑项目信息，修改作者与项目名称(不能含有空格)
 
-### 选项说明
+## 选项说明
 - [生成powercfg](guide/powercfg.md)
 - [共用powercfg](guide/linkto.md)
 - [制作卡刷包](guide/pack.md)
