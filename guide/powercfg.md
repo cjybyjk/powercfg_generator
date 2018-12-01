@@ -1,4 +1,3 @@
-
 ## 生成 `powercfg`
 1. 输入 SoC 型号
   - 如果SoC不在支持列表中，则需要输入附加信息
@@ -44,6 +43,6 @@ echo "modified!"
 [runonce]
 echo "first run!"
 [HMP]
-sched_spill_load= 90
+sched_spill_load=90
 ```
 
