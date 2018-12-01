@@ -9,8 +9,9 @@ read -p "请输入版本号:" prjVer
 [ -z $prjVer ] && echo "版本号不能为空" && exit 1
 read -p "请输入versionCode:" prjVerCode
 [ -z $prjVerCode ] && echo "versionCode不能为空" && exit 1
-zipPath="$basepath/flashable/$project_name.installer.$prjVer.zip"
-mkdir $basepath/flashable
+zipPath="$basepath/flashable/$project_name/$project_name.Installer.$prjVer.zip"
+removerPath="$basepath/flashable/$project_name/$project_name.Remover.zip"
+mkdir -p $basepath/flashable/$project_name
 
 echo "复制文件..."
 mkdir $tmpdir
@@ -18,6 +19,7 @@ cd $tmpdir
 cp -r $basepath/template/* ./
 cp -r $basepath/project/$project_id/* ./
 cp $basepath/config/list_of_socs ./common/
+cp $basepath/config/list_of_socs ./remover/
 rm ./powercfg_template
 
 echo "写入相关信息..."
@@ -27,10 +29,12 @@ sed -i "s/(project_name)/$project_name/g" `grep "(project_name)" -rl .`
 sed -i "s/(prj_vercode)/$prjVerCode/g" `grep "(prj_vercode)" -rl .`
 sed -i "s/(prj_ver)/$prjVer/g" `grep "(prj_ver)" -rl .`
 
-cp ./README.md $basepath/flashable/README_$project_name.md
+cp ./README.md $basepath/flashable/$project_name/README.md
 
 echo "打包文件..."
-zip -r "$zipPath" ./*
+zip -r "$zipPath" ./* -x "remover"
+cd ./remover
+zip -r "$removerPath" ./*
 
 echo "清理文件..."
 cd $basepath
