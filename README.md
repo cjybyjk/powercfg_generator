@@ -10,12 +10,12 @@
 所有使用本工具生成的 `powercfg` 脚本和卡刷包也应遵循 GPL v3 许可证
 
 ## 需要的环境
-bash + zip + vim
+bash + zip
 
 ## 使用方法
 1. clone 这个repo
 2. 执行 start.sh
-3. 编辑项目信息，修改作者与项目名称(不能含有空格)
+3. 新建一个项目（id不能包含空格）
 
 ## 选项说明
 - [生成powercfg](guide/powercfg.md)
