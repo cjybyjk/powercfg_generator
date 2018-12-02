@@ -1,0 +1,67 @@
+[balance]
+go_hispeed_load=little=99
+above_hispeed_delay=little=0 768000:61000 864000:65000 960000:71000 1248000:75000 1478000:81000 1555000:85000
+timer_rate=little=60000
+hispeed_freq=little=672000
+timer_slack=little=480000
+target_loads=little=98 460000:68 600000:82 672000:72 768000:92 864000:83 960000:99 1248000:75 1478000:99 1555000:100
+min_sample_time=little=0
+ignore_hispeed_on_notif=little=0
+boost=little=0
+fast_ramp_down=little=0
+align_windows=little=0
+use_migration_notif=little=1
+use_sched_load=little=0
+max_freq_hysteresis=little=0
+boostpulse_duration=little=0
+io_is_busy=little=0
+go_hispeed_load=big=99
+above_hispeed_delay=big=20000 768000:60000 960000:150000
+timer_rate=big=20000
+hispeed_freq=big=480000
+timer_slack=big=80000
+target_loads=big=98 480000:40 768000:80 960000:95 1248000:75 1344000:99 1440000:100
+min_sample_time=big=50000
+ignore_hispeed_on_notif=big=0
+boost=big=0
+fast_ramp_down=big=0
+align_windows=big=0
+use_migration_notif=big=1
+use_sched_load=big=0
+max_freq_hysteresis=big=0
+boostpulse_duration=big=80000
+io_is_busy=big=0
+
+[performance]
+go_hispeed_load=little=99
+above_hispeed_delay=little=0 768000:61000 864000:65000 960000:71000 1248000:75000 1478000:81000 1555000:85000
+timer_rate=little=60000
+hispeed_freq=little=864000
+timer_slack=little=480000
+target_loads=little=80 460000:68 600000:82 672000:72 768000:92 864000:83 960000:99 1248000:75 1478000:99 1555000:100
+min_sample_time=little=0
+ignore_hispeed_on_notif=little=0
+boost=little=0
+fast_ramp_down=little=0
+align_windows=little=0
+use_migration_notif=little=1
+use_sched_load=little=0
+max_freq_hysteresis=little=0
+boostpulse_duration=little=0
+io_is_busy=little=0
+go_hispeed_load=big=99
+above_hispeed_delay=big=20000 768000:60000 960000:150000
+timer_rate=big=20000
+hispeed_freq=big=480000
+timer_slack=big=80000
+target_loads=big=98 480000:40 768000:80 960000:95 1248000:75 1344000:99 1440000:100
+min_sample_time=big=50000
+ignore_hispeed_on_notif=big=0
+boost=big=0
+fast_ramp_down=big=0
+align_windows=big=0
+use_migration_notif=big=1
+use_sched_load=big=0
+max_freq_hysteresis=big=0
+boostpulse_duration=big=80000
+io_is_busy=big=0

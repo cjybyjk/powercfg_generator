@@ -1,0 +1,34 @@
+[balance]
+go_hispeed_load=99
+above_hispeed_delay=0 998000:25000 1152000:41000 1209000:55000
+timer_rate=60000
+hispeed_freq=800000
+timer_slack=480000
+target_loads=98 400000:68 553000:82 800000:72 998000:92 1094000:83 1152000:99 1209000:100
+min_sample_time=0
+ignore_hispeed_on_notif=0
+boost=0
+fast_ramp_down=0
+align_windows=0
+use_migration_notif=1
+use_sched_load=0
+max_freq_hysteresis=0
+boostpulse_duration=0
+
+[performance]
+go_hispeed_load=99
+above_hispeed_delay=0 998000:25000 1152000:41000 1209000:55000
+timer_rate=60000
+hispeed_freq=1094000
+timer_slack=480000
+target_loads=80 400000:68 553000:82 800000:72 998000:92 1094000:83 1152000:99 1209000:100
+min_sample_time=0
+ignore_hispeed_on_notif=0
+boost=0
+fast_ramp_down=0
+align_windows=0
+use_migration_notif=1
+use_sched_load=0
+max_freq_hysteresis=0
+boostpulse_duration=0
+

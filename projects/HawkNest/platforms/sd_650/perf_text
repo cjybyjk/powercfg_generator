@@ -1,0 +1,65 @@
+
+[balance]
+go_hispeed_load=little=99
+above_hispeed_delay=little=0 1190000:25000 1305000:41000 1382000:55000 1401000:61000 1440000:65000
+timer_rate=little=60000
+hispeed_freq=little=1017000
+timer_slack=little=480000
+target_loads=little=98 691000:68 806000:82 1017000:72 1190000:92 1305000:83 1382000:99 1401000:75 1440000:99
+min_sample_time=little=0
+ignore_hispeed_on_notif=little=0
+boost=little=0
+fast_ramp_down=little=0
+align_windows=little=0
+use_migration_notif=little=1
+use_sched_load=little=0
+max_freq_hysteresis=little=0
+boostpulse_duration=little=0
+go_hispeed_load=big=99
+above_hispeed_delay=big=20000 1190000:60000 1382000:150000
+timer_rate=big=20000
+hispeed_freq=big=883000
+timer_slack=big=80000
+target_loads=big=98 883000:40 1190000:80 1382000:95 1612000:75 1747000:99
+min_sample_time=big=50000
+ignore_hispeed_on_notif=big=0
+boost=big=0
+fast_ramp_down=big=0
+align_windows=big=0
+use_migration_notif=big=1
+use_sched_load=big=0
+max_freq_hysteresis=big=0
+boostpulse_duration=big=80000
+	
+[performance]
+go_hispeed_load=little=99
+above_hispeed_delay=little=0 1190000:25000 1305000:41000 1382000:55000 1401000:61000 1440000:65000
+timer_rate=little=60000
+hispeed_freq=little=1305000
+timer_slack=little=480000
+target_loads=little=80 691000:68 806000:82 1017000:72 1190000:92 1305000:83 1382000:99 1401000:75 1440000:99
+min_sample_time=little=0
+ignore_hispeed_on_notif=little=0
+boost=little=0
+fast_ramp_down=little=0
+align_windows=little=0
+use_migration_notif=little=1
+use_sched_load=little=0
+max_freq_hysteresis=little=0
+boostpulse_duration=little=0
+go_hispeed_load=big=99
+above_hispeed_delay=big=20000 1190000:60000 1382000:150000
+timer_rate=big=20000
+hispeed_freq=big=883000
+timer_slack=big=80000
+target_loads=big=98 883000:40 1190000:80 1382000:95 1612000:75 1747000:99
+min_sample_time=big=50000
+ignore_hispeed_on_notif=big=0
+boost=big=0
+fast_ramp_down=big=0
+align_windows=big=0
+use_migration_notif=big=1
+use_sched_load=big=0
+max_freq_hysteresis=big=0
+boostpulse_duration=big=80000
+
