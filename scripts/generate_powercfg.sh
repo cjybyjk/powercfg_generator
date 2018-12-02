@@ -20,7 +20,8 @@ function get_clusters()
 	yesNo "是否使用big.LITTLE架构" "y" && is_big_little=true
 	cluster_0=$(readDefault "cluster0" "cpu0")
 	$is_big_little && cluster_1=$(readDefault "cluster1" "cpu4")
-	if [ yesNo "添加这个SoC到支持列表中"  "y" ]; then
+	yesNo "添加这个SoC到支持列表中"  "y"
+	if [ $? -eq 0 ]; then
 		read -p "输入SoC代号(支持正则表达式):" socCodename
 		echo "$socCodename:$socModel:$is_big_little:$cluster_0:$cluster_1" >> $basepath/config/list_of_socs
 	fi
@@ -100,15 +101,17 @@ while read lineinText
 do 
 	[ -z "$lineinText" ] && continue
 	# cut string like [mode]
-	modeTmp=${lineinText#[}
-	modeTmp=${modeTmp%]}
-	if [ "$lineinText" != "$modeTmp" ]; then
+	if [ "${lineinText:0:1}" = "[" ] && [ "${lineinText:0-1:1}" = "]" ]; then
+		modeTmp=${lineinText#[}
+		modeTmp=${modeTmp%]}
 	    savemode
 	    mode="$modeTmp"
 	    echo "$mode start"
 	    continue
 	fi
 	lineinText=${lineinText/\//\\\/}
+	lineinText=${lineinText/\$/\\\$}
+	lineinText=${lineinText/\"/\\\"}
 	arrCmd=($lineinText)
 	if [ "runonce" = "$mode" ] || [[ "$mode" =~ "modify" ]]; then
 	    modeText=${modeText}"$lineinText\n	" 
@@ -120,7 +123,7 @@ do
 		    param="${arrCmd[1]}"
 	    else
 		    timer_rate_bak=$timer_rate
-		    if [ "${arrCmd[1]}" != "big" ] && [ "${arrCmd[1]}" != "little" ] ; then
+		    if [ "${arrCmd[1]}" != "big" ] && [ "${arrCmd[1]}" != "little" ] && [ "${arrCmd[1]}" != "HMP" ] ; then
 			    cluster="all"
 			    [ "HMP" = "$mode" ] && cluster="HMP"
 			    param="${arrCmd[1]}"
