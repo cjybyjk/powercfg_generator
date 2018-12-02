@@ -104,12 +104,14 @@ function readDefault()
 # $1:text $2:default(y/n)
 function yesNo()
 {
+    local tmpyn
     if [ "y" = "$(lcase $2)" ]; then
-        read -p "$1 (Y/n) : "
+        read -p "$1 (Y/n) : " tmpyn
+        [ "n" != "$(lcase $tmpyn)" ] && return 0
     else
-        read -p "$1 (y/N) : "
+        read -p "$1 (y/N) : " tmpyn
+        [ "y" = "$(lcase $tmpyn)" ] && return 0
     fi
-    [ "y" = "$(lcase $tmpyn)" ] && return 0
     return 1
  }
  
