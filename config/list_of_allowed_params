@@ -2,8 +2,8 @@ above_hispeed_delay
 align_windows
 boost
 boostpulse
-boostpulse_duration 
-enable_prediction 
+boostpulse_duration
+enable_prediction
 fast_ramp_down
 go_hispeed_load
 hispeed_freq
