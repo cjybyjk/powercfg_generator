@@ -1,7 +1,7 @@
 #!/system/bin/sh
 # (project_name)
 # Version: (prj_ver)
-# Author: (your_name)
+# Author: (project_author)
 # Platform: (soc_model)
 # Generated at (generate_date)
 # powercfg template by cjybyjk
@@ -121,6 +121,7 @@ function get_mode()
 		"(fast_tload)" ) echo "fast OK" ;;
 	esac
 }
+
 # RunOnce
 if [ ! -f /dev/perf_runonce ]; then
 	# set flag
