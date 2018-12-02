@@ -17,7 +17,7 @@ echo "复制文件..."
 mkdir $tmpdir
 cd $tmpdir
 cp -r $basepath/template/* ./
-cp -r $basepath/project/$project_id/* ./
+cp -r $basepath/projects/$project_id/* ./
 cp $basepath/config/list_of_socs ./common/
 cp $basepath/config/list_of_socs ./remover/
 rm ./powercfg_template
@@ -32,7 +32,7 @@ sed -i "s/(prj_ver)/$prjVer/g" `grep "(prj_ver)" -rl .`
 cp ./README.md $basepath/flashable/$project_name/README.md
 
 echo "打包文件..."
-zip -r "$zipPath" ./* -x "remover"
+zip -r "$zipPath" ./* -x "remover/*"
 cd ./remover
 zip -r "$removerPath" ./*
 
