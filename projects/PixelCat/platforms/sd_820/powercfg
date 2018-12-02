@@ -1,0 +1,219 @@
+#!/system/bin/sh
+# (project_name)
+# Version: (prj_ver)
+# Author: (project_author)
+# Platform: sd_820
+# Generated at 2018年 12月 02日 星期日 12:27:30 CST
+# powercfg template by cjybyjk
+
+is_big_little=true
+
+C0_GOVERNOR_DIR="/sys/devices/system/cpu/cpu0/cpufreq/interactive"
+C1_GOVERNOR_DIR="/sys/devices/system/cpu/cpu2/cpufreq/interactive"
+C0_CPUFREQ_DIR="/sys/devices/system/cpu/cpu0/cpufreq"
+C1_CPUFREQ_DIR="/sys/devices/system/cpu/cpu2/cpufreq"
+
+if ! $is_big_little ; then
+	C0_GOVERNOR_DIR="/sys/devices/system/cpu/cpufreq/interactive"
+	C1_GOVERNOR_DIR=""
+	C0_CPUFREQ_DIR="/sys/devices/system/cpu/cpu0/cpufreq"
+	C1_CPUFREQ_DIR=""
+fi
+
+# $1:timer_rate $2:value
+function set_param_little() 
+{
+	echo ${2} > ${C0_GOVERNOR_DIR}/${1}
+}
+
+function set_param_big() 
+{
+	echo ${2} > ${C1_GOVERNOR_DIR}/${1}
+}
+
+function set_param_all() 
+{
+	set_param_little ${1} "${2}"
+	$is_big_little && set_param_big ${1} "${2}"
+}
+
+function set_param_HMP()
+{
+	echo ${2} > /proc/sys/kernel/${1}
+}
+
+# $1:timer_rate
+function print_param() 
+{
+	if $is_big_little ; then
+		print_value "LITTLE: ${1}" ${C0_GOVERNOR_DIR}/${1}
+		print_value "big: ${1}" ${C1_GOVERNOR_DIR}/${1}
+	else
+		print_value "${1}" ${C0_GOVERNOR_DIR}/${1}
+	fi
+}
+
+function before_modify()
+{
+	set_value "interactive" ${C0_CPUFREQ_DIR}/scaling_governor
+	chown 0.0 ${C0_GOVERNOR_DIR}/*
+	chmod 0666 ${C0_GOVERNOR_DIR}/*
+	if $is_big_little ; then
+		set_value 1 /sys/devices/system/cpu/cpu2/online
+		set_value "interactive" ${C1_CPUFREQ_DIR}/scaling_governor
+		chown 0.0 ${C1_GOVERNOR_DIR}/*
+		chmod 0666 ${C1_GOVERNOR_DIR}/*
+	fi
+	# before_modify_params
+}
+
+function after_modify()
+{
+	chmod 0444 ${C0_GOVERNOR_DIR}/*
+	$is_big_little && chmod 0444 ${C1_GOVERNOR_DIR}/*
+	# after_modify_params
+	verify_param
+}
+
+# $1:value $2:file path
+function set_value() 
+{
+	if [ -f $2 ]; then
+		echo $1 > $2
+	fi
+}
+
+# $1:display-name $2:file path
+function print_value() 
+{
+	if [ -f $2 ]; then
+		echo $1
+		cat $2
+	fi
+}
+
+function verify_param() 
+{
+	expected_target=${C0_GOVERNOR_DIR}/target_loads
+	if [ "$action" = "powersave" ]; then
+		expected_value="70 480000:41 844000:56 1228000:67 1593000:74"
+	elif [ "$action" = "balance" ]; then
+		expected_value="55 480000:33 844000:46 1228000:57 1593000:68"
+	elif [ "$action" = "performance" ]; then
+		expected_value="40 480000:23 844000:31 1228000:37 1593000:49"
+	elif [ "$action" = "fast" ]; then
+		expected_value="(fast_tload)"
+	fi
+	if [ "`cat ${expected_target}`" = "${expected_value}" ]; then
+		echo "${action} OK"
+	else
+		echo "${action} FAIL"
+	fi
+}
+
+function get_mode()
+{
+    expected_target=${C0_GOVERNOR_DIR}/target_loads
+	case "`cat ${expected_target}`" in
+		"70 480000:41 844000:56 1228000:67 1593000:74" ) echo "powersave OK" ;;
+		"55 480000:33 844000:46 1228000:57 1593000:68" ) echo "balance OK" ;;
+		"40 480000:23 844000:31 1228000:37 1593000:49" ) echo "performance OK" ;;
+		"(fast_tload)" ) echo "fast OK" ;;
+	esac
+}
+
+# RunOnce
+if [ ! -f /dev/perf_runonce ]; then
+	# set flag
+	touch /dev/perf_runonce
+	
+	# HMP_params
+	# runonce_params
+fi
+
+action=$1
+if [ ! -n "$action" ]; then
+    action="balance"
+fi
+
+if [ "$action" = "debug" ]; then
+	echo "(project_name)"
+	echo "Version: (prj_ver)"
+	echo "Author: (project_author)"
+	echo "Platform: sd_820"
+	echo "Generated at 2018年 12月 02日 星期日 12:27:30 CST"
+	echo "powercfg template by cjybyjk"
+	echo ""
+	print_param above_hispeed_delay
+	print_param target_loads
+	get_mode
+	exit 0
+fi
+
+before_modify
+
+if [ "$action" = "powersave" ]; then
+	set_param_all boostpulse_duration 25000
+	set_param_all boost 1
+	set_param_all timer_rate 24000
+	set_param_all timer_slack 90000
+	set_param_all min_sample_time 1000
+	set_param_all align_windows 0
+	set_param_all max_freq_hysteresis 1000
+	set_param_all use_sched_load 1
+	set_param_all use_migration_notif 1
+	set_param_all go_hispeed_load 70
+	set_param_big hispeed_freq 652000
+	set_param_little hispeed_freq 307000
+	set_param_big above_hispeed_delay "25000 307000:37000 652000:49000 1248000:63000 1555000:78000 1920000:89000 2150000:99000"
+	set_param_little above_hispeed_delay "25000 480000:39000 844000:43000 1228000:57000 1593000:69000"
+	set_param_big target_loads "70 307000:41 652000:53 1248000:41 1555000:69 1920000:78 2150000:84"
+	set_param_little target_loads "70 480000:41 844000:56 1228000:67 1593000:74"
+	
+fi
+
+if [ "$action" = "balance" ]; then
+	set_param_all boostpulse_duration 12000
+	set_param_all boost 1
+	set_param_all timer_rate 10000
+	set_param_all timer_slack 40000
+	set_param_all min_sample_time 1000
+	set_param_all align_windows 0
+	set_param_all max_freq_hysteresis 1000
+	set_param_all use_sched_load 1
+	set_param_all use_migration_notif 1
+	set_param_all go_hispeed_load 55
+	set_param_big hispeed_freq 940000
+	set_param_little hispeed_freq 652000
+	set_param_big above_hispeed_delay "12000 307000:23000 652000:37000 1248000:56000 1555000:69000 1920000:78000 2150000:88000"
+	set_param_little above_hispeed_delay "12000 480000:28000 844000:36000 1228000:47000 1593000:59000"
+	set_param_big target_loads "55 307000:31 652000:45 1248000:41 1555000:63 1920000:69 2150000:78"
+	set_param_little target_loads "55 480000:33 844000:46 1228000:57 1593000:68"
+	
+fi
+
+if [ "$action" = "performance" ]; then
+	set_param_all timer_rate 10000
+	set_param_all timer_slack 40000
+	set_param_all min_sample_time 1000
+	set_param_all align_windows 0
+	set_param_all max_freq_hysteresis 1000
+	set_param_all use_sched_load 1
+	set_param_all use_migration_notif 1
+	set_param_all go_hispeed_load 40
+	set_param_big hispeed_freq 1401000
+	set_param_little hispeed_freq 940000
+	set_param_big above_hispeed_delay "7000 307000:13000 652000:24000 1248000:47000 1555000:54000 1920000:64000 2150000:73000"
+	set_param_little above_hispeed_delay "7000 480000:17000 844000:27000 1228000:35000 1593000:49000"
+	set_param_big target_loads "40 307000:21 652000:35 1248000:411516000:53 1920000:61 2150000:69"
+	set_param_little target_loads "40 480000:23 844000:31 1228000:37 1593000:49"
+	
+fi
+
+if [ "$action" = "fast" ]; then
+	:
+fi
+
+after_modify
+
+exit 0
