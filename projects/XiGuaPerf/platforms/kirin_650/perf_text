@@ -1,0 +1,17 @@
+hispeed_freq=
+little=807000
+big=1402000
+target=
+little=98 480000:75 807000:95 1306000:99
+big=98 1402000:95
+above=
+little=20000 480000:60000 807000:150000
+big=20000 1402000:160000
+min_sampling_time=50000
+boost=0
+go_hispeed=99
+boostpulse_duration=80000
+use_sched_load=1
+use_migration_notif=1
+
+

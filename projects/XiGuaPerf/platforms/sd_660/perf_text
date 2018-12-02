@@ -1,0 +1,17 @@
+go_hispeed_load=99
+hispeed_freq=
+big=1401000
+little=902000
+above_hispeed_delay=
+big=20000 1401000:60000 1747000:150000
+little=20000 902000:60000 1113000:150000
+target_loads=
+big=98 1130000:75 1401000:95 1747000:99
+little=98 633000:75 902000:95 1113000:40 1401000:80 1536000:99
+min_sample_time=50000
+boostpulse_duration=80000
+use_sched_load=1
+use_migration_notif=1
+boost=0
+
+

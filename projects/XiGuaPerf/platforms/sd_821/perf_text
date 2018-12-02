@@ -1,0 +1,21 @@
+boostpulse_duration=24000
+boost=0 
+timer_rate=20000
+timer_slack=80000
+min_sampling_time=24000
+align_ windows=0
+max_freq_hysteresis=0
+use_sched_load=1
+use_migration_notif=1
+go_hispeed=99
+hispeed_freq=
+little=460000 
+big=691000
+above_hispeed_delay=
+big=20000 1209000:60000 1516000:150000 
+little=20000 844000:60000 1209000:150000
+target_loads=
+big=98 691000:80 1209000:95 1516000:99 
+little=98 460000:80 844000:95 1209000:99
+
+

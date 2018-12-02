@@ -1,0 +1,10 @@
+target=98 422000:75 883000:95 1036000:40 1497000:80 1728000:99
+hispeed_freq=883000
+above=20000 883000:60000 1036000:150000
+min_sampling_time=50000
+go_hispeed=99
+boostpulse_duration=80000
+use_sched_load=1
+use_migration_notif=1
+
+

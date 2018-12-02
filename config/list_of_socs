@@ -23,3 +23,7 @@ universal9810:exynos_9810:true:cpu0:cpu4
 mt6795:helio_x10:false:cpu0
 mt6755:helio_p10:true:cpu0:cpu4
 hi3650:kirin_950:true:cpu0:cpu4
+universal8890:exynos_8890:true:cpu0:cpu4
+hi6250:kirin_650:true:cpu0:cpu4
+apq(8026|8028|8030)|msm(8226|8228|8230|8626|8628|8630|8926|8928|8930):sd_400:false:cpu0:
+sdm450:sd_450:true:cpu0:cpu4

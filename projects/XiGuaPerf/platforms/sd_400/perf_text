@@ -1,0 +1,10 @@
+go_hispeed_load=99
+above_hispeed_delay=20000 600000:60000 787000:150000
+timer_rate=20000
+hispeed_freq=600000
+timer_slack=80000
+target_loads=98 384000:75 600000:95 787000:40 998000:80 1094000:99
+min_sample_time=50000
+boost=0
+
+

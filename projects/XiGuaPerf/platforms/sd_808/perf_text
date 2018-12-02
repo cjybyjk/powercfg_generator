@@ -1,0 +1,10 @@
+hispeed_freq=864000
+target=98 480000:75 864000:95 960000:40 1248000:80 1440000:99
+above=20000 864000:60000 960000:150000
+boost=0
+min_sampling_time=50000
+go_hispeed=99
+boostpulse_duration=80000
+use_sched_load=1
+
+
