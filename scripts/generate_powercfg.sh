@@ -73,8 +73,17 @@ function check_timer_rate()
 function savemode()
 {
 	if [ "" != "$modeText" ]; then
-		sed -i "s/# ${mode}_params/$modeText/g" powercfg
+		while read templateText
+		do
+			if [[ "$templateText" =~ "${mode}_params" ]]; then
+				echo -e "$modeText" >> ./powercfg
+			else
+				echo "$templateText" >> ./powercfg
+			fi
+		done < ./powercfg_template
 		modeText=""
+		rm powercfg_template
+		mv powercfg powercfg_template
 		echo "$mode saved"
 	fi
 }
@@ -91,7 +100,8 @@ if [ -f "./linkto" ]; then
 	rm ./linkto
 	rm ./NOTICE
 fi
-cp $basepath/template/powercfg_template ./powercfg
+cp $basepath/template/powercfg_template ./
+rm ./powercfg
 $text_editor ./perf_text
 
 mode="balance"
@@ -109,12 +119,9 @@ do
 	    echo "$mode start"
 	    continue
 	fi
-	lineinText=${lineinText/\//\\\/}
-	lineinText=${lineinText/\$/\\\$}
-	lineinText=${lineinText/\"/\\\"}
 	arrCmd=($lineinText)
 	if [ "runonce" = "$mode" ] || [[ "$mode" =~ "modify" ]]; then
-	    modeText=${modeText}"$lineinText\n	" 
+	    modeText=${modeText}"\t$lineinText\n"
 	else
 	    timer_rate="${arrCmd[0]}"
 	    if [ "$timer_rate" = "big" ] || [ "$timer_rate" = "little" ]; then
@@ -137,13 +144,15 @@ do
 	    timer_rate=`echo $timer_rate | tr -d '[ \t]'`
 	    [ -z "$param" ] && continue
 	    [ "HMP" != "$mode" ] && $param_allowance_check && check_timer_rate
-	    [ "$timer_rate" = "target_loads" ] && [ "$cluster" = "little" -o ! $is_big_little ] && sed -i "s/(${mode}_tload)/$param/g" powercfg
+	    [ "$timer_rate" = "target_loads" ] && [ "$cluster" = "little" -o ! $is_big_little ] && sed -i "s/(${mode}_tload)/$param/g" powercfg_template
 	    [[ "$param" =~ " " ]] && param="\"$param\""
-	    modeText=${modeText}"set_param_$cluster $timer_rate $param\n	" 
+	    modeText=${modeText}"\tset_param_$cluster $timer_rate $param\n" 
 	fi
 done < ./perf_text
 savemode
 IFS="$OLD_IFS"
+
+mv powercfg_template powercfg
 
 # 写入相关信息
 sed -i "s/(soc_model)/$socModel/g" powercfg

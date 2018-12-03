@@ -3,7 +3,7 @@
 # Version: (prj_ver)
 # Author: (project_author)
 # Platform: sd_835
-# Generated at 2018年 12月 02日 星期日 14:10:22 CST
+# Generated at Mon Dec  3 14:02:32 CST 2018
 # powercfg template by cjybyjk
 
 is_big_little=true
@@ -64,7 +64,22 @@ function before_modify()
 		chown 0.0 ${C1_GOVERNOR_DIR}/*
 		chmod 0666 ${C1_GOVERNOR_DIR}/*
 	fi
-	# before_modify_params
+	set_param_all boost 0
+	set_param_all use_sched_load 1
+	set_param_all use_migration_notif 1
+	set_param_all timer_rate 26666
+	set_param_all boostpulse_duration 18000
+	set_param_all timer_slack 18000
+	set_param_all io_is_busy 0
+	set_param_all ignore_hispeed_on_notif 1
+	set_param_all enable_prediction 0
+	set_param_all sched_boost 0
+	set_param_all input_boost_ms 40
+	set_value "0-2" dev/cpuset/background/cpus
+	set_value "0-2" dev/cpuset/system-background/cpus
+	set_value "0-3,4-7" dev/cpuset/foreground/boost/cpus
+	set_value "0-3,4-7" dev/cpuset/foreground/cpus
+
 }
 
 function after_modify()
@@ -137,7 +152,7 @@ if [ ! -f /dev/perf_runonce ]; then
 	set_param_HMP sched_spill_load 80
 	set_param_HMP sched_restrict_cluster_spill 1
 	set_param_HMP sched_prefer_sync_wakee_to_waker 1
-	
+
 	# runonce_params
 fi
 
@@ -151,7 +166,7 @@ if [ "$action" = "debug" ]; then
 	echo "Version: (prj_ver)"
 	echo "Author: (project_author)"
 	echo "Platform: sd_835"
-	echo "Generated at 2018年 12月 02日 星期日 14:10:22 CST"
+	echo "Generated at Mon Dec  3 14:02:32 CST 2018"
 	echo "powercfg template by cjybyjk"
 	echo ""
 	print_param above_hispeed_delay
@@ -183,7 +198,7 @@ if [ "$action" = "powersave" ]; then
 	set_param_big min_sample_time 18000
 	set_param_big max_freq_hysteresis 79000
 	set_param_big scaling_min_freq 300000
-	
+
 fi
 
 if [ "$action" = "balance" ]; then
@@ -202,7 +217,7 @@ if [ "$action" = "balance" ]; then
 	set_param_big min_sample_time 18000
 	set_param_big max_freq_hysteresis 79000
 	set_param_big scaling_min_freq 422400
-	
+
 fi
 
 if [ "$action" = "performance" ]; then
@@ -222,7 +237,7 @@ if [ "$action" = "performance" ]; then
 	set_param_big min_sample_time 18000
 	set_param_big max_freq_hysteresis 79000
 	set_param_big scaling_min_freq 422400
-	
+
 fi
 
 if [ "$action" = "fast" ]; then
