@@ -3,10 +3,7 @@
 basepath=$(cd $(dirname $0); pwd)/../
 source $basepath/scripts/util_functions.sh
 init
-read -p "输入SoC型号:" socModel
-platformPath="$basepath/projects/$project_id/platforms/$socModel"
-mkdir -p $platformPath
-cd $platformPath
+get_soc_info
 
 $text_editor ./perf_text
 

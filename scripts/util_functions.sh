@@ -113,5 +113,32 @@ function yesNo()
         [ "y" = "$(lcase $tmpyn)" ] && return 0
     fi
     return 1
- }
- 
+}
+
+function get_soc_info()
+{
+	read -p "输入SoC型号:" socModel
+	platformPath="$basepath/projects/$project_id/platforms/$socModel"
+	mkdir -p $platformPath
+	cd $platformPath
+	while read soctext
+	do
+		tmparr=(${soctext//:/ })
+		if [ "${tmparr[1]}" = "$socModel" ]; then
+			is_big_little="${tmparr[2]}"
+			cluster_0="${tmparr[3]}"
+			cluster_1="${tmparr[4]}"
+			return 0
+		fi
+	done < $basepath/config/list_of_socs
+	is_big_little=false
+	yesNo "是否使用big.LITTLE架构" "y" && is_big_little=true
+	cluster_0=$(readDefault "cluster0" "cpu0")
+	$is_big_little && cluster_1=$(readDefault "cluster1" "cpu4")
+	yesNo "添加这个SoC到支持列表中"  "y"
+	if [ $? -eq 0 ]; then
+		read -p "输入SoC代号(支持正则表达式):" socCodename
+		echo "$socCodename:$socModel:$is_big_little:$cluster_0:$cluster_1" >> $basepath/config/list_of_socs
+	fi
+}
+
