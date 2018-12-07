@@ -17,15 +17,17 @@ function mainMenu()
 g) 生成powercfg
 l) 指定SoCs共用powercfg
 c) 执行旧生成器兼容性脚本
+e) 转换 EX Kernel Manager 配置文件 
 z) 制作卡刷包
 t) 切换项目
 m) 项目管理
 s) 设置
-x) 退出" "g l c z t m s x"
+x) 退出" "g l c e z t m s x"
         case $selectedKey in
             "g") sh scripts/generate_powercfg.sh ;;
             "l") sh scripts/linkto.sh ;;
             "c") sh scripts/compat_perf.sh ;;
+	    "e") sh scripts/exkernel_profile_convert.sh ;;
             "z") sh scripts/pack.sh ;;
             "t") project_manager toggle ;;
             "m") prjManageMenu ;;
