@@ -53,7 +53,7 @@ platform="unsupported"
 for tmpPlatform in $(echo `grep "Hardware" /proc/cpuinfo | awk '{print $NF}' ; getprop "ro.product.board" ; getprop "ro.board.platform"` | tr '[A-Z]' '[a-z]') 
 do
 	if [ "unsupported" = "$platform" ]; then
-		while read soctext
+		while read -r soctext
 		do
 			if [ "`echo $tmpPlatform | egrep $(echo $soctext | cut -d : -f 1)`" != "" ]; then
 				platform=$(echo $soctext | cut -d : -f 2)
@@ -87,7 +87,7 @@ if [ -d "./platforms/$platform/" ]; then
 		flagApplyOnce=true
 		[ -f "/perf_no_apply_once" ] && flagApplyOnce=false
 		mkdir ./mountimg
-		while read lineinText
+		while read -r lineinText
 		do 
 			fileFormat=`echo $lineinText | awk '{print \$1}'`
 			pathtofile=`echo $lineinText | awk -F \" '{print \$2}'`

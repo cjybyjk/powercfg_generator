@@ -37,7 +37,7 @@ ui_print "- Reomving files"
 rm -f /system/xbin/powercfg
 rm -f /system/bin/powercfg
 mkdir ./mountimg
-while read lineinText
+while read -r lineinText
 do 
     fileFormat=`echo $lineinText | awk '{print \$1}'`
     pathtofile=`echo $lineinText | awk -F \" '{print \$2}'`

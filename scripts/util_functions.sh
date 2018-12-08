@@ -121,7 +121,7 @@ function get_soc_info()
 	platformPath="$basepath/projects/$project_id/platforms/$socModel"
 	mkdir -p $platformPath
 	cd $platformPath
-	while read soctext
+	while read -r soctext
 	do
 		tmparr=(${soctext//:/ })
 		if [ "${tmparr[1]}" = "$socModel" ]; then

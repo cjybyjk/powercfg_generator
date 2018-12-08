@@ -33,7 +33,7 @@ function check_timer_rate()
 	local likelyRank=0
 	local lkRankTmp
 	local mostLikely
-	while read allowed_timer_rate
+	while read -r allowed_timer_rate
     do 
 		[ "$timer_rate" = "$allowed_timer_rate" ] && return 0
 		lkRankTmp=$(getLikelyRank "$timer_rate" "$allowed_timer_rate")
@@ -50,7 +50,7 @@ function check_timer_rate()
 function savemode()
 {
 	if [ "" != "$modeText" ]; then
-		while read templateText
+		while read -r templateText
 		do
 			if [[ "$templateText" =~ "${mode}_params" ]]; then
 				echo -e "$modeText" >> ./powercfg
@@ -80,7 +80,7 @@ $text_editor ./perf_text
 mode="balance"
 OLD_IFS="$IFS" 
 IFS="="
-while read lineinText
+while read -r lineinText
 do 
 	[ -z "$lineinText" ] && continue
 	# cut string like [mode]
