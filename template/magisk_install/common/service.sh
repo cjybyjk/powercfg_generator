@@ -1,8 +1,8 @@
 #!/system/bin/sh
 MODDIR=${0%/*}
 
-# wait for boot animation stopped
-until [ "`getprop init.svc.bootanim`" = "stopped" ]
+# wait for boot completed
+until [ "`getprop sys.boot_completed`" = "1" ]
 do
 sleep 10
 done
