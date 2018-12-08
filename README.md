@@ -23,3 +23,4 @@ bash + zip
 - [制作卡刷包](guide/pack.md)
 - [SoC支持列表](guide/socs.md)
 - [旧版生成器兼容性](guide/compat_perf.md)
+- [EX Kernel Manager 配置文件转换](guide/exkernel_profile.md)
