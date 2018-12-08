@@ -21,6 +21,7 @@ cp -r $basepath/projects/$project_id/* ./
 cp $basepath/config/list_of_socs ./common/
 cp $basepath/config/list_of_socs ./remover/
 rm ./powercfg_template
+rm ./project_config.sh
 
 echo "写入相关信息..."
 sed -i "s/(project_author)/$project_author/g" `grep "(project_author)" -rl .`
@@ -28,6 +29,7 @@ sed -i "s/(project_id)/$project_id/g" `grep "(project_id)" -rl .`
 sed -i "s/(project_name)/$project_name/g" `grep "(project_name)" -rl .`
 sed -i "s/(prj_vercode)/$prjVerCode/g" `grep "(prj_vercode)" -rl .`
 sed -i "s/(prj_ver)/$prjVer/g" `grep "(prj_ver)" -rl .`
+sed -i "s/(generator_ver)/$VER/g" `grep "(generator_ver)" -rl .`
 
 cp ./README.md $basepath/flashable/$project_name/README.md
 
