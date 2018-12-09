@@ -3,7 +3,7 @@
 # Version: (prj_ver)
 # Author: (project_author)
 # Platform: sd_410
-# Generated at 2018年 12月 02日 星期日 14:23:25 CST
+# Generated at 2018年 12月 09日 星期日 13:30:46 CST
 # powercfg template by cjybyjk
 
 is_big_little=false
@@ -141,7 +141,7 @@ if [ "$action" = "debug" ]; then
 	echo "Version: (prj_ver)"
 	echo "Author: (project_author)"
 	echo "Platform: sd_410"
-	echo "Generated at 2018年 12月 02日 星期日 14:23:25 CST"
+	echo "Generated at 2018年 12月 09日 星期日 13:30:46 CST"
 	echo "powercfg template by cjybyjk"
 	echo ""
 	print_param above_hispeed_delay
@@ -172,7 +172,7 @@ if [ "$action" = "balance" ]; then
 	set_param_all use_sched_load 0
 	set_param_all max_freq_hysteresis 0
 	set_param_all boostpulse_duration 0
-	
+
 fi
 
 if [ "$action" = "performance" ]; then
@@ -191,7 +191,7 @@ if [ "$action" = "performance" ]; then
 	set_param_all use_sched_load 0
 	set_param_all max_freq_hysteresis 0
 	set_param_all boostpulse_duration 0
-	
+
 fi
 
 if [ "$action" = "fast" ]; then
