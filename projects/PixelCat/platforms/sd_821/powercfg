@@ -3,7 +3,7 @@
 # Version: (prj_ver)
 # Author: (project_author)
 # Platform: sd_821
-# Generated at 2018年 12月 02日 星期日 12:27:57 CST
+# Generated at 2018年 12月 09日 星期日 13:39:36 CST
 # powercfg template by cjybyjk
 
 is_big_little=true
@@ -141,7 +141,7 @@ if [ "$action" = "debug" ]; then
 	echo "Version: (prj_ver)"
 	echo "Author: (project_author)"
 	echo "Platform: sd_821"
-	echo "Generated at 2018年 12月 02日 星期日 12:27:57 CST"
+	echo "Generated at 2018年 12月 09日 星期日 13:39:36 CST"
 	echo "powercfg template by cjybyjk"
 	echo ""
 	print_param above_hispeed_delay
@@ -168,7 +168,7 @@ if [ "$action" = "powersave" ]; then
 	set_param_little above_hispeed_delay "25000 460000:39000 844000:43000 1209000:57000 1516000:69000 2188000:84000"
 	set_param_big target_loads "70 307000:41 691000:53 1209000:41 1516000:69 1900000:78 2150000:84 2342000:97"
 	set_param_little target_loads "70 460000:41 844000:56 1209000:67 1516000:74 2188000:85"
-	
+
 fi
 
 if [ "$action" = "balance" ]; then
@@ -191,7 +191,7 @@ if [ "$action" = "balance" ]; then
 	set_param_little above_hispeed_delay "7000 844000:37000 1209000:51000 1440000:62000 1516000:79000 2100000:89000"
 	set_param_big target_loads "55 307000:45 691200:60 979000:75 1209000:80 1440000:82 1670000:89 1900000:91 2150000:95 2342000:97"
 	set_param_little target_loads "40 307000:45 691200:60 979000:75 1209000:85 1440000:90 2188000:97"
-	
+
 fi
 
 if [ "$action" = "performance" ]; then
@@ -210,7 +210,7 @@ if [ "$action" = "performance" ]; then
 	set_param_little above_hispeed_delay "7000 460000:17000 844000:27000 1209000:35000 1516000:49000 2188000:63000"
 	set_param_big target_loads "40 307000:21 691000:35 1209000:41 1516000:53 1900000:61 2150000:69 2342000:74"
 	set_param_little target_loads "40 460000:23 844000:31 1209000:37 1516000:49 2188000:62"
-	
+
 fi
 
 if [ "$action" = "fast" ]; then
