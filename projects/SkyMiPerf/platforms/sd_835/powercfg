@@ -3,7 +3,7 @@
 # Version: (prj_ver)
 # Author: (project_author)
 # Platform: sd_835
-# Generated at 2018年 12月 08日 星期六 23:54:14 CST
+# Generated at 2018年 12月 09日 星期日 13:32:12 CST
 # powercfg template by cjybyjk
 
 is_big_little=true
@@ -166,7 +166,7 @@ if [ "$action" = "debug" ]; then
 	echo "Version: (prj_ver)"
 	echo "Author: (project_author)"
 	echo "Platform: sd_835"
-	echo "Generated at 2018年 12月 08日 星期六 23:54:14 CST"
+	echo "Generated at 2018年 12月 09日 星期日 13:32:12 CST"
 	echo "powercfg template by cjybyjk"
 	echo ""
 	print_param above_hispeed_delay
