@@ -7,3 +7,13 @@
 3. 将配置文件的内容复制到文本编辑器中
    - 小技巧：在复制的内容之前可以添加模式头，例如[balance]
 4. 保存内容，将生成可用的 `perf_text` 文件
+
+### 输入示例
+```ini
+[balance]
+/sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay 20000
+/sys/devices/system/cpu/cpufreq/interactive/timer_rate 100000
+[powersave]
+/sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay 20000
+/sys/devices/system/cpu/cpufreq/interactive/timer_rate 100000
+```
