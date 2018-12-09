@@ -27,7 +27,7 @@ x) 退出" "g l c e z t m s x"
             "g") sh scripts/generate_powercfg.sh ;;
             "l") sh scripts/linkto.sh ;;
             "c") sh scripts/compat_perf.sh ;;
-	    "e") sh scripts/exkernel_profile_convert.sh ;;
+	        "e") sh scripts/exkernel_profile_convert.sh ;;
             "z") sh scripts/pack.sh ;;
             "t") project_manager toggle ;;
             "m") prjManageMenu ;;
