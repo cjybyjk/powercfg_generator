@@ -3,7 +3,7 @@
 # Version: (prj_ver)
 # Author: (project_author)
 # Platform: sd_400
-# Generated at 2018年 12月 02日 星期日 13:06:23 CST
+# Generated at 2018年 12月 09日 星期日 12:57:55 CST
 # powercfg template by cjybyjk
 
 is_big_little=false
@@ -141,7 +141,7 @@ if [ "$action" = "debug" ]; then
 	echo "Version: (prj_ver)"
 	echo "Author: (project_author)"
 	echo "Platform: sd_400"
-	echo "Generated at 2018年 12月 02日 星期日 13:06:23 CST"
+	echo "Generated at 2018年 12月 09日 星期日 12:57:55 CST"
 	echo "powercfg template by cjybyjk"
 	echo ""
 	print_param above_hispeed_delay
@@ -157,15 +157,20 @@ if [ "$action" = "powersave" ]; then
 fi
 
 if [ "$action" = "balance" ]; then
-	set_param_all go_hispeed_load 99
-	set_param_all above_hispeed_delay "20000 600000:60000 787000:150000"
-	set_param_all timer_rate 20000
-	set_param_all hispeed_freq 600000
-	set_param_all timer_slack 80000
-	set_param_all target_loads "98 384000:75 600000:95 787000:40 998000:80 1094000:99"
-	set_param_all min_sample_time 50000
+	set_param_all go_hispeed_load 46
+	set_param_all above_hispeed_delay 20000
+	set_param_all timer_rate 100000
+	set_param_all hispeed_freq 998400
+	set_param_all timer_slack 200000
+	set_param_all target_loads "93 998000:75 1094000:93 1190000:92 1305000:99"
+	set_param_all min_sample_time 0
 	set_param_all boost 0
-	
+	set_param_all sync_freq 0
+	set_param_all up_threshold_any_cpu_freq 0
+	set_param_all up_threshold_any_cpu_load 0
+	set_param_all sampling_down_factor 100000
+	set_param_all boostpulse_duration 50000
+
 fi
 
 if [ "$action" = "performance" ]; then

@@ -2,8 +2,8 @@
 # (project_name)
 # Version: (prj_ver)
 # Author: (project_author)
-# Platform: sd_636
-# Generated at 2018年 12月 09日 星期日 13:03:26 CST
+# Platform: sd_810
+# Generated at 2018年 12月 09日 星期日 13:04:42 CST
 # powercfg template by cjybyjk
 
 is_big_little=true
@@ -98,7 +98,7 @@ function verify_param()
 	if [ "$action" = "powersave" ]; then
 		expected_value="(powersave_tload)"
 	elif [ "$action" = "balance" ]; then
-		expected_value="93 1036000:75 1113000:93 1401000:92 1804000:99"
+		expected_value="93 768000:75 864000:93 960000:92 1248000:99 1536000:99"
 	elif [ "$action" = "performance" ]; then
 		expected_value="(performance_tload)"
 	elif [ "$action" = "fast" ]; then
@@ -116,7 +116,7 @@ function get_mode()
     expected_target=${C0_GOVERNOR_DIR}/target_loads
 	case "`cat ${expected_target}`" in
 		"(powersave_tload)" ) echo "powersave OK" ;;
-		"93 1036000:75 1113000:93 1401000:92 1804000:99" ) echo "balance OK" ;;
+		"93 768000:75 864000:93 960000:92 1248000:99 1536000:99" ) echo "balance OK" ;;
 		"(performance_tload)" ) echo "performance OK" ;;
 		"(fast_tload)" ) echo "fast OK" ;;
 	esac
@@ -140,8 +140,8 @@ if [ "$action" = "debug" ]; then
 	echo "(project_name)"
 	echo "Version: (prj_ver)"
 	echo "Author: (project_author)"
-	echo "Platform: sd_636"
-	echo "Generated at 2018年 12月 09日 星期日 13:03:26 CST"
+	echo "Platform: sd_810"
+	echo "Generated at 2018年 12月 09日 星期日 13:04:42 CST"
 	echo "powercfg template by cjybyjk"
 	echo ""
 	print_param above_hispeed_delay
@@ -159,10 +159,10 @@ fi
 if [ "$action" = "balance" ]; then
 	set_param_big timer_slack 200000
 	set_param_big timer_rate 100000
-	set_param_big target_loads "93 633000:75 902000:93 1113000:92 1401000:99"
+	set_param_big target_loads "93 600000:75 768000:93 1344000:92 1478000:99"
 	set_param_big min_sample_time 0
 	set_param_big ignore_hispeed_on_notif 1
-	set_param_big hispeed_freq 633000
+	set_param_big hispeed_freq 600000
 	set_param_big go_hispeed_load 46
 	set_param_big above_hispeed_delay 20000
 	set_param_big align_windows 0
@@ -175,11 +175,11 @@ if [ "$action" = "balance" ]; then
 	set_param_big use_sched_load 0
 	set_param_little timer_slack 200000
 	set_param_little timer_rate 100000
-	set_param_little target_loads "93 1036000:75 1113000:93 1401000:92 1804000:99"
-	set_param_little min_sample_time 0
+	set_param_little target_loads "93 768000:75 864000:93 960000:92 1248000:99 1536000:99"
+	set_param_little min_sample_time 50000
 	set_param_little ignore_hispeed_on_notif 1
-	set_param_little hispeed_freq 1113000
-	set_param_little go_hispeed_load 46
+	set_param_little hispeed_freq 768000
+	set_param_little go_hispeed_load 99
 	set_param_little above_hispeed_delay 20000
 	set_param_little align_windows 0
 	set_param_little boost 0

@@ -1,9 +1,9 @@
 go_hispeed_load=46
 above_hispeed_delay=20000
 timer_rate=100000
-hispeed_freq=998400
+hispeed_freq=871000
 timer_slack=200000
-target_loads=93 998000:75 1094000:93 1190000:92 1305000:99
+target_loads=93 871000:75 1027000:93 1352000:92 1430000:99
 min_sample_time=0
 boost=0
 sync_freq=0
@@ -11,7 +11,6 @@ up_threshold_any_cpu_freq=0
 up_threshold_any_cpu_load=0
 sampling_down_factor=100000
 boostpulse_duration=50000
-
 
 
 
