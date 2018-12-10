@@ -9,9 +9,9 @@ read -p "请输入版本号:" prjVer
 [ -z $prjVer ] && echo "版本号不能为空" && exit 1
 read -p "请输入versionCode:" prjVerCode
 [ -z $prjVerCode ] && echo "versionCode不能为空" && exit 1
-zipPath="$basepath/flashable/$project_name/$project_name.Installer.$prjVer.zip"
-removerPath="$basepath/flashable/$project_name/$project_name.Remover.zip"
-mkdir -p $basepath/flashable/$project_name
+zipPath="$basepath/flashable/$project_id/$project_id.Installer.$prjVer.zip"
+removerPath="$basepath/flashable/$project_id/$project_id.Remover.zip"
+mkdir -p $basepath/flashable/$project_id
 
 echo "复制文件..."
 mkdir $tmpdir
@@ -33,7 +33,7 @@ sed -i "s/(generator_ver)/$VER/g" `grep "(generator_ver)" -rl .`
 sed -i "/|${project_id}|${project_name}|${project_author}/d" $basepath/flashable/README.md
 echo "|${project_id}|${project_name}|${project_author}|${prjVer}|$(echo `ls $basepath/projects/$project_id/platforms`)|" >> $basepath/flashable/README.md
 
-cp ./README.md $basepath/flashable/$project_name/README.md
+cp ./README.md $basepath/flashable/$project_id/README.md
 
 echo "打包文件..."
 zip -r "$zipPath" ./* -x "remover/*"
