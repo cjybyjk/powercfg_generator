@@ -117,7 +117,7 @@ do
 	    timer_rate=`echo $timer_rate | tr -d '[ \t]'`
 	    [ -z "$param" ] && continue
 	    [ "HMP" != "$mode" ] && $param_allowance_check && check_timer_rate
-	    [ "$timer_rate" = "target_loads" ] && [ "$cluster" = "little" -o ! $is_big_little ] && sed -i "s/(${mode}_tload)/$param/g" powercfg_template
+	    [ "$timer_rate" = "target_loads" ] && [ "$cluster" != "big" ] && sed -i "s/(${mode}_tload)/$param/g" powercfg_template
 	    [[ "$param" =~ " " ]] && param="\"$param\""
 	    modeText=${modeText}"\tset_param_$cluster $timer_rate $param\n" 
 	fi
