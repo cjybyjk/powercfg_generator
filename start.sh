@@ -27,7 +27,7 @@ x) 退出" "g l c e z t m s x"
             "g") sh scripts/generate_powercfg.sh ;;
             "l") sh scripts/linkto.sh ;;
             "c") sh scripts/compat_perf.sh ;;
-	        "e") sh scripts/exkernel_profile_convert.sh ;;
+	    "e") sh scripts/exkernel_profile_convert.sh ;;
             "z") sh scripts/pack.sh ;;
             "t") project_manager toggle ;;
             "m") prjManageMenu ;;
@@ -74,6 +74,10 @@ function project_manager()
         yesNo "你确定这么做吗" || return 0
         rm -rf projects/$project_id_new
         [ "$prjPtr" = "$project_id_new" ] && rm config/project_pointer
+	if [ yesNo "删除卡刷包？" ]; then
+		rm -rf projects/$project_id_new
+		sed -i "/^|${project_id_new}|/d" $basepath/flashable/README.md
+	fi
         return 0
     elif [ "reset" = "$1" ]; then
         yesNo "你确定这么做吗" && rm -rf projects/$project_id_new/platforms

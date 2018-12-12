@@ -30,7 +30,7 @@ sed -i "s/(project_name)/$project_name/g" `grep "(project_name)" -rl .`
 sed -i "s/(prj_vercode)/$prjVerCode/g" `grep "(prj_vercode)" -rl .`
 sed -i "s/(prj_ver)/$prjVer/g" `grep "(prj_ver)" -rl .`
 sed -i "s/(generator_ver)/$VER/g" `grep "(generator_ver)" -rl .`
-sed -i "/|${project_id}|${project_name}|${project_author}/d" $basepath/flashable/README.md
+sed -i "/^|${project_id}|/d" $basepath/flashable/README.md
 echo "|${project_id}|${project_name}|${project_author}|${prjVer}|$(echo `ls $basepath/projects/$project_id/platforms`)|" >> $basepath/flashable/README.md
 
 cp ./README.md $basepath/flashable/$project_id/README.md
