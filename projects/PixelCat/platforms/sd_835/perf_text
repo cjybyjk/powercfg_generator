@@ -3,22 +3,26 @@ boostpulse_duration=6000
 boost=1
 timer_rate=20000
 timer_slack=80000
-min_sample_time=5000
-align_windows=0
-max_freq_hysteresis=520
+min_sampling_time=5000
+align_ window=0
+max_freq_hysteresis=1000
 enable_prediction=0
 io_is_busy=0
 ignore_hispeed_on_notif=0
 use_sched_load=1
 use_migration_notif=1
-go_hispeed_load=big=76
-go_hispeed_load=little=59
-hispeed_freq=big=806000
-hispeed_freq=little=518000
-above_hispeed_delay=big=6000 806000:42000 1190000:51000 1651000:75000 2112000:81000 2457000:94000
-above_hispeed_delay=little=6000 518000:40000 825000:42000 1171000:62000 1478000:71000 1900000:78000
-target_loads=big=65 806000:47 1190000:58 1651000:66 2112000:79 2457000:90
-target_loads=little=60 518000:48 825000:58 1171000:66 1478000:78 1900000:86
+go_hispeed_load=
+big=67
+little=57
+hispeed_freq=
+bug=1267000 
+little=1036000
+above_hispeed_delay=
+big=6000 806000:31000 1190000:44000 1651000:59000 2112000:81000 2457000:94000
+little=6000 518000:33000 825000:42000 1171000:62000 1478000:71000 1900000:78000
+target_loads=
+big=40 652000:27 979000:39 1267000:48 1651000:53 2035000:67 2323000:75 2457000:81
+little=40 364000:19 748000:31 1036000:39 1324000:49 1670000:57 1900000:68
 [performance]
 boostpulse_duration=7000
 boost=1
