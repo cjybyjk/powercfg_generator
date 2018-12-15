@@ -3,7 +3,7 @@
 # Version: (prj_ver)
 # Author: (project_author)
 # Platform: sd_820
-# Generated at 2018年 12月 09日 星期日 13:31:15 CST
+# Generated at Sat Dec 15 13:52:06 CST 2018
 # powercfg template by cjybyjk
 
 is_big_little=true
@@ -98,7 +98,7 @@ function verify_param()
 	if [ "$action" = "powersave" ]; then
 		expected_value="(powersave_tload)"
 	elif [ "$action" = "balance" ]; then
-		expected_value="81 480000:69 556000:83 652000:73 729000:93 960000:84 1190000:98 1401000:78 1478000:98"
+		expected_value="98 403000:40 1248000:80 1401000:95 1555000:70 1632000:99"
 	elif [ "$action" = "performance" ]; then
 		expected_value="80 480000:68 556000:82 652000:72 729000:92 960000:83 1228000:99 1478000:75 1593000:99"
 	elif [ "$action" = "fast" ]; then
@@ -116,7 +116,7 @@ function get_mode()
     expected_target=${C0_GOVERNOR_DIR}/target_loads
 	case "`cat ${expected_target}`" in
 		"(powersave_tload)" ) echo "powersave OK" ;;
-		"81 480000:69 556000:83 652000:73 729000:93 960000:84 1190000:98 1401000:78 1478000:98" ) echo "balance OK" ;;
+		"98 403000:40 1248000:80 1401000:95 1555000:70 1632000:99" ) echo "balance OK" ;;
 		"80 480000:68 556000:82 652000:72 729000:92 960000:83 1228000:99 1478000:75 1593000:99" ) echo "performance OK" ;;
 		"(fast_tload)" ) echo "fast OK" ;;
 	esac
@@ -141,7 +141,7 @@ if [ "$action" = "debug" ]; then
 	echo "Version: (prj_ver)"
 	echo "Author: (project_author)"
 	echo "Platform: sd_820"
-	echo "Generated at 2018年 12月 09日 星期日 13:31:15 CST"
+	echo "Generated at Sat Dec 15 13:52:06 CST 2018"
 	echo "powercfg template by cjybyjk"
 	echo ""
 	print_param above_hispeed_delay
@@ -157,40 +157,42 @@ if [ "$action" = "powersave" ]; then
 fi
 
 if [ "$action" = "balance" ]; then
-	set_param_little go_hispeed_load 99
-	set_param_little above_hispeed_delay "0 729000:21000 960000:39000 1190000:56000"
-	set_param_little timer_rate 60000
-	set_param_little hispeed_freq 652000
-	set_param_little timer_slack 480000
-	set_param_little target_loads "81 480000:69 556000:83 652000:73 729000:93 960000:84 1190000:98 1401000:78 1478000:98"
-	set_param_little min_sample_time 0
-	set_param_little ignore_hispeed_on_notif 0
-	set_param_little boost 0
-	set_param_little fast_ramp_down 0
-	set_param_little align_windows 0
-	set_param_little use_migration_notif 1
-	set_param_little enable_prediction 0
-	set_param_little use_sched_load 0
-	set_param_little max_freq_hysteresis 0
-	set_param_little boostpulse_duration 0
-	set_param_little io_is_busy 0
 	set_param_big go_hispeed_load 99
-	set_param_big above_hispeed_delay "20000 1248000:60000 1401000:150000"
-	set_param_big timer_rate 20000
-	set_param_big hispeed_freq 403000
-	set_param_big timer_slack 80000
-	set_param_big target_loads "98 403000:40 1248000:80 1401000:95 1555000:75 1632000:99"
-	set_param_big min_sample_time 40000
+	set_param_big above_hispeed_delay "0 729000:23000 1036000:37000 1113000:58000"
+	set_param_big timer_rate 60000
+	set_param_big hispeed_freq 960000
+	set_param_big timer_slack 480000
+	set_param_big target_loads "78 556000:69 729000:92 960000:81 1113000:99 1228000:79 1401000:99"
+	set_param_big min_sample_time 25000
 	set_param_big ignore_hispeed_on_notif 0
+	set_param_big align_windows 0
 	set_param_big boost 0
 	set_param_big fast_ramp_down 0
 	set_param_big align_windows 0
 	set_param_big use_migration_notif 1
 	set_param_big enable_prediction 0
-	set_param_big use_sched_load 0
-	set_param_big max_freq_hysteresis 0
-	set_param_big boostpulse_duration 80000
-	set_param_big io_is_busy 0
+	set_param_big hispeed_freq 1286400
+	set_param_big use_sched_load 1
+	set_param_big max_freq_hysteresis 3000
+	set_param_big boostpulse_duration 30000
+	set_param_little go_hispeed_load 99
+	set_param_little above_hispeed_delay "20000 1248000:60000 1401000:150000"
+	set_param_little timer_rate 60000
+	set_param_little hispeed_freq 403200
+	set_param_little timer_slack 80000
+	set_param_little target_loads "98 403000:40 1248000:80 1401000:95 1555000:70 1632000:99"
+	set_param_little min_sample_time 30000
+	set_param_little ignore_hispeed_on_notif 0
+	set_param_little align_windows 0
+	set_param_little boost 0
+	set_param_little fast_ramp_down 0
+	set_param_little align_windows 0
+	set_param_little use_migration_notif 1
+	set_param_little enable_prediction 0
+	set_param_little hispeed_freq 1286400
+	set_param_little use_sched_load 1
+	set_param_little max_freq_hysteresis 0
+	set_param_little boostpulse_duration 80000
 
 fi
 

@@ -1,38 +1,40 @@
 [balance]
-go_hispeed_load=little=99
-above_hispeed_delay=little=0 729000:21000 960000:39000 1190000:56000
-timer_rate=little=60000
-hispeed_freq=little=652000
-timer_slack=little=480000
-target_loads=little=81 480000:69 556000:83 652000:73 729000:93 960000:84 1190000:98 1401000:78 1478000:98
-min_sample_time=little=0
-ignore_hispeed_on_notif=little=0
-boost=little=0
-fast_ramp_down=little=0
-align_windows=little=0
-use_migration_notif=little=1
-enable_prediction=little=0
-use_sched_load=little=0
-max_freq_hysteresis=little=0
-boostpulse_duration=little=0
-io_is_busy=little=0
 go_hispeed_load=big=99
-above_hispeed_delay=big=20000 1248000:60000 1401000:150000
-timer_rate=big=20000
-hispeed_freq=big=403000
-timer_slack=big=80000
-target_loads=big=98 403000:40 1248000:80 1401000:95 1555000:75 1632000:99
-min_sample_time=big=40000
+above_hispeed_delay=big=0 729000:23000 1036000:37000 1113000:58000
+timer_rate=big=60000
+hispeed_freq=big=960000
+timer_slack=big=480000
+target_loads=big=78 556000:69 729000:92 960000:81 1113000:99 1228000:79 1401000:99
+min_sample_time=big=25000
 ignore_hispeed_on_notif=big=0
+powersave_bias=big=0
 boost=big=0
 fast_ramp_down=big=0
 align_windows=big=0
 use_migration_notif=big=1
 enable_prediction=big=0
-use_sched_load=big=0
-max_freq_hysteresis=big=0
-boostpulse_duration=big=80000
-io_is_busy=big=0
+screen_off_maxfreq=big=1286400
+use_sched_load=big=1
+max_freq_hysteresis=big=3000
+boostpulse_duration=big=30000
+go_hispeed_load=little=99
+above_hispeed_delay=little=20000 1248000:60000 1401000:150000
+timer_rate=little=60000
+hispeed_freq=little=403200
+timer_slack=little=80000
+target_loads=little=98 403000:40 1248000:80 1401000:95 1555000:70 1632000:99
+min_sample_time=little=30000
+ignore_hispeed_on_notif=little=0
+powersave_bias=little=0
+boost=little=0
+fast_ramp_down=little=0
+align_windows=little=0
+use_migration_notif=little=1
+enable_prediction=little=0
+screen_off_maxfreq=little=1286400
+use_sched_load=little=1
+max_freq_hysteresis=little=0
+boostpulse_duration=little=80000
 
 [performance]
 go_hispeed_load=little=99
@@ -65,3 +67,5 @@ use_migration_notif=big=1
 use_sched_load=big=0
 max_freq_hysteresis=big=0
 boostpulse_duration=big=80000
+
+
