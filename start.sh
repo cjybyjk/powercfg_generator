@@ -69,6 +69,8 @@ x) 返回" "l e a b p v x"
 # $1:action flag
 function project_manager()
 {
+    echo "可用项目列表: "
+    ls "$basepath/projects"
     local project_id_new=$(readDefault "项目id" $project_id)
     if [ "rm" = "$1" ]; then
         yesNo "你确定这么做吗" || return 0
@@ -120,14 +122,12 @@ function prjManageMenu()
 项目管理
 
 i) 修改项目信息
-l) 列出项目
 n) 新建项目
 d) 删除项目
 r) 重置项目
-x) 返回" "i l n d r x"
+x) 返回" "i n d r x"
     case $selectedKey in
             "i") project_manager modify ;;
-            "l") ls projects ; pause ;;
             "n") project_manager new ;;
             "d") project_manager rm ;;
             "r") project_manager reset ;;
