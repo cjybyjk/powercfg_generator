@@ -76,7 +76,7 @@ function project_manager()
         yesNo "你确定这么做吗" || return 0
         rm -rf projects/$project_id_new
         [ "$prjPtr" = "$project_id_new" ] && rm config/project_pointer
-	if [ yesNo "删除卡刷包？" ]; then
+	if [ yesNo "删除卡刷包?" ]; then
 		rm -rf projects/$project_id_new
 		sed -i "/^|${project_id_new}|/d" $basepath/flashable/README.md
 	fi

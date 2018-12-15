@@ -96,7 +96,7 @@ function trim()
 function readDefault()
 {
     local tmpvalue
-    read -p "请输入$1 (留空则使用 $2):  " tmpvalue
+    read -p "请输入$1 (留空则使用 $2): " tmpvalue
     [ -z "$(trim $tmpvalue)" ] && tmpvalue=$2
     echo $tmpvalue
 }
@@ -117,7 +117,7 @@ function yesNo()
 
 function get_soc_info()
 {
-	read -p "输入SoC型号:" socModel
+	read -p "输入SoC型号: " socModel
 	platformPath="$basepath/projects/$project_id/platforms/$socModel"
 	mkdir -p $platformPath
 	cd $platformPath
