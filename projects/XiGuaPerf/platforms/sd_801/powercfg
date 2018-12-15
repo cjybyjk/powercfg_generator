@@ -3,7 +3,7 @@
 # Version: (prj_ver)
 # Author: (project_author)
 # Platform: sd_801
-# Generated at 2018年 12月 02日 星期日 13:08:07 CST
+# Generated at Sat Dec 15 13:42:18 CST 2018
 # powercfg template by cjybyjk
 
 is_big_little=false
@@ -98,7 +98,7 @@ function verify_param()
 	if [ "$action" = "powersave" ]; then
 		expected_value="(powersave_tload)"
 	elif [ "$action" = "balance" ]; then
-		expected_value="(balance_tload)"
+		expected_value="98 422000:75 883000:95 1036000:40 1497000:80 1728000:99"
 	elif [ "$action" = "performance" ]; then
 		expected_value="(performance_tload)"
 	elif [ "$action" = "fast" ]; then
@@ -116,7 +116,7 @@ function get_mode()
     expected_target=${C0_GOVERNOR_DIR}/target_loads
 	case "`cat ${expected_target}`" in
 		"(powersave_tload)" ) echo "powersave OK" ;;
-		"(balance_tload)" ) echo "balance OK" ;;
+		"98 422000:75 883000:95 1036000:40 1497000:80 1728000:99" ) echo "balance OK" ;;
 		"(performance_tload)" ) echo "performance OK" ;;
 		"(fast_tload)" ) echo "fast OK" ;;
 	esac
@@ -141,7 +141,7 @@ if [ "$action" = "debug" ]; then
 	echo "Version: (prj_ver)"
 	echo "Author: (project_author)"
 	echo "Platform: sd_801"
-	echo "Generated at 2018年 12月 02日 星期日 13:08:07 CST"
+	echo "Generated at Sat Dec 15 13:42:18 CST 2018"
 	echo "powercfg template by cjybyjk"
 	echo ""
 	print_param above_hispeed_delay
@@ -165,7 +165,7 @@ if [ "$action" = "balance" ]; then
 	set_param_all boostpulse_duration 80000
 	set_param_all use_sched_load 1
 	set_param_all use_migration_notif 1
-	
+
 fi
 
 if [ "$action" = "performance" ]; then
