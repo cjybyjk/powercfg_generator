@@ -7,7 +7,7 @@
 | 项目ID | 项目名称 | 项目作者 | 最新版本 | 支持的SoC |
 |-|-|-|-|-|
 |SkyMiPerf|星空调度|星空未来 @ coolapk|181209|sd_835|
-|XiGuaPerf|XiGuaPerf|西瓜by特写 @ coolapk|181209|exynos_8890 exynos_8895 kirin_650 mt6750 sd_400 sd_410 sd_430 sd_435 sd_450 sd_615 sd_616 sd_625 sd_630 sd_636 sd_650 sd_653 sd_660 sd_801 sd_808 sd_810 sd_820 sd_821 sd_835|
 |PixelCat|橘猫调度|橘猫520 @ coolapk|181212|exynos_8895 exynos_9810 sd_636 sd_660 sd_820 sd_821 sd_835|
 |HawkNest|HawkNest|TSU守望者 @ coolapk|181214|helio_p10 helio_x10 sd_410 sd_650 sd_660 sd_810 sd_820|
 |XiGuaNew|XiGuaNew|西瓜by特写 @ coolapk|181209|sd_430 sd_625 sd_630 sd_636 sd_650 sd_660 sd_821 sd_835|
+|XiGuaPerf|XiGuaPerf|西瓜by特写 @ coolapk|181209|exynos_8890 exynos_8895 kirin_650 mt6750 sd_400 sd_410 sd_430 sd_435 sd_450 sd_615 sd_616 sd_625 sd_630 sd_636 sd_650 sd_653 sd_660 sd_801 sd_808 sd_810 sd_820 sd_821 sd_835|
