@@ -15,6 +15,7 @@ function mainMenu()
 主菜单
 
 g) 生成powercfg
+r) 生成所有powercfg
 l) 指定SoCs共用powercfg
 c) 执行旧生成器兼容性脚本
 e) 转换 EX Kernel Manager 配置文件 
@@ -22,20 +23,17 @@ z) 制作卡刷包
 t) 切换项目
 m) 项目管理
 s) 设置
-x) 退出" "g l c e z t m s x"
+x) 退出" "g r l c e z t m s x"
         case $selectedKey in
-            "g")
-		    yesNo "重新生成所有调度?"
-		    if [ 0 -eq $? ]; then
-			    cd $basepath/projects/$project_id/platforms/
-			    for socModel in $(ls)
-			    do
-				    [ -d $socModel ] && sh $basepath/scripts/generate_powercfg.sh "$socModel" "true"
-			    done
-			    cd $basepath
-		    else
-			    sh scripts/generate_powercfg.sh
-		    fi;;
+            "g") sh scripts/generate_powercfg.sh ;;
+	    "r")
+		    cd $basepath/projects/$project_id/platforms/
+		    for socModel in $(ls)
+		    do
+			    [ -d $socModel ] && sh $basepath/scripts/generate_powercfg.sh "$socModel" "true"
+		    done
+		    cd $basepath
+		    ;;
             "l") sh scripts/linkto.sh ;;
             "c") sh scripts/compat_perf.sh ;;
 	    "e") sh scripts/exkernel_profile_convert.sh ;;
