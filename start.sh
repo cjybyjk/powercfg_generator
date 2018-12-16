@@ -24,7 +24,18 @@ m) 项目管理
 s) 设置
 x) 退出" "g l c e z t m s x"
         case $selectedKey in
-            "g") sh scripts/generate_powercfg.sh ;;
+            "g")
+		    yesNo "重新生成所有调度?"
+		    if [ 0 -eq $? ]; then
+			    cd $basepath/projects/$project_id/platforms/
+			    for socModel in $(ls)
+			    do
+				    [ -d $socModel ] && sh $basepath/scripts/generate_powercfg.sh "$socModel" "true"
+			    done
+			    cd $basepath
+		    else
+			    sh scripts/generate_powercfg.sh
+		    fi;;
             "l") sh scripts/linkto.sh ;;
             "c") sh scripts/compat_perf.sh ;;
 	    "e") sh scripts/exkernel_profile_convert.sh ;;
@@ -98,6 +109,10 @@ function project_manager()
     local project_author_new=$(readDefault "项目作者" "$project_author")
     if [ "modify" = "$1" ]; then
         mv projects/$project_id projects/$project_id_new
+	if [ yesNo "移动卡刷包?" ]; then
+                mv projects/$project_id projects/$project_id_new
+                sed -i "/^|${project_id}|/d" $basepath/flashable/README.md
+	fi
         echo "$project_id_new" > config/project_pointer
     elif [ "new" = "$1" ]; then
         if [ -f projects/$project_id_new/project_config.sh ]; then

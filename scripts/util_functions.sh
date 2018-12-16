@@ -117,7 +117,7 @@ function yesNo()
 
 function get_soc_info()
 {
-	read -p "输入SoC型号: " socModel
+	[ "" = "$socModel" ] && read -p "输入SoC型号: " socModel
 	platformPath="$basepath/projects/$project_id/platforms/$socModel"
 	mkdir -p $platformPath
 	cd $platformPath

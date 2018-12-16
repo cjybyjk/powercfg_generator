@@ -68,14 +68,22 @@ function savemode()
 # 备份标准输入
 exec 3<&0
 
+socModel="$1"
 get_soc_info
+echo  "
+SoC Info:
+model: $socModel
+is_big_little:$is_big_little
+cluster_0:$cluster_0
+cluster_1:$cluster_1
+"
 if [ -f "./linkto" ]; then
 	rm ./linkto
 	rm ./NOTICE
 fi
 cp $basepath/template/powercfg_template ./
 rm ./powercfg
-$text_editor ./perf_text
+[ "true" != "$2" ] && $text_editor ./perf_text
 
 mode="balance"
 OLD_IFS="$IFS" 
@@ -139,4 +147,5 @@ sed -i "s/# powersave_params/:/g" powercfg
 sed -i "s/# performance_params/:/g" powercfg
 sed -i "s/# fast_params/:/g" powercfg
 
-pause
+echo ""
+[ "true" != "$2" ] && pause
