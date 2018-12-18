@@ -2,16 +2,16 @@
 # (project_name)
 # Version: (prj_ver)
 # Author: (project_author)
-# Platform: sd_835
-# Generated at Wed Dec 19 01:45:28 CST 2018
+# Platform: sd_425
+# Generated at Wed Dec 19 01:43:38 CST 2018
 # powercfg template by cjybyjk
 
-is_big_little=true
+is_big_little=false
 
 C0_GOVERNOR_DIR="/sys/devices/system/cpu/cpu0/cpufreq/interactive"
-C1_GOVERNOR_DIR="/sys/devices/system/cpu/cpu4/cpufreq/interactive"
+C1_GOVERNOR_DIR="/sys/devices/system/cpu//cpufreq/interactive"
 C0_CPUFREQ_DIR="/sys/devices/system/cpu/cpu0/cpufreq"
-C1_CPUFREQ_DIR="/sys/devices/system/cpu/cpu4/cpufreq"
+C1_CPUFREQ_DIR="/sys/devices/system/cpu//cpufreq"
 
 if ! $is_big_little ; then
 	C0_GOVERNOR_DIR="/sys/devices/system/cpu/cpufreq/interactive"
@@ -56,7 +56,7 @@ function before_modify()
 	chown 0.0 ${C0_GOVERNOR_DIR}/*
 	chmod 0666 ${C0_GOVERNOR_DIR}/*
 	if $is_big_little ; then
-		set_value 1 /sys/devices/system/cpu/cpu4/online
+		set_value 1 /sys/devices/system/cpu//online
 		set_value "interactive" ${C1_CPUFREQ_DIR}/scaling_governor
 		chown 0.0 ${C1_GOVERNOR_DIR}/*
 		chmod 0666 ${C1_GOVERNOR_DIR}/*
@@ -95,7 +95,7 @@ function verify_param()
 	if [ "$action" = "powersave" ]; then
 		expected_value="(powersave_tload)"
 	elif [ "$action" = "balance" ]; then
-		expected_value="85 825000:70 1036000:82 1248000:84 1550000:82"
+		expected_value="99 960000:75 1094000:93 1248000:92 1401000:99"
 	elif [ "$action" = "performance" ]; then
 		expected_value="(performance_tload)"
 	elif [ "$action" = "fast" ]; then
@@ -113,7 +113,7 @@ function get_mode()
     expected_target=${C0_GOVERNOR_DIR}/target_loads
 	case "`cat ${expected_target}`" in
 		"(powersave_tload)" ) echo "powersave OK" ;;
-		"85 825000:70 1036000:82 1248000:84 1550000:82" ) echo "balance OK" ;;
+		"99 960000:75 1094000:93 1248000:92 1401000:99" ) echo "balance OK" ;;
 		"(performance_tload)" ) echo "performance OK" ;;
 		"(fast_tload)" ) echo "fast OK" ;;
 	esac
@@ -137,8 +137,8 @@ if [ "$action" = "debug" ]; then
 	echo "(project_name)"
 	echo "Version: (prj_ver)"
 	echo "Author: (project_author)"
-	echo "Platform: sd_835"
-	echo "Generated at Wed Dec 19 01:45:28 CST 2018"
+	echo "Platform: sd_425"
+	echo "Generated at Wed Dec 19 01:43:38 CST 2018"
 	echo "powercfg template by cjybyjk"
 	echo ""
 	print_param above_hispeed_delay
@@ -154,34 +154,19 @@ if [ "$action" = "powersave" ]; then
 fi
 
 if [ "$action" = "balance" ]; then
-	set_param_all go_hispeed_load 110
-	set_param_little above_hispeed_delay "20000 1036000:63000 1248000:73000"
-	set_param_little timer_rate 60000
-	set_param_little hispeed_freq 1036000
-	set_param_little timer_slack 380000
-	set_param_little target_loads "85 825000:70 1036000:82 1248000:84 1550000:82"
-	set_param_little min_sample_time 0
-	set_param_little ignore_hispeed_on_notif 0
-	set_param_little boost 0
-	set_param_little fast_ramp_down 0
-	set_param_little align_windows 0
-	set_param_little use_migration_notif 1
-	set_param_little use_sched_load 1
-	set_param_little max_freq_hysteresis 0
-	set_param_little boostpulse_duration 0
-	set_param_big go_hispeed_load 110
-	set_param_big timer_rate 60000
-	set_param_big hispeed_freq 902000
-	set_param_big timer_slack 380000
-	set_param_big min_sample_time 0
-	set_param_big ignore_hispeed_on_notif 0
-	set_param_big boost 0
-	set_param_big fast_ramp_down 0
-	set_param_big align_windows 0
-	set_param_big use_migration_notif 1
-	set_param_big use_sched_load 1
-	set_param_big max_freq_hysteresis 0
-	set_param_big boostpulse_duration 0
+	set_param_all go_hispeed_load 90
+	set_param_all above_hispeed_delay "60000 1094000:95000 1248000:65000"
+	set_param_all timer_rate 20000
+	set_param_all hispeed_freq 1094400
+	set_param_all timer_slack 80000
+	set_param_all target_loads "99 960000:75 1094000:93 1248000:92 1401000:99"
+	set_param_all min_sample_time 0
+	set_param_all boost 0
+	set_param_all sync_freq 0
+	set_param_all up_threshold_any_cpu_freq 0
+	set_param_all up_threshold_any_cpu_load 0
+	set_param_all sampling_down_factor 0
+	set_param_all boostpulse_duration 0
 
 fi
 

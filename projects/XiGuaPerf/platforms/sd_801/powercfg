@@ -3,7 +3,7 @@
 # Version: (prj_ver)
 # Author: (project_author)
 # Platform: sd_801
-# Generated at Sat Dec 15 13:42:18 CST 2018
+# Generated at Wed Dec 19 01:44:30 CST 2018
 # powercfg template by cjybyjk
 
 is_big_little=false
@@ -15,9 +15,6 @@ C1_CPUFREQ_DIR="/sys/devices/system/cpu//cpufreq"
 
 if ! $is_big_little ; then
 	C0_GOVERNOR_DIR="/sys/devices/system/cpu/cpufreq/interactive"
-	C1_GOVERNOR_DIR=""
-	C0_CPUFREQ_DIR="/sys/devices/system/cpu/cpu0/cpufreq"
-	C1_CPUFREQ_DIR=""
 fi
 
 # $1:timer_rate $2:value
@@ -98,7 +95,7 @@ function verify_param()
 	if [ "$action" = "powersave" ]; then
 		expected_value="(powersave_tload)"
 	elif [ "$action" = "balance" ]; then
-		expected_value="98 422000:75 883000:95 1036000:40 1497000:80 1728000:99"
+		expected_value="99 883000:75 1036000:93 1497000:92 1728000:99"
 	elif [ "$action" = "performance" ]; then
 		expected_value="(performance_tload)"
 	elif [ "$action" = "fast" ]; then
@@ -116,7 +113,7 @@ function get_mode()
     expected_target=${C0_GOVERNOR_DIR}/target_loads
 	case "`cat ${expected_target}`" in
 		"(powersave_tload)" ) echo "powersave OK" ;;
-		"98 422000:75 883000:95 1036000:40 1497000:80 1728000:99" ) echo "balance OK" ;;
+		"99 883000:75 1036000:93 1497000:92 1728000:99" ) echo "balance OK" ;;
 		"(performance_tload)" ) echo "performance OK" ;;
 		"(fast_tload)" ) echo "fast OK" ;;
 	esac
@@ -141,7 +138,7 @@ if [ "$action" = "debug" ]; then
 	echo "Version: (prj_ver)"
 	echo "Author: (project_author)"
 	echo "Platform: sd_801"
-	echo "Generated at Sat Dec 15 13:42:18 CST 2018"
+	echo "Generated at Wed Dec 19 01:44:30 CST 2018"
 	echo "powercfg template by cjybyjk"
 	echo ""
 	print_param above_hispeed_delay
@@ -157,14 +154,19 @@ if [ "$action" = "powersave" ]; then
 fi
 
 if [ "$action" = "balance" ]; then
-	set_param_all target_loads "98 422000:75 883000:95 1036000:40 1497000:80 1728000:99"
-	set_param_all hispeed_freq 883000
-	set_param_all above_hispeed_delay "20000 883000:60000 1036000:150000"
-	set_param_all min_sample_time 50000
-	set_param_all go_hispeed_load 99
-	set_param_all boostpulse_duration 80000
-	set_param_all use_sched_load 1
-	set_param_all use_migration_notif 1
+	set_param_all go_hispeed_load 90
+	set_param_all above_hispeed_delay "60000 1036000:95000 1497000:65000"
+	set_param_all timer_rate 20000
+	set_param_all hispeed_freq 1036000
+	set_param_all timer_slack 80000
+	set_param_all target_loads "99 883000:75 1036000:93 1497000:92 1728000:99"
+	set_param_all min_sample_time 0
+	set_param_all boost 0
+	set_param_all sync_freq 0
+	set_param_all up_threshold_any_cpu_freq 0
+	set_param_all up_threshold_any_cpu_load 0
+	set_param_all sampling_down_factor 0
+	set_param_all boostpulse_duration 0
 
 fi
 

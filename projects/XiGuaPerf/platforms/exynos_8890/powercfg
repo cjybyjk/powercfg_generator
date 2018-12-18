@@ -3,7 +3,7 @@
 # Version: (prj_ver)
 # Author: (project_author)
 # Platform: exynos_8890
-# Generated at 2018年 12月 02日 星期日 13:00:24 CST
+# Generated at Wed Dec 19 01:43:17 CST 2018
 # powercfg template by cjybyjk
 
 is_big_little=true
@@ -15,9 +15,6 @@ C1_CPUFREQ_DIR="/sys/devices/system/cpu/cpu4/cpufreq"
 
 if ! $is_big_little ; then
 	C0_GOVERNOR_DIR="/sys/devices/system/cpu/cpufreq/interactive"
-	C1_GOVERNOR_DIR=""
-	C0_CPUFREQ_DIR="/sys/devices/system/cpu/cpu0/cpufreq"
-	C1_CPUFREQ_DIR=""
 fi
 
 # $1:timer_rate $2:value
@@ -141,7 +138,7 @@ if [ "$action" = "debug" ]; then
 	echo "Version: (prj_ver)"
 	echo "Author: (project_author)"
 	echo "Platform: exynos_8890"
-	echo "Generated at 2018年 12月 02日 星期日 13:00:24 CST"
+	echo "Generated at Wed Dec 19 01:43:17 CST 2018"
 	echo "powercfg template by cjybyjk"
 	echo ""
 	print_param above_hispeed_delay
@@ -169,7 +166,7 @@ if [ "$action" = "balance" ]; then
 	set_param_all boostpulse_duration 24000
 	set_param_all use_sched_load 1
 	set_param_all use_migration_notif 1
-	
+
 fi
 
 if [ "$action" = "performance" ]; then

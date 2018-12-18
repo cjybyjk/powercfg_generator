@@ -28,3 +28,4 @@ hi6250:kirin_650:true:cpu0:cpu4
 apq(8026|8028|8030)|msm(8226|8228|8230|8626|8628|8630|8926|8928|8930):sd_400:false:cpu0:
 sdm450:sd_450:true:cpu0:cpu4
 mt6750:mt6750:false:cpu0:
+msm8917:sd_425:false:cpu0:

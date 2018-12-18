@@ -3,7 +3,7 @@
 # Version: (prj_ver)
 # Author: (project_author)
 # Platform: sd_660
-# Generated at 2018年 12月 02日 星期日 13:07:59 CST
+# Generated at Wed Dec 19 01:44:29 CST 2018
 # powercfg template by cjybyjk
 
 is_big_little=true
@@ -15,9 +15,6 @@ C1_CPUFREQ_DIR="/sys/devices/system/cpu/cpu4/cpufreq"
 
 if ! $is_big_little ; then
 	C0_GOVERNOR_DIR="/sys/devices/system/cpu/cpufreq/interactive"
-	C1_GOVERNOR_DIR=""
-	C0_CPUFREQ_DIR="/sys/devices/system/cpu/cpu0/cpufreq"
-	C1_CPUFREQ_DIR=""
 fi
 
 # $1:timer_rate $2:value
@@ -141,7 +138,7 @@ if [ "$action" = "debug" ]; then
 	echo "Version: (prj_ver)"
 	echo "Author: (project_author)"
 	echo "Platform: sd_660"
-	echo "Generated at 2018年 12月 02日 星期日 13:07:59 CST"
+	echo "Generated at Wed Dec 19 01:44:29 CST 2018"
 	echo "powercfg template by cjybyjk"
 	echo ""
 	print_param above_hispeed_delay
@@ -169,7 +166,7 @@ if [ "$action" = "balance" ]; then
 	set_param_all use_sched_load 1
 	set_param_all use_migration_notif 1
 	set_param_all boost 0
-	
+
 fi
 
 if [ "$action" = "performance" ]; then
