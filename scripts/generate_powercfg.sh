@@ -44,7 +44,7 @@ function check_timer_rate()
 	done < $basepath/config/list_of_allowed_params
 	echo "目标 \"$timer_rate\" 可能存在错误, 与它最相似的是 \"$mostLikely\""
 	read -p "请在此进行修改(默认为 $mostLikely):" timer_rate <&3
-	[ -z "$rightTimerRate" ] && timer_rate="$mostLikely"
+	[ -z "$timer_rate" ] && timer_rate="$mostLikely"
 }
 
 function savemode()
