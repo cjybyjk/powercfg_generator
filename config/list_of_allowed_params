@@ -20,4 +20,8 @@ up_threshold_any_cpu_freq
 up_threshold_any_cpu_load
 use_migration_notif
 use_sched_load
-
+sleep_timer_rate
+powersave_bias
+fastlane_threshold
+fastlane
+screen_off_maxfreq

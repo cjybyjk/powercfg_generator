@@ -3,7 +3,7 @@
 # Version: (prj_ver)
 # Author: (project_author)
 # Platform: sd_820
-# Generated at Sat Dec 15 13:52:06 CST 2018
+# Generated at Wed Dec 19 01:51:34 CST 2018
 # powercfg template by cjybyjk
 
 is_big_little=true
@@ -15,9 +15,6 @@ C1_CPUFREQ_DIR="/sys/devices/system/cpu/cpu2/cpufreq"
 
 if ! $is_big_little ; then
 	C0_GOVERNOR_DIR="/sys/devices/system/cpu/cpufreq/interactive"
-	C1_GOVERNOR_DIR=""
-	C0_CPUFREQ_DIR="/sys/devices/system/cpu/cpu0/cpufreq"
-	C1_CPUFREQ_DIR=""
 fi
 
 # $1:timer_rate $2:value
@@ -141,7 +138,7 @@ if [ "$action" = "debug" ]; then
 	echo "Version: (prj_ver)"
 	echo "Author: (project_author)"
 	echo "Platform: sd_820"
-	echo "Generated at Sat Dec 15 13:52:06 CST 2018"
+	echo "Generated at Wed Dec 19 01:51:34 CST 2018"
 	echo "powercfg template by cjybyjk"
 	echo ""
 	print_param above_hispeed_delay
@@ -165,13 +162,13 @@ if [ "$action" = "balance" ]; then
 	set_param_big target_loads "78 556000:69 729000:92 960000:81 1113000:99 1228000:79 1401000:99"
 	set_param_big min_sample_time 25000
 	set_param_big ignore_hispeed_on_notif 0
-	set_param_big align_windows 0
+	set_param_big powersave_bias 0
 	set_param_big boost 0
 	set_param_big fast_ramp_down 0
 	set_param_big align_windows 0
 	set_param_big use_migration_notif 1
 	set_param_big enable_prediction 0
-	set_param_big hispeed_freq 1286400
+	set_param_big screen_off_maxfreq 1286400
 	set_param_big use_sched_load 1
 	set_param_big max_freq_hysteresis 3000
 	set_param_big boostpulse_duration 30000
@@ -183,13 +180,13 @@ if [ "$action" = "balance" ]; then
 	set_param_little target_loads "98 403000:40 1248000:80 1401000:95 1555000:70 1632000:99"
 	set_param_little min_sample_time 30000
 	set_param_little ignore_hispeed_on_notif 0
-	set_param_little align_windows 0
+	set_param_little powersave_bias 0
 	set_param_little boost 0
 	set_param_little fast_ramp_down 0
 	set_param_little align_windows 0
 	set_param_little use_migration_notif 1
 	set_param_little enable_prediction 0
-	set_param_little hispeed_freq 1286400
+	set_param_little screen_off_maxfreq 1286400
 	set_param_little use_sched_load 1
 	set_param_little max_freq_hysteresis 0
 	set_param_little boostpulse_duration 80000
