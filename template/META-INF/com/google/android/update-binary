@@ -50,18 +50,11 @@ unzip -o "$ZIP" > /dev/null
 # get platform
 ui_print "- Checking platform"
 platform="unsupported"
-# check is_big_little
-if [ ! -d "/sys/kernel/bL_switcher" ]; then
-	is_big_little=false
-else
-	is_big_little=true
-fi
 for tmpPlatform in $(echo `grep "Hardware" /proc/cpuinfo | awk '{print $NF}' ; getprop "ro.product.board" ; getprop "ro.board.platform"` | tr '[A-Z]' '[a-z]') 
 do
 	if [ "unsupported" = "$platform" ]; then
 		while read -r soctext
 		do
-			[ "$is_big_little" !=  "$(echo $soctext | cut -d : -f 3)" ] && continue
 			if [ "`echo $tmpPlatform | egrep $(echo $soctext | cut -d : -f 1)`" != "" ]; then
 				platform=$(echo $soctext | cut -d : -f 2)
 			fi
