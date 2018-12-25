@@ -182,6 +182,13 @@ if [ -d "./platforms/$platform/" ]; then
 	ui_print "  2. Modify /data/perf_mode and reboot"
 else
 	ui_print "! Unsupported device!"
+	if [ "unsupported" = "$platform" ]; then
+		ui_print "  platform info:"
+		ui_print "    is_big_little=$is_big_little"
+		ui_print "    hardware=`grep 'Hardware' /proc/cpuinfo | awk '{print $NF}'`"
+		ui_print "    board=`getprop ro.product.board`"
+		ui_print "    platform=`getprop ro.board.platform`"
+	fi
 fi
 
 ui_print "- Cleaning files"
