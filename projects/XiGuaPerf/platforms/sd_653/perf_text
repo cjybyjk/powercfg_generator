@@ -1,11 +1,11 @@
 timer_slack=big=80000
 timer_rate=big=20000
-target_loads=big=99 691000:75 806000:93 1017000:92 1190000:99
+target_loads=big=99 1017000:75 1190000:93 1305000:92 1382000:99
 min_sample_time=big=0
 ignore_hispeed_on_notif=big=1
-hispeed_freq=big=806000
+hispeed_freq=big=1017000
 go_hispeed_load=big=90
-above_hispeed_delay=big=60000 806000:95000 1017000:65000
+above_hispeed_delay=big=60000 1017000:95000 1190000:65000
 align_windows=big=0
 boost=big=0
 boostpulse_duration=big=0
@@ -16,12 +16,12 @@ use_migration_notif=big=1
 use_sched_load=big=1
 timer_slack=little=80000
 timer_rate=little=20000
-target_loads=little=93 940000:75 998000:93 1056000:92 1113000:99
+target_loads=little=99 1113000:75 1190000:93 1248000:92 1305000:99
 min_sample_time=little=0
 ignore_hispeed_on_notif=little=1
-hispeed_freq=little=998000
+hispeed_freq=little=1113000
 go_hispeed_load=little=90
-above_hispeed_delay=little=60000 998000:95000 1056000:65000
+above_hispeed_delay=little=60000 1113000:95000 1190000:65000
 align_windows=little=0
 boost=little=0
 boostpulse_duration=little=0

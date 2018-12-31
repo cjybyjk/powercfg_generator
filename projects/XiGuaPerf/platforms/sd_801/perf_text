@@ -1,9 +1,9 @@
 go_hispeed_load=90
-above_hispeed_delay=60000 1036000:95000 1497000:65000
+above_hispeed_delay=60000 1497000:95000 1728000:65000
 timer_rate=20000
 hispeed_freq=1036000
 timer_slack=80000
-target_loads=99 883000:75 1036000:93 1497000:92 1728000:99
+target_loads=99 1036000:75 1497000:93 1728000:92 1958000:99
 min_sample_time=0
 boost=0
 sync_freq=0
