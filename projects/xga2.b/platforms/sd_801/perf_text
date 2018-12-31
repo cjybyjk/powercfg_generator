@@ -1,0 +1,16 @@
+go_hispeed_load=90
+above_hispeed_delay=0 1497000:45000 1728000:65000
+timer_rate=20000
+hispeed_freq=1036000
+timer_slack=-1
+target_loads=99 1036000:55 1497000:95 1728000:70 1958000:99
+min_sample_time=0
+boost=0
+sync_freq=0
+up_threshold_any_cpu_freq=0
+up_threshold_any_cpu_load=0
+sampling_down_factor=0
+boostpulse_duration=40000
+
+
+
