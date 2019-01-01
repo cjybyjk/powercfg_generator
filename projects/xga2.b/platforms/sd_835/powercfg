@@ -1,0 +1,202 @@
+#!/system/bin/sh
+# (project_name)
+# Version: (prj_ver)
+# Author: (project_author)
+# Platform: sd_835
+# Generated at 2018年 12月 31日 星期一 23:24:22 CST
+# powercfg template by cjybyjk
+
+is_big_little=true
+
+C0_GOVERNOR_DIR="/sys/devices/system/cpu/cpu0/cpufreq/interactive"
+C1_GOVERNOR_DIR="/sys/devices/system/cpu/cpu4/cpufreq/interactive"
+C0_CPUFREQ_DIR="/sys/devices/system/cpu/cpu0/cpufreq"
+C1_CPUFREQ_DIR="/sys/devices/system/cpu/cpu4/cpufreq"
+
+if ! $is_big_little ; then
+	C0_GOVERNOR_DIR="/sys/devices/system/cpu/cpufreq/interactive"
+fi
+
+# $1:timer_rate $2:value
+function set_param_little() 
+{
+	echo ${2} > ${C0_GOVERNOR_DIR}/${1}
+}
+
+function set_param_big() 
+{
+	echo ${2} > ${C1_GOVERNOR_DIR}/${1}
+}
+
+function set_param_all() 
+{
+	set_param_little ${1} "${2}"
+	$is_big_little && set_param_big ${1} "${2}"
+}
+
+function set_param_HMP()
+{
+	echo ${2} > /proc/sys/kernel/${1}
+}
+
+# $1:timer_rate
+function print_param() 
+{
+	if $is_big_little ; then
+		print_value "LITTLE: ${1}" ${C0_GOVERNOR_DIR}/${1}
+		print_value "big: ${1}" ${C1_GOVERNOR_DIR}/${1}
+	else
+		print_value "${1}" ${C0_GOVERNOR_DIR}/${1}
+	fi
+}
+
+function before_modify()
+{
+	set_value "interactive" ${C0_CPUFREQ_DIR}/scaling_governor
+	chown 0.0 ${C0_GOVERNOR_DIR}/*
+	chmod 0666 ${C0_GOVERNOR_DIR}/*
+	if $is_big_little ; then
+		set_value 1 /sys/devices/system/cpu/cpu4/online
+		set_value "interactive" ${C1_CPUFREQ_DIR}/scaling_governor
+		chown 0.0 ${C1_GOVERNOR_DIR}/*
+		chmod 0666 ${C1_GOVERNOR_DIR}/*
+	fi
+	# before_modify_params
+}
+
+function after_modify()
+{
+	chmod 0444 ${C0_GOVERNOR_DIR}/*
+	$is_big_little && chmod 0444 ${C1_GOVERNOR_DIR}/*
+	# after_modify_params
+	verify_param
+}
+
+# $1:value $2:file path
+function set_value() 
+{
+	if [ -f $2 ]; then
+		echo $1 > $2
+	fi
+}
+
+# $1:display-name $2:file path
+function print_value() 
+{
+	if [ -f $2 ]; then
+		echo $1
+		cat $2
+	fi
+}
+
+function verify_param() 
+{
+	expected_target=${C0_GOVERNOR_DIR}/target_loads
+	if [ "$action" = "powersave" ]; then
+		expected_value="(powersave_tload)"
+	elif [ "$action" = "balance" ]; then
+		expected_value="99 1267000:55 1344000:95 1420000:70 1497000:99"
+	elif [ "$action" = "performance" ]; then
+		expected_value="(performance_tload)"
+	elif [ "$action" = "fast" ]; then
+		expected_value="(fast_tload)"
+	fi
+	if [ "`cat ${expected_target}`" = "${expected_value}" ]; then
+		echo "${action} OK"
+	else
+		echo "${action} FAIL"
+	fi
+}
+
+function get_mode()
+{
+    expected_target=${C0_GOVERNOR_DIR}/target_loads
+	case "`cat ${expected_target}`" in
+		"(powersave_tload)" ) echo "powersave OK" ;;
+		"99 1267000:55 1344000:95 1420000:70 1497000:99" ) echo "balance OK" ;;
+		"(performance_tload)" ) echo "performance OK" ;;
+		"(fast_tload)" ) echo "fast OK" ;;
+	esac
+}
+
+# RunOnce
+if [ ! -f /dev/perf_runonce ]; then
+	# set flag
+	touch /dev/perf_runonce
+	
+	# HMP_params
+	# runonce_params
+fi
+
+action=$1
+if [ ! -n "$action" ]; then
+    action="balance"
+fi
+
+if [ "$action" = "debug" ]; then
+	echo "(project_name)"
+	echo "Version: (prj_ver)"
+	echo "Author: (project_author)"
+	echo "Platform: sd_835"
+	echo "Generated at 2018年 12月 31日 星期一 23:24:22 CST"
+	echo "powercfg template by cjybyjk"
+	echo ""
+	print_param above_hispeed_delay
+	print_param target_loads
+	get_mode
+	exit 0
+fi
+
+before_modify
+
+if [ "$action" = "powersave" ]; then
+	:
+fi
+
+if [ "$action" = "balance" ]; then
+	set_param_big timer_slack -1
+	set_param_big timer_rate 20000
+	set_param_big target_loads "99 1171000:55 1248000:95 1324000:70 1401000:99"
+	set_param_big min_sample_time 0
+	set_param_big ignore_hispeed_on_notif 1
+	set_param_big hispeed_freq 1171000
+	set_param_big go_hispeed_load 90
+	set_param_big above_hispeed_delay "0 1248000:45000 1324000:65000"
+	set_param_big align_windows 0
+	set_param_big boost 0
+	set_param_big boostpulse_duration 40000
+	set_param_big enable_prediction 0
+	set_param_big fast_ramp_down 0
+	set_param_big max_freq_hysteresis 0
+	set_param_big use_migration_notif 1
+	set_param_big use_sched_load 1
+	set_param_little timer_slack -1
+	set_param_little timer_rate 20000
+	set_param_little target_loads "99 1267000:55 1344000:95 1420000:70 1497000:99"
+	set_param_little min_sample_time 0
+	set_param_little ignore_hispeed_on_notif 1
+	set_param_little hispeed_freq 1267000
+	set_param_little go_hispeed_load 90
+	set_param_little above_hispeed_delay "0 1344000:45000 1497000:65000"
+	set_param_little align_windows 0
+	set_param_little boost 0
+	set_param_little boostpulse_duration 40000
+	set_param_little enable_prediction 0
+	set_param_little fast_ramp_down 0
+	set_param_little max_freq_hysteresis 0
+	set_param_little use_migration_notif 1
+	set_param_little use_sched_load 1
+
+fi
+
+if [ "$action" = "performance" ]; then
+	:
+fi
+
+if [ "$action" = "fast" ]; then
+	:
+fi
+
+after_modify
+
+exit 0

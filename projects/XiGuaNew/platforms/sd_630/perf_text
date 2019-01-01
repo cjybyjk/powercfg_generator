@@ -1,10 +1,10 @@
 go_hispeed_load=big=19
-above_hispeed_delay=big=20000
-timer_rate=big=50000
+above_hispeed_delay=big=0 614000:60000 883000:17000 1094000:75000 1382000:50000
+timer_rate=big=20000
 hispeed_freq=big=883000
 timer_slack=big=80000
 sleep_timer_rate=big=0
-target_loads=big=66 614000:97 883000:85 1094000:75 1382000:99
+target_loads=big=85 614000:73 883000:73 1094000:70 1382000:99
 min_sample_time=big=0
 ignore_hispeed_on_notif=big=0
 powersave_bias=big=0
@@ -19,12 +19,12 @@ use_sched_load=big=1
 max_freq_hysteresis=big=5000
 boostpulse_duration=big=20000
 go_hispeed_load=little=19
-above_hispeed_delay=little=20000
-timer_rate=little=50000
+above_hispeed_delay=little=0 400000:60000 1344000:17000 1516000:75000 1670000:50000
+timer_rate=little=20000
 hispeed_freq=little=787000
 timer_slack=little=80000
 sleep_timer_rate=little=0
-target_loads=little=66 400000:97 1344000:85 1516000:75 1670000:99
+target_loads=little=85 400000:73 1344000:73 1516000:70 1670000:99
 min_sample_time=little=0
 ignore_hispeed_on_notif=little=0
 powersave_bias=little=0

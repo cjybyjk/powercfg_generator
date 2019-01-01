@@ -3,7 +3,7 @@
 # Version: (prj_ver)
 # Author: (project_author)
 # Platform: sd_625
-# Generated at Wed Dec 19 01:44:12 CST 2018
+# Generated at 2018年 12月 31日 星期一 23:01:43 CST
 # powercfg template by cjybyjk
 
 is_big_little=true
@@ -95,7 +95,7 @@ function verify_param()
 	if [ "$action" = "powersave" ]; then
 		expected_value="(powersave_tload)"
 	elif [ "$action" = "balance" ]; then
-		expected_value="99 652000:75 1036000:93 1401000:92 1689000:99"
+		expected_value="99 10940000:75 1401000:93 1689000:92 1958000:99"
 	elif [ "$action" = "performance" ]; then
 		expected_value="(performance_tload)"
 	elif [ "$action" = "fast" ]; then
@@ -113,7 +113,7 @@ function get_mode()
     expected_target=${C0_GOVERNOR_DIR}/target_loads
 	case "`cat ${expected_target}`" in
 		"(powersave_tload)" ) echo "powersave OK" ;;
-		"99 652000:75 1036000:93 1401000:92 1689000:99" ) echo "balance OK" ;;
+		"99 10940000:75 1401000:93 1689000:92 1958000:99" ) echo "balance OK" ;;
 		"(performance_tload)" ) echo "performance OK" ;;
 		"(fast_tload)" ) echo "fast OK" ;;
 	esac
@@ -138,7 +138,7 @@ if [ "$action" = "debug" ]; then
 	echo "Version: (prj_ver)"
 	echo "Author: (project_author)"
 	echo "Platform: sd_625"
-	echo "Generated at Wed Dec 19 01:44:12 CST 2018"
+	echo "Generated at 2018年 12月 31日 星期一 23:01:43 CST"
 	echo "powercfg template by cjybyjk"
 	echo ""
 	print_param above_hispeed_delay
@@ -156,11 +156,11 @@ fi
 if [ "$action" = "balance" ]; then
 	set_param_big timer_slack 80000
 	set_param_big timer_rate 20000
-	set_param_big target_loads "99 652000:75 1094000:93 1401000:92 1689000:99"
+	set_param_big target_loads "99 1094000:75 1401000:93 1689000:92 1958000:99"
 	set_param_big min_sample_time 0
 	set_param_big ignore_hispeed_on_notif 1
 	set_param_big hispeed_freq 1094400
-	set_param_big go_hispeed_load 99
+	set_param_big go_hispeed_load 90
 	set_param_big above_hispeed_delay "60000 1094000:95000 1401000:65000"
 	set_param_big align_windows 0
 	set_param_big boost 0
@@ -172,11 +172,11 @@ if [ "$action" = "balance" ]; then
 	set_param_big use_sched_load 1
 	set_param_little timer_slack 80000
 	set_param_little timer_rate 20000
-	set_param_little target_loads "99 652000:75 1036000:93 1401000:92 1689000:99"
+	set_param_little target_loads "99 10940000:75 1401000:93 1689000:92 1958000:99"
 	set_param_little min_sample_time 0
 	set_param_little ignore_hispeed_on_notif 1
 	set_param_little hispeed_freq 1094400
-	set_param_little go_hispeed_load 99
+	set_param_little go_hispeed_load 90
 	set_param_little above_hispeed_delay "60000 1094000:95000 1401000:65000"
 	set_param_little align_windows 0
 	set_param_little boost 0

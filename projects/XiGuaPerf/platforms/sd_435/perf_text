@@ -3,7 +3,7 @@ timer_rate=big=20000
 target_loads=big=99 768000:75 902000:93 998000:92 1094000:99
 min_sample_time=big=0
 ignore_hispeed_on_notif=big=1
-hispeed_freq=big=902000
+hispeed_freq=big=1094000
 go_hispeed_load=big=90
 above_hispeed_delay=big=60000 902000:95000 998000:65000
 align_windows=big=0
@@ -19,7 +19,7 @@ timer_rate=little=20000
 target_loads=little=99 1094000:75 1209000:93 1248000:92 1344000:99
 min_sample_time=little=0
 ignore_hispeed_on_notif=little=1
-hispeed_freq=little=1209000
+hispeed_freq=little=1094000
 go_hispeed_load=little=90
 above_hispeed_delay=little=60000 1209000:95000 1248000:65000
 align_windows=little=0

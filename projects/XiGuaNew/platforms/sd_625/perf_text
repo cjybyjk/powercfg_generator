@@ -1,10 +1,10 @@
 go_hispeed_load=big=19
-above_hispeed_delay=big=20000
-timer_rate=big=50000
+above_hispeed_delay=big=0 652000:60000 1036000:17000 1401000:75000 1689000:50000
+timer_rate=big=20000
 hispeed_freq=big=1036000
 timer_slack=big=80000
 sleep_timer_rate=big=0
-target_loads=big=66 652000:97 1036000:85 1401000:75 1689000:99
+target_loads=big=85 652000:73 1036000:73 1401000:70 1689000:99
 min_sample_time=big=0
 ignore_hispeed_on_notif=big=0
 powersave_bias=big=0
@@ -19,12 +19,12 @@ use_sched_load=big=1
 max_freq_hysteresis=big=5000
 boostpulse_duration=big=20000
 go_hispeed_load=little=19
-above_hispeed_delay=little=20000
-timer_rate=little=50000
+above_hispeed_delay=little=0 652000:60000 1036000:17000 1401000:75000 1689000:50000
+timer_rate=little=20000
 hispeed_freq=little=1036000
 timer_slack=little=80000
 sleep_timer_rate=little=0
-target_loads=little=66 652000:97 1401000:85 1689000:75 1804000:99
+target_loads=little=85 652000:73 1401000:73 1689000:70 1804000:99
 min_sample_time=little=0
 ignore_hispeed_on_notif=little=0
 powersave_bias=little=0
@@ -38,8 +38,6 @@ screen_off_maxfreq=little=0
 use_sched_load=little=1
 max_freq_hysteresis=little=5000
 boostpulse_duration=little=20000
-
-
 
 
 

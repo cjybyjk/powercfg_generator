@@ -1,63 +1,35 @@
-go_hispeed_load=110
-above_hispeed_delay=
-little=20000 1036000:63000 1248000:73000
-timer_rate=
-little=60000
-hispeed_freq=
-little=1036000
-timer_slack=
-little=380000
-target_loads=
-little=85 825000:70 1036000:82 1248000:84 1550000:82
-min_sample_time=
-little=0
-ignore_hispeed_on_notif=
-little=0
-boost=
-little=0
-fast_ramp_down=
-little=0
-align_windows=
-little=0
-use_migration_notif=
-little=1
-use_sched_load=
-little=1
-max_freq_hysteresis=
-little=0
-boostpulse_duration=
-little=0
-go_hispeed_load=
-big=110
-above_hispeed_delay=
-big=
-20000 902000:74000 1344000:82000
-timer_rate=
-big=60000
-hispeed_freq=
-big=902000
-timer_slack=
-big=380000
-target_loads=
-big=
-85 729000:70 902000:82 1344000:84 1651000:82
-min_sample_time=
-big=0
-ignore_hispeed_on_notif=
-big=0
-boost=
-big=0
-fast_ramp_down=
-big=0
-align_windows=
-big=0
-use_migration_notif=
-big=1
-use_sched_load=
-big=1
-max_freq_hysteresis=
-big=0
-boostpulse_duration=
-big=0
+timer_slack=big=80000
+timer_rate=big=20000
+target_loads=big=99 1171000:75 1248000:93 1324000:92 1401000:99
+min_sample_time=big=0
+ignore_hispeed_on_notif=big=1
+hispeed_freq=big=1171000
+go_hispeed_load=big=90
+above_hispeed_delay=big=60000 1248000:95000 1324000:65000
+align_windows=big=0
+boost=big=0
+boostpulse_duration=big=0
+enable_prediction=big=0
+fast_ramp_down=big=0
+max_freq_hysteresis=big=0
+use_migration_notif=big=1
+use_sched_load=big=1
+timer_slack=little=80000
+timer_rate=little=20000
+target_loads=little=99 1267000:75 1344000:93 1420000:92 1497000:99
+min_sample_time=little=0
+ignore_hispeed_on_notif=little=1
+hispeed_freq=little=1267000
+go_hispeed_load=little=90
+above_hispeed_delay=little=60000 1344000:95000 1497000:65000
+align_windows=little=0
+boost=little=0
+boostpulse_duration=little=0
+enable_prediction=little=0
+fast_ramp_down=little=0
+max_freq_hysteresis=little=0
+use_migration_notif=little=1
+use_sched_load=little=1
+
 
 

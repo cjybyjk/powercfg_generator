@@ -3,7 +3,7 @@
 # Version: (prj_ver)
 # Author: (project_author)
 # Platform: sd_435
-# Generated at Wed Dec 19 01:43:44 CST 2018
+# Generated at 2018年 12月 31日 星期一 23:01:34 CST
 # powercfg template by cjybyjk
 
 is_big_little=true
@@ -138,7 +138,7 @@ if [ "$action" = "debug" ]; then
 	echo "Version: (prj_ver)"
 	echo "Author: (project_author)"
 	echo "Platform: sd_435"
-	echo "Generated at Wed Dec 19 01:43:44 CST 2018"
+	echo "Generated at 2018年 12月 31日 星期一 23:01:34 CST"
 	echo "powercfg template by cjybyjk"
 	echo ""
 	print_param above_hispeed_delay
@@ -159,7 +159,7 @@ if [ "$action" = "balance" ]; then
 	set_param_big target_loads "99 768000:75 902000:93 998000:92 1094000:99"
 	set_param_big min_sample_time 0
 	set_param_big ignore_hispeed_on_notif 1
-	set_param_big hispeed_freq 902000
+	set_param_big hispeed_freq 1094000
 	set_param_big go_hispeed_load 90
 	set_param_big above_hispeed_delay "60000 902000:95000 998000:65000"
 	set_param_big align_windows 0
@@ -175,7 +175,7 @@ if [ "$action" = "balance" ]; then
 	set_param_little target_loads "99 1094000:75 1209000:93 1248000:92 1344000:99"
 	set_param_little min_sample_time 0
 	set_param_little ignore_hispeed_on_notif 1
-	set_param_little hispeed_freq 1209000
+	set_param_little hispeed_freq 1094000
 	set_param_little go_hispeed_load 90
 	set_param_little above_hispeed_delay "60000 1209000:95000 1248000:65000"
 	set_param_little align_windows 0
