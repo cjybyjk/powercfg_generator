@@ -137,12 +137,13 @@ IFS="$OLD_IFS"
 mv powercfg_template powercfg
 
 # 写入相关信息
-sed -i "s/(soc_model)/$socModel/g" powercfg
+write_value "soc_model" "$socModel" powercfg
+write_value "is_big_little" "$is_big_little" powercfg
+write_value "generate_date" "`date`" powercfg
+write_value "project_name" "$project_name" powercfg
+write_value "project_author" "$project_author" powercfg
 sed -i "s/cluster_0/$cluster_0/g" powercfg
 sed -i "s/cluster_1/$cluster_1/g" powercfg
-sed -i "s/is_big_little=true/is_big_little=$is_big_little/g" powercfg
-sed -i "s/(generate_date)/`date`/g" powercfg
-
 sed -i "s/# balance_params/:/g" powercfg
 sed -i "s/# powersave_params/:/g" powercfg
 sed -i "s/# performance_params/:/g" powercfg

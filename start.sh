@@ -81,6 +81,7 @@ function project_manager()
     echo "可用项目列表: "
     ls "$basepath/projects"
     local project_id_new=$(readDefault "项目id" $project_id)
+    conf_file=projects/$project_id_new/project_config.sh
     if [ "rm" = "$1" ]; then
         yesNo "你确定这么做吗" || return 0
         rm -rf projects/$project_id_new
@@ -107,6 +108,15 @@ function project_manager()
     local project_author_new=$(readDefault "项目作者" "$project_author")
     if [ "modify" = "$1" ]; then
         mv projects/$project_id projects/$project_id_new
+	cd $basepath/projects/$project_id_new/platforms/
+	    for socModel in $(ls)
+	    do
+		if [ -d $socModel ]; then
+		    write_value "project_name" "$project_name_new" "$socModel/powercfg"
+		    write_value "project_author" "$project_author_new" "$socModel/powercfg"
+	        fi
+	    done
+	    cd $basepath
 	if [ yesNo "移动卡刷包?" ]; then
                 mv projects/$project_id projects/$project_id_new
                 sed -i "/^|${project_id}|/d" $basepath/flashable/README.md
@@ -119,11 +129,11 @@ function project_manager()
             return 1
         fi
         mkdir -p projects/$project_id_new
-        touch projects/$project_id_new/project_config.sh
+        touch "$conf_file"
     fi
-    write_value "project_name" "$project_name_new" "$project_id_new"
-    write_value "project_author" "$project_author_new" "$project_id_new"
-    write_value "project_id" "$project_id_new" "$project_id_new"
+    write_value "project_name" "$project_name_new" "$conf_file"
+    write_value "project_author" "$project_author_new" "$conf_file"
+    write_value "project_id" "$project_id_new" "$conf_file"
     init
 }
 

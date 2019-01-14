@@ -1,10 +1,12 @@
 #!/system/bin/sh
-# (project_name)
-# Version: (prj_ver)
-# Author: (project_author)
-# Platform: (soc_model)
-# Generated at (generate_date)
-# powercfg template by cjybyjk
+# powercfg template by cjybyjk & yc9559
+# License: GPL V3
+
+project_name="template"
+prj_ver="(prj_ver)"
+project_author="cjybyjk"
+soc_model=""
+generate_date=""
 
 is_big_little=true
 
@@ -134,12 +136,11 @@ if [ ! -n "$action" ]; then
 fi
 
 if [ "$action" = "debug" ]; then
-	echo "(project_name)"
-	echo "Version: (prj_ver)"
-	echo "Author: (project_author)"
-	echo "Platform: (soc_model)"
-	echo "Generated at (generate_date)"
-	echo "powercfg template by cjybyjk"
+	echo "$project_name"
+	echo "Version: $prj_ver"
+	echo "Author: $project_author"
+	echo "Platform: $soc_model"
+	echo "Generated at $generate_date"
 	echo ""
 	print_param above_hispeed_delay
 	print_param target_loads

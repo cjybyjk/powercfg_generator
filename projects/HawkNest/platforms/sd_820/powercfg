@@ -1,12 +1,14 @@
 #!/system/bin/sh
-# (project_name)
-# Version: (prj_ver)
-# Author: (project_author)
-# Platform: sd_820
-# Generated at Thu Dec 20 00:22:52 CST 2018
-# powercfg template by cjybyjk
+# powercfg template by cjybyjk & yc9559
+# License: GPL V3
 
-is_big_little=true
+project_name="HawkNest"
+prj_ver="(prj_ver)"
+project_author="TSU守望者 @ coolapk"
+soc_model="sd_820"
+generate_date="Tue Jan 15 01:38:25 CST 2019"
+
+is_big_little="true"
 
 C0_GOVERNOR_DIR="/sys/devices/system/cpu/cpu0/cpufreq/interactive"
 C1_GOVERNOR_DIR="/sys/devices/system/cpu/cpu2/cpufreq/interactive"
@@ -134,12 +136,11 @@ if [ ! -n "$action" ]; then
 fi
 
 if [ "$action" = "debug" ]; then
-	echo "(project_name)"
-	echo "Version: (prj_ver)"
-	echo "Author: (project_author)"
-	echo "Platform: sd_820"
-	echo "Generated at Thu Dec 20 00:22:52 CST 2018"
-	echo "powercfg template by cjybyjk"
+	echo "$project_name"
+	echo "Version: $prj_ver"
+	echo "Author: $project_author"
+	echo "Platform: $soc_model"
+	echo "Generated at $generate_date"
 	echo ""
 	print_param above_hispeed_delay
 	print_param target_loads

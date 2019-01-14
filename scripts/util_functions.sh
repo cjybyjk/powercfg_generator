@@ -52,16 +52,13 @@ function showMenu()
     return 0
 }
 
-# $1:name $2:value [$3:projectID]
+# $1:name $2:value [$3:conf_file]
 function write_value()
 {
     [ -z "$(trim $1)" ] && return 1
     [ -z "$(trim $2)" ] && return 1
-    if [ -z "$3" ]; then
-        configFile=config/config.sh
-    else
-        configFile=projects/$3/project_config.sh
-    fi
+    configFile=$3
+    [ -z "$configFile" ] && configFile=config/config.sh
     local tmp=$(grep "^$1=" $configFile)
     if [ -z "$tmp" ]; then
         echo "$1=\"$2\"" >> $configFile

@@ -1,12 +1,14 @@
 #!/system/bin/sh
-# (project_name)
-# Version: (prj_ver)
-# Author: (project_author)
-# Platform: exynos_8895
-# Generated at 2018年 12月 31日 星期一 23:01:28 CST
-# powercfg template by cjybyjk
+# powercfg template by cjybyjk & yc9559
+# License: GPL V3
 
-is_big_little=true
+project_name="XiGuaPerf(xga)"
+prj_ver="(prj_ver)"
+project_author="西瓜by特写 @ coolapk"
+soc_model="exynos_8895"
+generate_date="Tue Jan 15 01:46:11 CST 2019"
+
+is_big_little="true"
 
 C0_GOVERNOR_DIR="/sys/devices/system/cpu/cpu0/cpufreq/interactive"
 C1_GOVERNOR_DIR="/sys/devices/system/cpu/cpu4/cpufreq/interactive"
@@ -134,12 +136,11 @@ if [ ! -n "$action" ]; then
 fi
 
 if [ "$action" = "debug" ]; then
-	echo "(project_name)"
-	echo "Version: (prj_ver)"
-	echo "Author: (project_author)"
-	echo "Platform: exynos_8895"
-	echo "Generated at 2018年 12月 31日 星期一 23:01:28 CST"
-	echo "powercfg template by cjybyjk"
+	echo "$project_name"
+	echo "Version: $prj_ver"
+	echo "Author: $project_author"
+	echo "Platform: $soc_model"
+	echo "Generated at $generate_date"
 	echo ""
 	print_param above_hispeed_delay
 	print_param target_loads

@@ -1,12 +1,14 @@
 #!/system/bin/sh
-# (project_name)
-# Version: (prj_ver)
-# Author: (project_author)
-# Platform: sd_636
-# Generated at 2018年 12月 09日 星期日 13:39:09 CST
-# powercfg template by cjybyjk
+# powercfg template by cjybyjk & yc9559
+# License: GPL V3
 
-is_big_little=true
+project_name="橘猫调度"
+prj_ver="(prj_ver)"
+project_author="橘猫520 @ coolapk"
+soc_model="sd_636"
+generate_date="Tue Jan 15 01:45:01 CST 2019"
+
+is_big_little="true"
 
 C0_GOVERNOR_DIR="/sys/devices/system/cpu/cpu0/cpufreq/interactive"
 C1_GOVERNOR_DIR="/sys/devices/system/cpu/cpu4/cpufreq/interactive"
@@ -15,9 +17,6 @@ C1_CPUFREQ_DIR="/sys/devices/system/cpu/cpu4/cpufreq"
 
 if ! $is_big_little ; then
 	C0_GOVERNOR_DIR="/sys/devices/system/cpu/cpufreq/interactive"
-	C1_GOVERNOR_DIR=""
-	C0_CPUFREQ_DIR="/sys/devices/system/cpu/cpu0/cpufreq"
-	C1_CPUFREQ_DIR=""
 fi
 
 # $1:timer_rate $2:value
@@ -137,12 +136,11 @@ if [ ! -n "$action" ]; then
 fi
 
 if [ "$action" = "debug" ]; then
-	echo "(project_name)"
-	echo "Version: (prj_ver)"
-	echo "Author: (project_author)"
-	echo "Platform: sd_636"
-	echo "Generated at 2018年 12月 09日 星期日 13:39:09 CST"
-	echo "powercfg template by cjybyjk"
+	echo "$project_name"
+	echo "Version: $prj_ver"
+	echo "Author: $project_author"
+	echo "Platform: $soc_model"
+	echo "Generated at $generate_date"
 	echo ""
 	print_param above_hispeed_delay
 	print_param target_loads
