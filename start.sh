@@ -25,19 +25,22 @@ m) 项目管理
 s) 设置
 x) 退出" "g r l c e z t m s x"
         case $selectedKey in
-            "g") sh scripts/generate_powercfg.sh ;;
+            "g") check_proj && sh scripts/generate_powercfg.sh ;;
 	    "r")
-		    cd $basepath/projects/$project_id/platforms/
-		    for socModel in $(ls)
-		    do
+		    check_proj
+		    if [ $? -eq 0 ]; then
+                        cd $basepath/projects/$project_id/platforms/
+			for socModel in $(ls)
+			do
 			    [ -d $socModel ] && sh $basepath/scripts/generate_powercfg.sh "$socModel" "true"
-		    done
-		    cd $basepath
+		        done
+		        cd $basepath
+		    fi
 		    ;;
-            "l") sh scripts/linkto.sh ;;
-            "c") sh scripts/compat_perf.sh ;;
-	    "e") sh scripts/exkernel_profile_convert.sh ;;
-            "z") sh scripts/pack.sh ;;
+            "l") check_proj && sh scripts/linkto.sh ;;
+            "c") check_proj && sh scripts/compat_perf.sh ;;
+	    "e") check_proj && sh scripts/exkernel_profile_convert.sh ;;
+            "z") check_proj && sh scripts/pack.sh ;;
             "t") project_manager toggle ;;
             "m") prjManageMenu ;;
             "s") settingMenu ;;

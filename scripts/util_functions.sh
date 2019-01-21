@@ -139,3 +139,13 @@ function get_soc_info()
 	fi
 }
 
+function check_proj()
+{
+	if [ "(unknown)" = "$project_id" ]; then
+		echo "错误：未指定项目"
+		pause
+		return 1
+	fi
+	return 0
+}
+
