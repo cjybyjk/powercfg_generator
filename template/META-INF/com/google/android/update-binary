@@ -61,6 +61,7 @@ do
 		done < ./common/list_of_socs
 	fi
 done
+[ -f "/perf_soc_model" ] && platform="`cat /perf_soc_model`"
 ui_print "   Platform: $platform"
 
 if [ -d "./platforms/$platform/" ]; then
