@@ -54,6 +54,9 @@ function print_param()
 
 function before_modify()
 {
+	# disable hotplug to switch governor
+	set_value 0 /sys/module/msm_thermal/core_control/enabled
+	set_value N /sys/module/msm_thermal/parameters/enabled
 	set_value "interactive" ${C0_CPUFREQ_DIR}/scaling_governor
 	chown 0.0 ${C0_GOVERNOR_DIR}/*
 	chmod 0666 ${C0_GOVERNOR_DIR}/*
@@ -70,6 +73,7 @@ function after_modify()
 {
 	chmod 0444 ${C0_GOVERNOR_DIR}/*
 	$is_big_little && chmod 0444 ${C1_GOVERNOR_DIR}/*
+	set_value 1 /sys/module/msm_thermal/core_control/enabled
 	# after_modify_params
 	verify_param
 }
