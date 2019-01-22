@@ -57,12 +57,19 @@ function before_modify()
 	# disable hotplug to switch governor
 	set_value 0 /sys/module/msm_thermal/core_control/enabled
 	set_value N /sys/module/msm_thermal/parameters/enabled
-	set_value "interactive" ${C0_CPUFREQ_DIR}/scaling_governor
+	lock_value "interactive" ${C0_CPUFREQ_DIR}/scaling_governor
 	chown 0.0 ${C0_GOVERNOR_DIR}/*
 	chmod 0666 ${C0_GOVERNOR_DIR}/*
 	if $is_big_little ; then
-		set_value 1 /sys/devices/system/cpu/cluster_1/online
-		set_value "interactive" ${C1_CPUFREQ_DIR}/scaling_governor
+		for core in /sys/devices/system/cpu/cpu*/online
+		do
+			if [ "/sys/devices/system/cpu/cluster_1/online" = "$core" ]; then
+				set_value 1 $core
+			else
+				set_value 0 $core
+		fi
+		done
+		lock_value "interactive" ${C1_CPUFREQ_DIR}/scaling_governor
 		chown 0.0 ${C1_GOVERNOR_DIR}/*
 		chmod 0666 ${C1_GOVERNOR_DIR}/*
 	fi
@@ -84,6 +91,16 @@ function set_value()
 	if [ -f $2 ]; then
 		echo $1 > $2
 	fi
+}
+
+# $1:value $2:file path
+function lock_value()
+{                                                                   if [ -f $2 ]; then
+	# chown 0.0 $2
+	chmod 0666 $2
+	echo $1 > $2
+	chmod 0444 $2
+fi                                                  
 }
 
 # $1:display-name $2:file path
