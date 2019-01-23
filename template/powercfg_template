@@ -54,21 +54,19 @@ function print_param()
 
 function before_modify()
 {
-	# disable hotplug to switch governor
-	set_value 0 /sys/module/msm_thermal/core_control/enabled
-	set_value N /sys/module/msm_thermal/parameters/enabled
 	lock_value "interactive" ${C0_CPUFREQ_DIR}/scaling_governor
 	chown 0.0 ${C0_GOVERNOR_DIR}/*
 	chmod 0666 ${C0_GOVERNOR_DIR}/*
 	if $is_big_little ; then
-		for core in /sys/devices/system/cpu/cpu*/online
+		for coreOnline in /sys/devices/system/cpu/cpu*/online
 		do
-			if [ "/sys/devices/system/cpu/cluster_1/online" = "$core" ]; then
-				set_value 1 $core
-			else
-				set_value 0 $core
+			core=(${coreOnline//\// })
+			if [[ "cluster_1" < "${core[4]}" ]]; then
+				echo "shutting down ${core[4]}"
+				set_value 0 $coreOnline
 		fi
 		done
+		set_value 1 /sys/devices/system/cpu/cluster_1/online
 		lock_value "interactive" ${C1_CPUFREQ_DIR}/scaling_governor
 		chown 0.0 ${C1_GOVERNOR_DIR}/*
 		chmod 0666 ${C1_GOVERNOR_DIR}/*
@@ -80,7 +78,6 @@ function after_modify()
 {
 	chmod 0444 ${C0_GOVERNOR_DIR}/*
 	$is_big_little && chmod 0444 ${C1_GOVERNOR_DIR}/*
-	set_value 1 /sys/module/msm_thermal/core_control/enabled
 	# after_modify_params
 	verify_param
 }
