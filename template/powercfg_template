@@ -60,11 +60,11 @@ function before_modify()
 	if $is_big_little ; then
 		for coreOnline in /sys/devices/system/cpu/cpu*/online
 		do
+			[ "0" = "`cat $coreOnline`" ] && continue
 			core=(${coreOnline//\// })
 			if [[ "cluster_1" < "${core[4]}" ]]; then
-				echo "shutting down ${core[4]}"
 				set_value 0 $coreOnline
-		fi
+			fi
 		done
 		set_value 1 /sys/devices/system/cpu/cluster_1/online
 		lock_value "interactive" ${C1_CPUFREQ_DIR}/scaling_governor
