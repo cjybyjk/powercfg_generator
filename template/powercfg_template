@@ -58,15 +58,17 @@ function before_modify()
 	chown 0.0 ${C0_GOVERNOR_DIR}/*
 	chmod 0666 ${C0_GOVERNOR_DIR}/*
 	if $is_big_little ; then
-		for coreOnline in /sys/devices/system/cpu/cpu*/online
+		until [ "`cat /sys/devices/system/cpu/cluster_1/online`" = "1" ]
 		do
-			[ "0" = "`cat $coreOnline`" ] && continue
-			core=(${coreOnline//\// })
-			if [[ "cluster_1" < "${core[4]}" ]]; then
-				set_value 0 $coreOnline
-			fi
+			sleep 1
+			for coreOnline in /sys/devices/system/cpu/cpu*/online
+			do
+				[ "0" = "`cat $coreOnline`" ] && continue
+				core=(${coreOnline//\// })
+				[[ "cluster_1" < "${core[4]}" ]] && set_value 0 $coreOnline
+			done
+			set_value 1 /sys/devices/system/cpu/cluster_1/online
 		done
-		set_value 1 /sys/devices/system/cpu/cluster_1/online
 		lock_value "interactive" ${C1_CPUFREQ_DIR}/scaling_governor
 		chown 0.0 ${C1_GOVERNOR_DIR}/*
 		chmod 0666 ${C1_GOVERNOR_DIR}/*
