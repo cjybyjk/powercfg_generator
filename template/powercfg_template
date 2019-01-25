@@ -60,7 +60,6 @@ function before_modify()
 	if $is_big_little ; then
 		until [ "`cat /sys/devices/system/cpu/cluster_1/online`" = "1" ]
 		do
-			sleep 1
 			for coreOnline in /sys/devices/system/cpu/cpu*/online
 			do
 				[ "0" = "`cat $coreOnline`" ] && continue
