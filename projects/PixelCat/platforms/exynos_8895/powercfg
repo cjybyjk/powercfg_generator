@@ -6,7 +6,7 @@ project_name="橘猫调度"
 prj_ver="(prj_ver)"
 project_author="橘猫520 @ coolapk"
 soc_model="exynos_8895"
-generate_date="Tue Jan 15 01:44:49 CST 2019"
+generate_date="Sun Jan 27 14:01:05 CST 2019"
 
 is_big_little="true"
 
@@ -52,14 +52,32 @@ function print_param()
 	fi
 }
 
+function wake_up_clusters()
+{
+	echo "waiting for cpu0 and cpu4 online"
+	until [ "`cat /sys/devices/system/cpu/cpu0/online`" = "1" ] &&  [ "`cat /sys/devices/system/cpu/cpu4/online`" = "1" ]
+	do
+		for coreOnline in /sys/devices/system/cpu/cpu*/online
+		do
+			[ "0" = "`cat $coreOnline`" ] && continue
+			core=(${coreOnline//\// })
+			if [[ "cpu4" != "${core[4]}" ]] && [[ "cpu0" != "${core[4]}" ]]; then
+				echo "shutting down ${core[4]}"
+				set_value 0 $coreOnline
+			fi
+		done
+		set_value 1 /sys/devices/system/cpu/cpu0/online
+		set_value 1 /sys/devices/system/cpu/cpu4/online
+	done
+}
+
 function before_modify()
 {
-	set_value "interactive" ${C0_CPUFREQ_DIR}/scaling_governor
+	lock_value "interactive" ${C0_CPUFREQ_DIR}/scaling_governor
 	chown 0.0 ${C0_GOVERNOR_DIR}/*
 	chmod 0666 ${C0_GOVERNOR_DIR}/*
 	if $is_big_little ; then
-		set_value 1 /sys/devices/system/cpu/cpu4/online
-		set_value "interactive" ${C1_CPUFREQ_DIR}/scaling_governor
+		lock_value "interactive" ${C1_CPUFREQ_DIR}/scaling_governor
 		chown 0.0 ${C1_GOVERNOR_DIR}/*
 		chmod 0666 ${C1_GOVERNOR_DIR}/*
 	fi
@@ -80,6 +98,17 @@ function set_value()
 	if [ -f $2 ]; then
 		echo $1 > $2
 	fi
+}
+
+# $1:value $2:file path
+function lock_value()
+{
+	if [ -f $2 ]; then
+		# chown 0.0 $2
+		chmod 0666 $2
+		echo $1 > $2
+		chmod 0444 $2
+	fi                                                  
 }
 
 # $1:display-name $2:file path
@@ -105,6 +134,8 @@ function verify_param()
 	fi
 	if [ "`cat ${expected_target}`" = "${expected_value}" ]; then
 		echo "${action} OK"
+	elif [ "${expected_value}" = "(${action}_tload)" ]; then
+		echo "${action} not included"
 	else
 		echo "${action} FAIL"
 	fi
@@ -134,6 +165,8 @@ action=$1
 if [ ! -n "$action" ]; then
     action="balance"
 fi
+
+$is_big_little && wake_up_clusters
 
 if [ "$action" = "debug" ]; then
 	echo "$project_name"
