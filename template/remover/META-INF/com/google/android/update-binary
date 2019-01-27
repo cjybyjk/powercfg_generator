@@ -88,7 +88,7 @@ ui_print "  Removing magisk module (id:(project_id))"
 rm -rf magisk/(project_id)
 umount magisk
 
-ui_print "  Removing wipe_mode"
+ui_print "  Removing perf_mode"
 rm -f /data/perf_mode
 
 if [ -L "/data/powercfg" ]; then
