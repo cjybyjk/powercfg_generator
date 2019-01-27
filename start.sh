@@ -39,7 +39,7 @@ x) 退出" "g r l c e z t m s x"
 		    ;;
             "l") check_proj && sh scripts/linkto.sh ;;
             "c") check_proj && sh scripts/compat_perf.sh ;;
-	    "e") check_proj && sh scripts/exkernel_profile_convert.sh ;;
+	        "e") check_proj && sh scripts/exkernel_profile_convert.sh ;;
             "z") check_proj && sh scripts/pack.sh ;;
             "t") project_manager toggle ;;
             "m") prjManageMenu ;;
@@ -57,7 +57,7 @@ function settingMenu()
         showMenu "
 设置
 
-l) 检查(interactive)参数合法性: $param_allowance_check
+l) 检查(interactive)参数合法性(严重影响生成速度): $param_allowance_check
 e) 编辑SoCs列表
 a) 编辑合法参数列表
 b) 编辑附加启动列表

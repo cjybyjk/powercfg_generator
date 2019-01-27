@@ -1,6 +1,6 @@
-VER="1.1.29"
+VER="1.1.30"
 project_id="(unknown)"
 project_name="(未指定项目)"
 project_author="(unknown)"
-param_allowance_check="true"
+param_allowance_check="false"
 text_editor="vim"
