@@ -16,6 +16,8 @@ C0_GOVERNOR_DIR="/sys/devices/system/cpu/cluster_0/cpufreq/interactive"
 C1_GOVERNOR_DIR="/sys/devices/system/cpu/cluster_1/cpufreq/interactive"
 C0_CPUFREQ_DIR="/sys/devices/system/cpu/cluster_0/cpufreq"
 C1_CPUFREQ_DIR="/sys/devices/system/cpu/cluster_1/cpufreq"
+C0_CORECTL_DIR="/sys/devices/system/cpu/cluster_0/core_ctl"
+C1_CORECTL_DIR="/sys/devices/system/cpu/cluster_1/core_ctl"
 
 if ! $is_big_little ; then
 	C0_GOVERNOR_DIR="/sys/devices/system/cpu/cpufreq/interactive"
@@ -57,25 +59,6 @@ function print_param()
 	fi
 }
 
-function wake_up_clusters()
-{
-	echo "waiting for cluster_0 and cluster_1 online"
-	until [ "`cat /sys/devices/system/cpu/cluster_0/online`" = "1" ] && [ "`cat /sys/devices/system/cpu/cluster_1/online`" = "1" ]
-	do
-		for coreOnline in /sys/devices/system/cpu/cpu*/online
-		do
-			[ "0" = "`cat $coreOnline`" ] && continue
-			core=(${coreOnline//\// })
-			if [[ "cluster_1" != "${core[4]}" ]] && [[ "cluster_0" != "${core[4]}" ]]; then
-				echo "shutting down ${core[4]}"
-				set_value 0 $coreOnline
-			fi
-		done
-		set_value 1 /sys/devices/system/cpu/cluster_0/online
-		set_value 1 /sys/devices/system/cpu/cluster_1/online
-	done
-}
-
 function before_modify()
 {
 	lock_value "interactive" ${C0_CPUFREQ_DIR}/scaling_governor
@@ -101,6 +84,7 @@ function after_modify()
 function set_value() 
 {
 	if [ -f $2 ]; then
+		DEBUG_FLAG && echo "set ${2} to ${1}"
 		echo $1 > $2
 	fi
 }
@@ -113,6 +97,7 @@ function lock_value()
 		chmod 0666 $2
 		echo $1 > $2
 		chmod 0444 $2
+		DEBUG_FLAG && echo "lock ${2} to ${1}"
 	fi                                                  
 }
 
@@ -171,7 +156,13 @@ if [ ! -n "$action" ]; then
     action="balance"
 fi
 
-$is_big_little && wake_up_clusters
+# wake up clusters
+C0_CORECTL_MINCPUS=`cat $C0_CORECTL_DIR/min_cpus`
+C1_CORECTL_MINCPUS=`cat $C1_CORECTL_DIR/min_cpus`
+cat $C0_CORECTL_DIR/max_cpus > $C0_CORECTL_DIR/min_cpus
+cat $C1_CORECTL_DIR/max_cpus > $C1_CORECTL_DIR/min_cpus
+set_value 1 /sys/devices/system/cpu/cluster_0/online
+set_value 1 /sys/devices/system/cpu/cluster_1/online
 
 if [ "$action" = "debug" ]; then
 	echo "$project_name"
@@ -183,27 +174,21 @@ if [ "$action" = "debug" ]; then
 	print_param above_hispeed_delay
 	print_param target_loads
 	get_mode
-	exit 0
+else
+	before_modify
+	if [ "$action" = "powersave" ]; then
+		# powersave_params
+	elif [ "$action" = "balance" ]; then
+		# balance_params
+	elif [ "$action" = "performance" ]; then
+		# performance_params
+	elif [ "$action" = "fast" ]; then
+		# fast_params
+	fi
+	after_modify
 fi
 
-before_modify
-
-if [ "$action" = "powersave" ]; then
-	# powersave_params
-fi
-
-if [ "$action" = "balance" ]; then
-	# balance_params
-fi
-
-if [ "$action" = "performance" ]; then
-	# performance_params
-fi
-
-if [ "$action" = "fast" ]; then
-	# fast_params
-fi
-
-after_modify
+echo $C0_CORECTL_MINCPUS > $C0_CORECTL_DIR/min_cpus
+echo $C1_CORECTL_MINCPUS > $C1_CORECTL_DIR/min_cpus
 
 exit 0

@@ -128,7 +128,7 @@ do
 	    [ "HMP" != "$mode" ] && $param_allowance_check && check_timer_rate
 	    [ "$timer_rate" = "target_loads" ] && [ "$cluster" != "big" ] && sed -i "s/(${mode}_tload)/$param/g" powercfg_template
 	    [[ "$param" =~ " " ]] && param="\"$param\""
-	    modeText=${modeText}"\tset_param_$cluster $timer_rate $param\n" 
+	    modeText=${modeText}"\t\tset_param_$cluster $timer_rate $param\n" 
 	fi
 done < ./perf_text
 savemode
