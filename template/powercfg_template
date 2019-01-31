@@ -26,13 +26,13 @@ fi
 # $1:timer_rate $2:value
 function set_param_little() 
 {
-	DEBUG_FLAG && echo "little: set ${1} to ${2}"
+	DEBUG_FLAG && echo "little: set ${1} into ${2}"
 	echo ${2} > ${C0_GOVERNOR_DIR}/${1}
 }
 
 function set_param_big() 
 {
-	DEBUG_FLAG && echo "big: set ${1} to ${2}"
+	DEBUG_FLAG && echo "big: set ${1} into ${2}"
 	echo ${2} > ${C1_GOVERNOR_DIR}/${1}
 }
 
@@ -44,7 +44,7 @@ function set_param_all()
 
 function set_param_HMP()
 {
-	DEBUG_FLAG && echo "HMP: set ${1} to ${2}"
+	DEBUG_FLAG && echo "HMP: set ${1} into ${2}"
 	echo ${2} > /proc/sys/kernel/${1}
 }
 
@@ -84,7 +84,7 @@ function after_modify()
 function set_value() 
 {
 	if [ -f $2 ]; then
-		DEBUG_FLAG && echo "set ${2} to ${1}"
+		DEBUG_FLAG && echo "set ${2} into ${1}"
 		echo $1 > $2
 	fi
 }
@@ -97,7 +97,7 @@ function lock_value()
 		chmod 0666 $2
 		echo $1 > $2
 		chmod 0444 $2
-		DEBUG_FLAG && echo "lock ${2} to ${1}"
+		DEBUG_FLAG && echo "lock ${2} into ${1}"
 	fi                                                  
 }
 
