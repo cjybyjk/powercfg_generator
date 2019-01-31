@@ -10,6 +10,8 @@ generate_date=""
 
 is_big_little=true
 
+DEBUG_FLAG=false
+
 C0_GOVERNOR_DIR="/sys/devices/system/cpu/cluster_0/cpufreq/interactive"
 C1_GOVERNOR_DIR="/sys/devices/system/cpu/cluster_1/cpufreq/interactive"
 C0_CPUFREQ_DIR="/sys/devices/system/cpu/cluster_0/cpufreq"
@@ -22,11 +24,13 @@ fi
 # $1:timer_rate $2:value
 function set_param_little() 
 {
+	DEBUG_FLAG && echo "little: set ${1} to ${2}"
 	echo ${2} > ${C0_GOVERNOR_DIR}/${1}
 }
 
 function set_param_big() 
 {
+	DEBUG_FLAG && echo "big: set ${1} to ${2}"
 	echo ${2} > ${C1_GOVERNOR_DIR}/${1}
 }
 
@@ -38,6 +42,7 @@ function set_param_all()
 
 function set_param_HMP()
 {
+	DEBUG_FLAG && echo "HMP: set ${1} to ${2}"
 	echo ${2} > /proc/sys/kernel/${1}
 }
 
@@ -55,7 +60,7 @@ function print_param()
 function wake_up_clusters()
 {
 	echo "waiting for cluster_0 and cluster_1 online"
-	until [ "`cat /sys/devices/system/cpu/cluster_0/online`" = "1" ] &&  [ "`cat /sys/devices/system/cpu/cluster_1/online`" = "1" ]
+	until [ "`cat /sys/devices/system/cpu/cluster_0/online`" = "1" ] && [ "`cat /sys/devices/system/cpu/cluster_1/online`" = "1" ]
 	do
 		for coreOnline in /sys/devices/system/cpu/cpu*/online
 		do
@@ -115,7 +120,7 @@ function lock_value()
 function print_value() 
 {
 	if [ -f $2 ]; then
-		echo $1
+		echo -n "$1: "
 		cat $2
 	fi
 }
