@@ -6,14 +6,18 @@ project_name="橘猫调度"
 prj_ver="(prj_ver)"
 project_author="橘猫520 @ coolapk"
 soc_model="sd_821"
-generate_date="Sun Jan 27 14:03:40 CST 2019"
+generate_date="2019年 01月 31日 星期四 22:21:06 CST"
 
 is_big_little="true"
+
+DEBUG_FLAG="false"
 
 C0_GOVERNOR_DIR="/sys/devices/system/cpu/cpu0/cpufreq/interactive"
 C1_GOVERNOR_DIR="/sys/devices/system/cpu/cpu2/cpufreq/interactive"
 C0_CPUFREQ_DIR="/sys/devices/system/cpu/cpu0/cpufreq"
 C1_CPUFREQ_DIR="/sys/devices/system/cpu/cpu2/cpufreq"
+C0_CORECTL_DIR="/sys/devices/system/cpu/cpu0/core_ctl"
+C1_CORECTL_DIR="/sys/devices/system/cpu/cpu2/core_ctl"
 
 if ! $is_big_little ; then
 	C0_GOVERNOR_DIR="/sys/devices/system/cpu/cpufreq/interactive"
@@ -22,11 +26,13 @@ fi
 # $1:timer_rate $2:value
 function set_param_little() 
 {
+	$DEBUG_FLAG && echo "little: set ${1} into ${2}"
 	echo ${2} > ${C0_GOVERNOR_DIR}/${1}
 }
 
 function set_param_big() 
 {
+	$DEBUG_FLAG && echo "big: set ${1} into ${2}"
 	echo ${2} > ${C1_GOVERNOR_DIR}/${1}
 }
 
@@ -38,6 +44,7 @@ function set_param_all()
 
 function set_param_HMP()
 {
+	$DEBUG_FLAG && echo "HMP: set ${1} into ${2}"
 	echo ${2} > /proc/sys/kernel/${1}
 }
 
@@ -50,25 +57,6 @@ function print_param()
 	else
 		print_value "${1}" ${C0_GOVERNOR_DIR}/${1}
 	fi
-}
-
-function wake_up_clusters()
-{
-	echo "waiting for cpu0 and cpu2 online"
-	until [ "`cat /sys/devices/system/cpu/cpu0/online`" = "1" ] &&  [ "`cat /sys/devices/system/cpu/cpu2/online`" = "1" ]
-	do
-		for coreOnline in /sys/devices/system/cpu/cpu*/online
-		do
-			[ "0" = "`cat $coreOnline`" ] && continue
-			core=(${coreOnline//\// })
-			if [[ "cpu2" != "${core[4]}" ]] && [[ "cpu0" != "${core[4]}" ]]; then
-				echo "shutting down ${core[4]}"
-				set_value 0 $coreOnline
-			fi
-		done
-		set_value 1 /sys/devices/system/cpu/cpu0/online
-		set_value 1 /sys/devices/system/cpu/cpu2/online
-	done
 }
 
 function before_modify()
@@ -96,6 +84,7 @@ function after_modify()
 function set_value() 
 {
 	if [ -f $2 ]; then
+		$DEBUG_FLAG && echo "set ${2} into ${1}"
 		echo $1 > $2
 	fi
 }
@@ -108,6 +97,7 @@ function lock_value()
 		chmod 0666 $2
 		echo $1 > $2
 		chmod 0444 $2
+		$DEBUG_FLAG && echo "lock ${2} into ${1}"
 	fi                                                  
 }
 
@@ -115,7 +105,7 @@ function lock_value()
 function print_value() 
 {
 	if [ -f $2 ]; then
-		echo $1
+		echo -n "$1: "
 		cat $2
 	fi
 }
@@ -166,7 +156,13 @@ if [ ! -n "$action" ]; then
     action="balance"
 fi
 
-$is_big_little && wake_up_clusters
+# wake up clusters
+C0_CORECTL_MINCPUS=`cat $C0_CORECTL_DIR/min_cpus`
+C1_CORECTL_MINCPUS=`cat $C1_CORECTL_DIR/min_cpus`
+cat $C0_CORECTL_DIR/max_cpus > $C0_CORECTL_DIR/min_cpus
+cat $C1_CORECTL_DIR/max_cpus > $C1_CORECTL_DIR/min_cpus
+set_value 1 /sys/devices/system/cpu/cpu0/online
+set_value 1 /sys/devices/system/cpu/cpu2/online
 
 if [ "$action" = "debug" ]; then
 	echo "$project_name"
@@ -178,76 +174,70 @@ if [ "$action" = "debug" ]; then
 	print_param above_hispeed_delay
 	print_param target_loads
 	get_mode
-	exit 0
+else
+	before_modify
+	if [ "$action" = "powersave" ]; then
+		set_param_all boostpulse_duration 25000
+		set_param_all boost 1
+		set_param_all timer_rate 24000
+		set_param_all timer_slack 90000
+		set_param_all min_sample_time 1000
+		set_param_all align_windows 0
+		set_param_all max_freq_hysteresis 1000
+		set_param_all use_sched_load 1
+		set_param_all use_migration_notif 1
+		set_param_all go_hispeed_load 70
+		set_param_all hispeed_freq "691000 307000"
+		set_param_big above_hispeed_delay "25000 307000:37000 691000:49000 1209000:63000 1516000:78000 1900000:89000 2150000:99000 2342000:112000"
+		set_param_little above_hispeed_delay "25000 460000:39000 844000:43000 1209000:57000 1516000:69000 2188000:84000"
+		set_param_big target_loads "70 307000:41 691000:53 1209000:41 1516000:69 1900000:78 2150000:84 2342000:97"
+		set_param_little target_loads "70 460000:41 844000:56 1209000:67 1516000:74 2188000:85"
+
+	elif [ "$action" = "balance" ]; then
+		set_param_all boostpulse_duration 7000
+		set_param_all boost 1
+		set_param_all timer_rate 28000
+		set_param_all timer_slack 10000
+		set_param_all min_sample_time 4000
+		set_param_all max_freq_hysteresis 1000
+		set_param_all enable_prediction 0
+		set_param_all io_is_busy 0
+		set_param_all ignore_hispeed_on_notif 0
+		set_param_all use_sched_load 1
+		set_param_all use_migration_notif 1
+		set_param_big go_hispeed_load 75
+		set_param_little go_hispeed_load 60
+		set_param_big hispeed_freq 902000
+		set_param_little hispeed_freq 691200
+		set_param_big above_hispeed_delay "7000 844000:39000 1209000:51000 1670000:64000 1900000:76000 2150000:88000 2342000:95000"
+		set_param_little above_hispeed_delay "7000 844000:37000 1209000:51000 1440000:62000 1516000:79000 2100000:89000"
+		set_param_big target_loads "55 307000:45 691200:60 979000:75 1209000:80 1440000:82 1670000:89 1900000:91 2150000:95 2342000:97"
+		set_param_little target_loads "40 307000:45 691200:60 979000:75 1209000:85 1440000:90 2188000:97"
+
+	elif [ "$action" = "performance" ]; then
+		set_param_all boostpulse_duration 7000
+		set_param_all boost 1
+		set_param_all timer_rate 10000
+		set_param_all timer_slack 40000
+		set_param_all min_sample_time 1000
+		set_param_all align_windows 0
+		set_param_all max_freq_hysteresis 1000
+		set_param_all use_sched_load 1
+		set_param_all use_migration_notif 1
+		set_param_all go_hispeed_load 40
+		set_param_all hispeed_freq "1440000 902000"
+		set_param_big above_hispeed_delay "7000 307000:13000 691000:24000 1209000:47000 1516000:54000 1900000:64000 2150000:73000 2342000:81000"
+		set_param_little above_hispeed_delay "7000 460000:17000 844000:27000 1209000:35000 1516000:49000 2188000:63000"
+		set_param_big target_loads "40 307000:21 691000:35 1209000:41 1516000:53 1900000:61 2150000:69 2342000:74"
+		set_param_little target_loads "40 460000:23 844000:31 1209000:37 1516000:49 2188000:62"
+
+	elif [ "$action" = "fast" ]; then
+		:
+	fi
+	after_modify
 fi
 
-before_modify
-
-if [ "$action" = "powersave" ]; then
-	set_param_all boostpulse_duration 25000
-	set_param_all boost 1
-	set_param_all timer_rate 24000
-	set_param_all timer_slack 90000
-	set_param_all min_sample_time 1000
-	set_param_all align_windows 0
-	set_param_all max_freq_hysteresis 1000
-	set_param_all use_sched_load 1
-	set_param_all use_migration_notif 1
-	set_param_all go_hispeed_load 70
-	set_param_all hispeed_freq "691000 307000"
-	set_param_big above_hispeed_delay "25000 307000:37000 691000:49000 1209000:63000 1516000:78000 1900000:89000 2150000:99000 2342000:112000"
-	set_param_little above_hispeed_delay "25000 460000:39000 844000:43000 1209000:57000 1516000:69000 2188000:84000"
-	set_param_big target_loads "70 307000:41 691000:53 1209000:41 1516000:69 1900000:78 2150000:84 2342000:97"
-	set_param_little target_loads "70 460000:41 844000:56 1209000:67 1516000:74 2188000:85"
-
-fi
-
-if [ "$action" = "balance" ]; then
-	set_param_all boostpulse_duration 7000
-	set_param_all boost 1
-	set_param_all timer_rate 28000
-	set_param_all timer_slack 10000
-	set_param_all min_sample_time 4000
-	set_param_all max_freq_hysteresis 1000
-	set_param_all enable_prediction 0
-	set_param_all io_is_busy 0
-	set_param_all ignore_hispeed_on_notif 0
-	set_param_all use_sched_load 1
-	set_param_all use_migration_notif 1
-	set_param_big go_hispeed_load 75
-	set_param_little go_hispeed_load 60
-	set_param_big hispeed_freq 902000
-	set_param_little hispeed_freq 691200
-	set_param_big above_hispeed_delay "7000 844000:39000 1209000:51000 1670000:64000 1900000:76000 2150000:88000 2342000:95000"
-	set_param_little above_hispeed_delay "7000 844000:37000 1209000:51000 1440000:62000 1516000:79000 2100000:89000"
-	set_param_big target_loads "55 307000:45 691200:60 979000:75 1209000:80 1440000:82 1670000:89 1900000:91 2150000:95 2342000:97"
-	set_param_little target_loads "40 307000:45 691200:60 979000:75 1209000:85 1440000:90 2188000:97"
-
-fi
-
-if [ "$action" = "performance" ]; then
-	set_param_all boostpulse_duration 7000
-	set_param_all boost 1
-	set_param_all timer_rate 10000
-	set_param_all timer_slack 40000
-	set_param_all min_sample_time 1000
-	set_param_all align_windows 0
-	set_param_all max_freq_hysteresis 1000
-	set_param_all use_sched_load 1
-	set_param_all use_migration_notif 1
-	set_param_all go_hispeed_load 40
-	set_param_all hispeed_freq "1440000 902000"
-	set_param_big above_hispeed_delay "7000 307000:13000 691000:24000 1209000:47000 1516000:54000 1900000:64000 2150000:73000 2342000:81000"
-	set_param_little above_hispeed_delay "7000 460000:17000 844000:27000 1209000:35000 1516000:49000 2188000:63000"
-	set_param_big target_loads "40 307000:21 691000:35 1209000:41 1516000:53 1900000:61 2150000:69 2342000:74"
-	set_param_little target_loads "40 460000:23 844000:31 1209000:37 1516000:49 2188000:62"
-
-fi
-
-if [ "$action" = "fast" ]; then
-	:
-fi
-
-after_modify
+echo $C0_CORECTL_MINCPUS > $C0_CORECTL_DIR/min_cpus
+echo $C1_CORECTL_MINCPUS > $C1_CORECTL_DIR/min_cpus
 
 exit 0
