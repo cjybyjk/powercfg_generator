@@ -157,12 +157,14 @@ if [ ! -n "$action" ]; then
 fi
 
 # wake up clusters
-C0_CORECTL_MINCPUS=`cat $C0_CORECTL_DIR/min_cpus`
-C1_CORECTL_MINCPUS=`cat $C1_CORECTL_DIR/min_cpus`
-cat $C0_CORECTL_DIR/max_cpus > $C0_CORECTL_DIR/min_cpus
-cat $C1_CORECTL_DIR/max_cpus > $C1_CORECTL_DIR/min_cpus
-set_value 1 /sys/devices/system/cpu/cluster_0/online
-set_value 1 /sys/devices/system/cpu/cluster_1/online
+if $is_big_little; then
+	C0_CORECTL_MINCPUS=`cat $C0_CORECTL_DIR/min_cpus`
+	C1_CORECTL_MINCPUS=`cat $C1_CORECTL_DIR/min_cpus`
+	cat $C0_CORECTL_DIR/max_cpus > $C0_CORECTL_DIR/min_cpus
+	cat $C1_CORECTL_DIR/max_cpus > $C1_CORECTL_DIR/min_cpus
+	set_value 1 /sys/devices/system/cpu/cluster_0/online
+	set_value 1 /sys/devices/system/cpu/cluster_1/online
+fi
 
 if [ "$action" = "debug" ]; then
 	echo "$project_name"
@@ -188,7 +190,9 @@ else
 	after_modify
 fi
 
-echo $C0_CORECTL_MINCPUS > $C0_CORECTL_DIR/min_cpus
-echo $C1_CORECTL_MINCPUS > $C1_CORECTL_DIR/min_cpus
+if $is_big_little; then
+	echo $C0_CORECTL_MINCPUS > $C0_CORECTL_DIR/min_cpus
+	echo $C1_CORECTL_MINCPUS > $C1_CORECTL_DIR/min_cpus
+fi
 
 exit 0
