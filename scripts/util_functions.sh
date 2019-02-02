@@ -57,13 +57,14 @@ function write_value()
 {
     [ -z "$(trim $1)" ] && return 1
     [ -z "$(trim $2)" ] && return 1
-    configFile=$3
-    [ -z "$configFile" ] && configFile=config/config.sh
+    local configFile=$3
+    [ -z "$configFile" ] && configFile=$basepath/config/config.sh
+
     local tmp=$(grep "^$1=" $configFile)
     if [ -z "$tmp" ]; then
         echo "$1=\"$2\"" >> $configFile
     else
-        sed -i "s/^$tmp/$1=\"$2\"/g" $configFile
+        sed -i "s#^$tmp#$1=\"$2\"#g" $configFile
     fi
     return $?
 }

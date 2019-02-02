@@ -26,16 +26,16 @@ s) 设置
 x) 退出" "g r l c e z t m s x"
         case $selectedKey in
             "g") check_proj && sh scripts/generate_powercfg.sh ;;
-	    "r")
-		    check_proj
-		    if [ $? -eq 0 ]; then
-                        cd $basepath/projects/$project_id/platforms/
-			for socModel in $(ls)
-			do
-			    [ -d $socModel ] && sh $basepath/scripts/generate_powercfg.sh "$socModel" "true"
-		        done
-		        cd $basepath
-		    fi
+	        "r")
+		        check_proj
+                if [ $? -eq 0 ]; then
+                    cd $basepath/projects/$project_id/platforms/
+                    for socModel in $(ls)
+                    do
+                        [ -d $socModel ] && sh $basepath/scripts/generate_powercfg.sh "$socModel" "true"
+                    done
+                    cd $basepath
+                fi
 		    ;;
             "l") check_proj && sh scripts/linkto.sh ;;
             "c") check_proj && sh scripts/compat_perf.sh ;;
@@ -60,15 +60,19 @@ function settingMenu()
 l) 检查(interactive)参数合法性(严重影响生成速度): $param_allowance_check
 e) 编辑SoCs列表
 d) powercfg调试开关: $powercfg_debug_flag
+o) zip卡刷包输出路径: $zip_flashable_outpath
 a) 编辑合法参数列表
 b) 编辑附加启动列表
 p) 编辑powercfg模板
 v) 修改文本编辑器: $text_editor
-x) 返回" "l e d a b p v x"
+x) 返回" "l e d o a b p v x"
         case $selectedKey in
             "l") write_value "param_allowance_check" `toggle_boolean $param_allowance_check` ;;
             "e") $text_editor config/list_of_socs ;;
             "d") write_value "powercfg_debug_flag" `toggle_boolean $powercfg_debug_flag` ;;
+            "o") 
+                zip_flashable_outpath=$(readDefault "生成目录" $zip_flashable_outpath)
+                write_value "zip_flashable_outpath" $zip_flashable_outpath ;;
             "a") $text_editor config/list_of_allowed_params ;;
             "b") $text_editor config/list_of_bootable ;;
             "p") $text_editor template/powercfg_template ;;
@@ -113,7 +117,7 @@ function project_manager()
     local project_author_new=$(readDefault "项目作者" "$project_author")
     if [ "modify" = "$1" ]; then
         mv projects/$project_id projects/$project_id_new
-	cd $basepath/projects/$project_id_new/platforms/
+	    cd $basepath/projects/$project_id_new/platforms/
 	    for socModel in $(ls)
 	    do
 		if [ -d $socModel ]; then
@@ -122,10 +126,10 @@ function project_manager()
 	        fi
 	    done
 	    cd $basepath
-	if [ yesNo "移动卡刷包?" ]; then
-                mv projects/$project_id projects/$project_id_new
-                sed -i "/^|${project_id}|/d" $basepath/flashable/README.md
-	fi
+	    if [ yesNo "移动卡刷包?" ]; then
+            mv projects/$project_id projects/$project_id_new
+            sed -i "/^|${project_id}|/d" $basepath/flashable/README.md
+	    fi
         echo "$project_id_new" > config/project_pointer
     elif [ "new" = "$1" ]; then
         if [ -f projects/$project_id_new/project_config.sh ]; then
@@ -154,7 +158,7 @@ n) 新建项目
 d) 删除项目
 r) 重置项目
 x) 返回" "i n d r x"
-    case $selectedKey in
+        case $selectedKey in
             "i") project_manager modify ;;
             "n") project_manager new ;;
             "d") project_manager rm ;;
