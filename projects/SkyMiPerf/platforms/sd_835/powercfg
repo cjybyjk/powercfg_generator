@@ -6,7 +6,7 @@ project_name="星空调度"
 prj_ver="(prj_ver)"
 project_author="星空未来 @ coolapk"
 soc_model="sd_835"
-generate_date="2019年 02月 02日 星期六 20:09:21 CST"
+generate_date="Sun Feb  3 08:27:04 CST 2019"
 
 is_big_little="true"
 
@@ -81,6 +81,8 @@ function before_modify()
 	set_param_all use_migration_notif 1
 	set_param_all boostpulse_duration 18000
 	set_param_all ignore_hispeed_on_notif 1
+	lock_value 441600 ${C0_CPUFREQ_DIR}/scaling_min_freq
+	lock_value 300000 ${C1_CPUFREQ_DIR}/scaling_min_freq
 	if [ "balance" = "$mode" ]; then
 	    set_param_HMP sched_upmigrate 65
 	    set_param_HMP sched_downmigrate 50
@@ -243,14 +245,12 @@ else
 		set_param_little target_loads "50 441800:23 518000:32 678000:44 748000:65 828000:72 968000:77 1178000:88 1248000:90 1328000:95 1401800:97"
 		set_param_little min_sample_time 18000
 		set_param_little max_freq_hysteresis 79000
-		set_param_little scaling_min_freq 441600
 		set_param_big above_hispeed_delay "18000 908000:68000 1058000:68000 1268000:98000 1428000:128000"
 		set_param_big go_hispeed_load 95
 		set_param_big hispeed_freq 900000
 		set_param_big target_loads "80 348000:91 498000:40 578000:50 658000:60 728000:70 978000:75 1058000:93 1198000:66 1268000:77 1348000:96 1428000:90 1580000:99"
 		set_param_big min_sample_time 18000
 		set_param_big max_freq_hysteresis 79000
-		set_param_big scaling_min_freq 300000
 
 	elif [ "$action" = "balance" ]; then
 		set_param_little above_hispeed_delay "18000 1328000:58000 1401800:18000 1555800:58000 1748000:98000"
@@ -259,14 +259,12 @@ else
 		set_param_little target_loads "80 441800:32 598000:20 678000:44 748000:35 828000:61 968000:73 1038000:78 1178000:98 1248000:86 1328000:54 1478000:89 1555800:94 1748000:95"
 		set_param_little min_sample_time 18000
 		set_param_little max_freq_hysteresis 58000
-		set_param_little scaling_min_freq 441600
 		set_param_big above_hispeed_delay "18000 1268000:68000 1348000:18000 1428000:38000 1658000:68000 1958000:88000"
 		set_param_big go_hispeed_load 75
 		set_param_big hispeed_freq 1328000
 		set_param_big target_loads "80 441800:44 578000:15 658000:55 728000:60 808000:55 978000:60 1058000:70 1138000:88 1348000:90 1428000:30 1658000:93 1728000:95 1958000:97"
 		set_param_big min_sample_time 18000
 		set_param_big max_freq_hysteresis 58000
-		set_param_big scaling_min_freq 300000
 
 	elif [ "$action" = "performance" ]; then
 		set_param_little above_hispeed_delay "18000 1328000:48000 1558000:18000 1748000:88000 1828000:38000"
@@ -275,14 +273,12 @@ else
 		set_param_little target_loads "80 441800:32 598000:20 678000:44 748000:35 828000:61 968000:73 1038000:78 1178000:98 1248000:86 1328000:54 1478000:89 1555800:94 1748000:95"
 		set_param_little min_sample_time 18000
 		set_param_little max_freq_hysteresis 48000
-		set_param_little scaling_min_freq 441600
 		set_param_big above_hispeed_delay "18000 1348000:48000 1578000:18000 1728000:48000 1958000:58000 2268000:48000"
 		set_param_big go_hispeed_load 60
 		set_param_big hispeed_freq 1328000
 		set_param_big target_loads "80 441800:44 578000:15 658000:55 728000:60 808000:55 978000:60 1058000:70 1138000:88 1348000:90 1428000:30 1658000:93 1728000:95 1958000:97"
 		set_param_big min_sample_time 18000
 		set_param_big max_freq_hysteresis 48000
-		set_param_big scaling_min_freq 300000
 
 	elif [ "$action" = "fast" ]; then
 		:

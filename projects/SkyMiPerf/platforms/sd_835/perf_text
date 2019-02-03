@@ -11,6 +11,8 @@ set_param_all use_sched_load 1
 set_param_all use_migration_notif 1
 set_param_all boostpulse_duration 18000
 set_param_all ignore_hispeed_on_notif 1
+lock_value 441600 ${C0_CPUFREQ_DIR}/scaling_min_freq
+lock_value 300000 ${C1_CPUFREQ_DIR}/scaling_min_freq
 if [ "balance" = "$mode" ]; then
     set_param_HMP sched_upmigrate 65
     set_param_HMP sched_downmigrate 50
@@ -71,8 +73,6 @@ min_sample_time=
 little=18000
 max_freq_hysteresis=
 little=58000
-scaling_min_freq=
-little=441600
 above_hispeed_delay=
 big=18000 1268000:68000 1348000:18000 1428000:38000 1658000:68000 1958000:88000
 go_hispeed_load=
@@ -85,8 +85,6 @@ min_sample_time=
 big=18000
 max_freq_hysteresis=
 big=58000
-scaling_min_freq=
-big=300000
 [performance]
 above_hispeed_delay=
 little=18000 1328000:48000 1558000:18000 1748000:88000 1828000:38000
@@ -100,8 +98,6 @@ min_sample_time=
 little=18000
 max_freq_hysteresis=
 little=48000
-scaling_min_freq=
-little=441600
 above_hispeed_delay=
 big=18000 1348000:48000 1578000:18000 1728000:48000 1958000:58000 2268000:48000
 go_hispeed_load=
@@ -114,8 +110,6 @@ min_sample_time=
 big=18000
 max_freq_hysteresis=
 big=48000
-scaling_min_freq=
-big=300000
 [powersave]
 above_hispeed_delay=
 little=18000 968000:58000 1178000:18000 1248000:58000 1401800:108000
@@ -129,8 +123,6 @@ min_sample_time=
 little=18000
 max_freq_hysteresis=
 little=79000
-scaling_min_freq=
-little=441600
 above_hispeed_delay=
 big=18000 908000:68000 1058000:68000 1268000:98000 1428000:128000
 go_hispeed_load=
@@ -143,7 +135,4 @@ min_sample_time=
 big=18000
 max_freq_hysteresis=
 big=79000
-scaling_min_freq=
-big=300000
-
 
