@@ -13,3 +13,4 @@
 |xga2.b|XiGuaPerf(xga2.b_final)|西瓜by特写 @ coolapk|final|sd_400 sd_435 sd_625 sd_650 sd_653 sd_660 sd_801 sd_835|
 |XiGuaPerf|XiGuaPerf(xga_final)|西瓜by特写 @ coolapk|final|exynos_8890 exynos_8895 kirin_650 mt6750 sd_400 sd_410 sd_425 sd_430 sd_435 sd_450 sd_615 sd_616 sd_625 sd_630 sd_636 sd_650 sd_653 sd_660 sd_801 sd_808 sd_810 sd_820 sd_821 sd_835|
 |XiGuaNew|XiGuaNew(final)|西瓜by特写 @ coolapk|final|sd_430 sd_625 sd_630 sd_636 sd_650 sd_660 sd_821 sd_835|
+|xga3|XiGuaPerf(xga3)|西瓜by特写 @ coolapk|190204|sd_425 sd_430 sd_625 sd_630 sd_636 sd_650 sd_660 sd_801 sd_835|
