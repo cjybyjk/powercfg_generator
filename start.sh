@@ -108,7 +108,7 @@ function project_manager()
         [ "$prjPtr" = "$project_id_new" ] && rm $config_path/project_pointer
         mv $zip_flashable_outpath/$project_id_new $zip_flashable_outpath/discarded/
         sed -i "/^|${project_id_new}|/d" $zip_flashable_outpath/README.md
-        echo "|${project_id_new}|$(echo `date`)|$(echo `ls $projects_path/$project_id_new/platforms`)|" >> $zip_flashable_outpath/discarded/README.md
+        echo "|${project_id_new}|$(echo `date`)|" >> $zip_flashable_outpath/discarded/README.md
         return 0
     elif [ "reset" = "$1" ]; then
         yesNo "你确定这么做吗" && rm -rf $projects_path/$project_id_new/platforms
