@@ -16,10 +16,10 @@ mkdir -p $zip_flashable_outpath/$project_id
 echo "复制文件..."
 mkdir $tmpdir
 cd $tmpdir
-cp -r $basepath/template/* ./
-cp -r $basepath/projects/$project_id/* ./
-cp $basepath/config/list_of_socs ./common/
-cp $basepath/config/list_of_socs ./remover/
+cp -r $template_path/* ./
+cp -r $projects_path/$project_id/* ./
+cp $config_path/list_of_socs ./common/
+cp $config_path/list_of_socs ./remover/
 rm ./powercfg_template
 rm ./project_config.sh
 
@@ -31,7 +31,7 @@ sed -i "s/(prj_vercode)/$prjVerCode/g" `grep "(prj_vercode)" -rl .`
 sed -i "s/(prj_ver)/$prjVer/g" `grep "(prj_ver)" -rl .`
 sed -i "s/(generator_ver)/$VER/g" `grep "(generator_ver)" -rl .`
 sed -i "/^|${project_id}|/d" $zip_flashable_outpath/README.md
-echo "|${project_id}|${project_name}|${project_author}|${prjVer}|$(echo `ls $basepath/projects/$project_id/platforms`)|" >> $zip_flashable_outpath/README.md
+echo "|${project_id}|${project_name}|${project_author}|${prjVer}|$(echo `ls $projects_path/$project_id/platforms`)|" >> $zip_flashable_outpath/README.md
 
 cp ./README.md $zip_flashable_outpath/$project_id/README.md
 

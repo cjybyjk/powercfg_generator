@@ -41,11 +41,11 @@ function check_timer_rate()
 			likelyRank=$lkRankTmp
 			mostLikely="$allowed_timer_rate"
 		fi
-	done < $basepath/config/list_of_allowed_params
+	done < $config_path/list_of_allowed_params
 	echo "目标 \"$timer_rate\" 可能存在错误, 与它最相似的是 \"$mostLikely\""
 	read -p "请在此进行修改(默认为 $mostLikely):" timer_rate <&3
 	[ -z "$timer_rate" ] && timer_rate="$mostLikely"
-	[ "$timer_rate" != "$mostLikely" ] && echo "$timer_rate" >> $basepath/config/list_of_allowed_params
+	[ "$timer_rate" != "$mostLikely" ] && echo "$timer_rate" >> $config_path/list_of_allowed_params
 }
 
 function savemode()
@@ -82,7 +82,7 @@ if [ -f "./linkto" ]; then
 	rm ./linkto
 	rm ./NOTICE
 fi
-cp $basepath/template/powercfg_template ./
+cp $template_path/powercfg_template ./
 rm ./powercfg
 [ "true" != "$2" ] && $text_editor ./perf_text
 

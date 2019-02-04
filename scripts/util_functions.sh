@@ -5,11 +5,16 @@
 
 # utility functions
 
+projects_path=$basepath/projects
+scripts_path=$basepath/scripts
+config_path=$basepath/config
+template_path=$basepath/template
+
 function init()
 {
-    source $basepath/config/config.sh
-    [ -f $basepath/config/project_pointer ] && prjPtr=$(cat $basepath/config/project_pointer)
-    [ -f $basepath/projects/$prjPtr/project_config.sh ] && source $basepath/projects/$prjPtr/project_config.sh
+    source $config_path/config.sh
+    [ -f $config_path/project_pointer ] && prjPtr=$(cat $config_path/project_pointer)
+    [ -f $projects_path/$prjPtr/project_config.sh ] && source $projects_path/$prjPtr/project_config.sh
     generatorInfo="powercfg_generator VER:$VER
 by cjybyjk @ coolapk
 License: GPL v3
@@ -58,7 +63,7 @@ function write_value()
     [ -z "$(trim $1)" ] && return 1
     [ -z "$(trim $2)" ] && return 1
     local configFile=$3
-    [ -z "$configFile" ] && configFile=$basepath/config/config.sh
+    [ -z "$configFile" ] && configFile=$config_path/config.sh
 
     local tmp=$(grep "^$1=" $configFile)
     if [ -z "$tmp" ]; then
@@ -116,7 +121,7 @@ function yesNo()
 function get_soc_info()
 {
 	[ "" = "$socModel" ] && read -p "输入SoC型号: " socModel
-	platformPath="$basepath/projects/$project_id/platforms/$socModel"
+	platformPath="$projects_path/$project_id/platforms/$socModel"
 	mkdir -p $platformPath
 	cd $platformPath
 	while read -r soctext
@@ -128,7 +133,7 @@ function get_soc_info()
 			cluster_1="${tmparr[4]}"
 			return 0
 		fi
-	done < $basepath/config/list_of_socs
+	done < $config_path/list_of_socs
 	is_big_little=false
 	yesNo "是否使用big.LITTLE架构" "y" && is_big_little=true
 	cluster_0=$(readDefault "cluster0" "cpu0")
@@ -136,7 +141,7 @@ function get_soc_info()
 	yesNo "添加这个SoC到支持列表中"  "y"
 	if [ $? -eq 0 ]; then
 		read -p "输入SoC代号(支持正则表达式):" socCodename
-		echo "$socCodename:$socModel:$is_big_little:$cluster_0:$cluster_1" >> $basepath/config/list_of_socs
+		echo "$socCodename:$socModel:$is_big_little:$cluster_0:$cluster_1" >> $config_path/list_of_socs
 	fi
 }
 

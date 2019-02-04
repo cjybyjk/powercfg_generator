@@ -3,7 +3,7 @@
 basepath=$(cd $(dirname $0); pwd)/../
 source $basepath/scripts/util_functions.sh
 init
-prjPath="$basepath/projects/$project_id/platforms/"
+prjPath="$projects_path/$project_id/platforms/"
 
 read -p "输入源SoC:" sourceSoC
 [ -z "$sourceSoC" ] && echo "输入不能为空!" && return

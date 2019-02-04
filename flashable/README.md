@@ -3,6 +3,8 @@
 
 [*使用这个模块来解决MIUI系统下的CPU满频率运行问题*](./miuiPerfRemover.zip)
 
+[*查看被丢弃的项目*](./discarded/README.md)
+
 ### 支持的项目列表
 | 项目ID | 项目名称 | 项目作者 | 最新版本 | 支持的SoC |
 |-|-|-|-|-|
