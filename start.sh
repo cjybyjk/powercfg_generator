@@ -88,8 +88,13 @@ x) 返回" "l e d o a b p v x"
 function project_manager()
 {
     echo "可用项目列表: "
-    ls "$projects_path"
+    ls "$projects_path" | grep -v "^discarded$"
     local project_id_new=$(readDefault "项目id" $project_id)
+    if [ "discarded" = "`trim $project_id_new`" ]; then
+        echo "项目ID不允许为 discarded"
+	pause
+	return 1
+    fi
     conf_file=$projects_path/$project_id_new/project_config.sh
     if [ "rm" = "$1" ]; then
         yesNo "你确定这么做吗" || return 0
