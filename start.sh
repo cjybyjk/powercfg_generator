@@ -90,10 +90,16 @@ function project_manager()
     echo "可用项目列表: "
     ls "$projects_path" | grep -v "^discarded$"
     local project_id_new=$(readDefault "项目id" $project_id)
+    if [ -z "`echo $project_id_new | egrep '^[a-zA-Z][a-zA-Z0-9\._-]+$'`" ]; then
+        echo "项目ID非法! 请确保项目ID符合这个正则表达式:"
+        echo '  ^[a-zA-Z][a-zA-Z0-9\._-]+$'
+        pause
+        return 1
+    fi
     if [ "discarded" = "`trim $project_id_new`" ]; then
         echo "项目ID不允许为 discarded"
-	pause
-	return 1
+        pause
+        return 1
     fi
     conf_file=$projects_path/$project_id_new/project_config.sh
     if [ "rm" = "$1" ]; then

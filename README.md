@@ -16,7 +16,7 @@ bash + zip
 ## 使用方法
 1. clone 这个repo
 2. 执行 start.sh
-3. 新建一个项目（id不能包含空格）
+3. 新建一个项目（id需要符合这个正则表达式: `^[a-zA-Z][a-zA-Z0-9\._-]+$` ）
 
 ## 选项说明
 - [生成powercfg](guide/powercfg.md)
