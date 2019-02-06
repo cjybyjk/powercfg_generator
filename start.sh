@@ -131,15 +131,17 @@ function project_manager()
     local project_name_new=$(readDefault "项目名称" "$project_name")
     local project_author_new=$(readDefault "项目作者" "$project_author")
     if [ "modify" = "$1" ]; then
-        mv projects/$project_id projects/$project_id_new
-	    cd $projects_path/$project_id_new/platforms/
-	    for socModel in $(ls)
-	    do
-		if [ -d $socModel ]; then
-		    write_value "project_name" "$project_name_new" "$socModel/powercfg"
-		    write_value "project_author" "$project_author_new" "$socModel/powercfg"
-	        fi
-	    done
+        [ "$project_id" != "$project_id_new" ] && mv projects/$project_id projects/$project_id_new
+        if [ -d "$projects_path/$project_id_new/platforms/" ]; then
+            cd $projects_path/$project_id_new/platforms/
+            for socModel in $(ls)
+            do
+                if [ -d $socModel ]; then
+                    write_value "project_name" "$project_name_new" "$socModel/powercfg"
+                    write_value "project_author" "$project_author_new" "$socModel/powercfg"
+                fi
+            done
+        fi
 	    cd $basepath
 	    if yesNo "移动卡刷包?" ; then
             mv projects/$project_id projects/$project_id_new
@@ -152,7 +154,7 @@ function project_manager()
             pause
             return 1
         fi
-        mkdir -p projects/$project_id_new
+        mkdir -p projects/$project_id_new/platforms
         touch "$conf_file"
     fi
     write_value "project_name" "$project_name_new" "$conf_file"
