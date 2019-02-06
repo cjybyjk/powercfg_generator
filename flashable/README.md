@@ -12,4 +12,3 @@
 |PixelCatV30|橘猫调度 for v30|橘猫520 @ coolapk|Christmas.LG_V30.181225|sd_835|
 |PixelCat|橘猫调度|橘猫520 @ coolapk|190127|exynos_8895 exynos_9810 sd_636 sd_660 sd_820 sd_821 sd_835|
 |SkyMiPerf|星空调度|星空未来 @ coolapk|8.12.19|sd_835|
-|xga3|XiGuaPerf(xga3)|西瓜by特写 @ coolapk|190204|sd_425 sd_430 sd_625 sd_630 sd_636 sd_650 sd_660 sd_801 sd_835|
