@@ -1,0 +1,25 @@
+go_hispeed_load=big=90
+above_hispeed_delay=big=0 949000:45000 1066000:65000
+timer_rate=big=20000
+hispeed_freq=big=1066000
+timer_slack=big=-1
+target_loads=big=90 1066000:95 1456000:75 1550000:70 1600000:99
+min_sample_time=big=40000
+mode=big=0
+boost=big=0
+param_index=big=0
+boostpulse_duration=big=0
+go_hispeed_load=little=90
+above_hispeed_delay=little=0 1066000:45000 1352000:65000
+timer_rate=little=20000
+hispeed_freq=little=1352000
+timer_slack=little=-1
+target_loads=little=90 1352000:95 1469000:75 2002000:70 2158000:99
+min_sample_time=little=40000
+mode=little=0
+boost=little=0
+param_index=little=0
+boostpulse_duration=little=0
+
+
+

@@ -1,0 +1,19 @@
+/sys/devices/system/cpu/cpufreq/interactive/timer_slack -1
+/sys/devices/system/cpu/cpufreq/interactive/timer_rate 20000
+/sys/devices/system/cpu/cpufreq/interactive/target_loads 90 1113000:95 1401000:75 1728000:70 1958000:99
+/sys/devices/system/cpu/cpufreq/interactive/min_sample_time 40000
+/sys/devices/system/cpu/cpufreq/interactive/ignore_hispeed_on_notif 0
+/sys/devices/system/cpu/cpufreq/interactive/hispeed_freq 1113000
+/sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load 90
+/sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay 0 1113000:45000 1401000:65000
+/sys/devices/system/cpu/cpufreq/interactive/align_windows 0
+/sys/devices/system/cpu/cpufreq/interactive/boost 0
+/sys/devices/system/cpu/cpufreq/interactive/boostpulse_duration 0
+/sys/devices/system/cpu/cpufreq/interactive/enable_prediction 0
+/sys/devices/system/cpu/cpufreq/interactive/fast_ramp_down 0
+/sys/devices/system/cpu/cpufreq/interactive/max_freq_hysteresis 0
+/sys/devices/system/cpu/cpufreq/interactive/use_migration_notif 1
+/sys/devices/system/cpu/cpufreq/interactive/use_sched_load 1
+
+
+

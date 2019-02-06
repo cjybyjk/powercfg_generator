@@ -1,0 +1,29 @@
+go_hispeed_load=big=90
+above_hispeed_delay=big=0 960000:45000 1094000:65000
+timer_rate=big=20000
+hispeed_freq=big=1094000
+timer_slack=big=-1
+target_loads=big=90 960000:95 1094000:75 1209000:70 1344000:99
+min_sample_time=big=40000
+ignore_hispeed_on_notif=big=0
+fast_ramp_down=big=0
+align_windows=big=1
+use_migration_notif=big=1
+use_sched_load=big=1
+max_freq_hysteresis=big=0
+go_hispeed_load=little=90
+above_hispeed_delay=little=0 768000:45000 902000:65000
+timer_rate=little=20000
+hispeed_freq=little=998000
+timer_slack=little=-1
+target_loads=little=90 768000:95 902000:75 998000:70 1094000:99
+min_sample_time=little=40000
+ignore_hispeed_on_notif=little=0
+fast_ramp_down=little=0
+align_windows=little=1
+use_migration_notif=little=1
+use_sched_load=little=1
+max_freq_hysteresis=little=0
+
+
+
