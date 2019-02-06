@@ -25,24 +25,31 @@ timer_rate=
 big/little=value
 ```
 
-##### 示例
+#### 示例
 ```ini
+[HMP]
+sched_spill_load=90
+[balance]
+hispeed_freq=633000
+target_loads=55 1113000:39
 [performance]
 hispeed_freq=big=1401000
 hispeed_freq=little=902000
 target_loads=
 big=40 1804000:59
 little=40 1612000:64
-[balance]
-hispeed_freq=633000
-target_loads=55 1113000:39
 [before_modify]
-echo "ready to modify"
+echo "set bg-cpus"
+set_value "0-2" /dev/cpuset/background/cpus
+echo "lock min-perf"
+lock_value 441600 ${C0_CPUFREQ_DIR}/scaling_min_freq 
 [after_modify]
+set_param_big timer_slack 18000
+set_param_little timer_slack 20000
+set_param_HMP sched_group_upmigrate 95
 echo "modified!"
 [runonce]
 echo "first run!"
-[HMP]
-sched_spill_load=90
+set_param_all enable_prediction 0
 ```
 
