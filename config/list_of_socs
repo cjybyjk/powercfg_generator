@@ -3,7 +3,7 @@ msm8937:sd_430:true:cpu0:cpu4
 msm8940:sd_435:true:cpu0:cpu4
 msm8939:sd_615:true:cpu4:cpu0
 msm8939v2:sd_616:true:cpu4:cpu0
-msm8953:sd_625:false:cpu0
+msm8953:sd_625:false:cpu0:cpu4
 msm8953pro:sd_626:true:cpu0:cpu4
 sdm630:sd_630:true:cpu0:cpu4
 sdm636:sd_636:true:cpu0:cpu4
