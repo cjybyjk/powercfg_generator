@@ -19,7 +19,7 @@ C1_CPUFREQ_DIR="/sys/devices/system/cpu/cluster_1/cpufreq"
 C0_CORECTL_DIR="/sys/devices/system/cpu/cluster_0/core_ctl"
 C1_CORECTL_DIR="/sys/devices/system/cpu/cluster_1/core_ctl"
 
-if ! $is_big_little ; then
+if $is_big_little || [ ! -f "$C0_GOVERNOR_DIR" ] ; then
 	C0_GOVERNOR_DIR="/sys/devices/system/cpu/cpufreq/interactive"
 fi
 
@@ -189,12 +189,16 @@ if [ "$action" = "debug" ]; then
 else
 	before_modify
 	if [ "$action" = "powersave" ]; then
+		echo "applying powersave"
 		# powersave_params
 	elif [ "$action" = "balance" ]; then
+		echo "applying balance"
 		# balance_params
 	elif [ "$action" = "performance" ]; then
+		echo "applying performance"
 		# performance_params
 	elif [ "$action" = "fast" ]; then
+		echo "applying fast"
 		# fast_params
 	fi
 	after_modify
