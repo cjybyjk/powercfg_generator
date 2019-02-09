@@ -19,7 +19,7 @@ C1_CPUFREQ_DIR="/sys/devices/system/cpu/cluster_1/cpufreq"
 C0_CORECTL_DIR="/sys/devices/system/cpu/cluster_0/core_ctl"
 C1_CORECTL_DIR="/sys/devices/system/cpu/cluster_1/core_ctl"
 
-if $is_big_little || [ ! -f "$C0_GOVERNOR_DIR" ] ; then
+if ! $is_big_little ; then
 	C0_GOVERNOR_DIR="/sys/devices/system/cpu/cpufreq/interactive"
 fi
 
