@@ -6,7 +6,7 @@ project_name="西瓜调度"
 prj_ver="(prj_ver)"
 project_author="老特写 @ coolapk"
 soc_model="exynos_8895"
-generate_date="2019年 02月 06日 星期三 12:53:53 CST"
+generate_date="2019年 02月 09日 星期六 11:38:06 CST"
 
 is_big_little="true"
 
@@ -61,6 +61,12 @@ function print_param()
 
 function before_modify()
 {
+	# disable hotplug to switch governor
+	set_value 0 /sys/module/msm_thermal/core_control/enabled
+	set_value N /sys/module/msm_thermal/parameters/enabled
+	# Exynos hotplug
+	lock_value 0 /sys/power/cpuhotplug/enabled
+	lock_value 0 /sys/devices/system/cpu/cpuhotplug/enabled
 	lock_value "interactive" ${C0_CPUFREQ_DIR}/scaling_governor
 	chown 0.0 ${C0_GOVERNOR_DIR}/*
 	chmod 0666 ${C0_GOVERNOR_DIR}/*
@@ -158,10 +164,14 @@ fi
 
 # wake up clusters
 if $is_big_little; then
-	C0_CORECTL_MINCPUS=`cat $C0_CORECTL_DIR/min_cpus`
-	C1_CORECTL_MINCPUS=`cat $C1_CORECTL_DIR/min_cpus`
-	cat $C0_CORECTL_DIR/max_cpus > $C0_CORECTL_DIR/min_cpus
-	cat $C1_CORECTL_DIR/max_cpus > $C1_CORECTL_DIR/min_cpus
+	if [ -f "$C0_CORECTL_DIR/min_cpus" ]; then
+		C0_CORECTL_MINCPUS=`cat $C0_CORECTL_DIR/min_cpus`
+		cat $C0_CORECTL_DIR/max_cpus > $C0_CORECTL_DIR/min_cpus
+	fi
+	if [ -f "$C1_CORECTL_DIR/min_cpus" ]; then
+		C1_CORECTL_MINCPUS=`cat $C1_CORECTL_DIR/min_cpus`
+		cat $C1_CORECTL_DIR/max_cpus > $C1_CORECTL_DIR/min_cpus
+	fi
 	set_value 1 /sys/devices/system/cpu/cpu0/online
 	set_value 1 /sys/devices/system/cpu/cpu4/online
 fi
@@ -213,8 +223,8 @@ else
 fi
 
 if $is_big_little; then
-	echo $C0_CORECTL_MINCPUS > $C0_CORECTL_DIR/min_cpus
-	echo $C1_CORECTL_MINCPUS > $C1_CORECTL_DIR/min_cpus
+	set_value $C0_CORECTL_MINCPUS $C0_CORECTL_DIR/min_cpus
+	set_value $C1_CORECTL_MINCPUS $C1_CORECTL_DIR/min_cpus
 fi
 
 exit 0
