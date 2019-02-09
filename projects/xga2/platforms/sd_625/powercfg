@@ -6,18 +6,18 @@ project_name="西瓜调度"
 prj_ver="(prj_ver)"
 project_author="老特写 @ coolapk"
 soc_model="sd_625"
-generate_date="2019年 02月 09日 星期六 11:38:08 CST"
+generate_date="2019年 02月 09日 星期六 14:20:38 CST"
 
-is_big_little="true"
+is_big_little="false"
 
 DEBUG_FLAG="false"
 
 C0_GOVERNOR_DIR="/sys/devices/system/cpu/cpu0/cpufreq/interactive"
-C1_GOVERNOR_DIR="/sys/devices/system/cpu/cpu4/cpufreq/interactive"
+C1_GOVERNOR_DIR="/sys/devices/system/cpu//cpufreq/interactive"
 C0_CPUFREQ_DIR="/sys/devices/system/cpu/cpu0/cpufreq"
-C1_CPUFREQ_DIR="/sys/devices/system/cpu/cpu4/cpufreq"
+C1_CPUFREQ_DIR="/sys/devices/system/cpu//cpufreq"
 C0_CORECTL_DIR="/sys/devices/system/cpu/cpu0/core_ctl"
-C1_CORECTL_DIR="/sys/devices/system/cpu/cpu4/core_ctl"
+C1_CORECTL_DIR="/sys/devices/system/cpu//core_ctl"
 
 if ! $is_big_little ; then
 	C0_GOVERNOR_DIR="/sys/devices/system/cpu/cpufreq/interactive"
@@ -173,7 +173,7 @@ if $is_big_little; then
 		cat $C1_CORECTL_DIR/max_cpus > $C1_CORECTL_DIR/min_cpus
 	fi
 	set_value 1 /sys/devices/system/cpu/cpu0/online
-	set_value 1 /sys/devices/system/cpu/cpu4/online
+	set_value 1 /sys/devices/system/cpu//online
 fi
 
 if [ "$action" = "debug" ]; then
