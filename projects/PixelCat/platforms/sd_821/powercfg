@@ -6,7 +6,7 @@ project_name="橘猫调度"
 prj_ver="(prj_ver)"
 project_author="橘猫520 @ coolapk"
 soc_model="sd_821"
-generate_date="2019年 02月 09日 星期六 11:40:45 CST"
+generate_date="Mon Feb 18 23:18:19 CST 2019"
 
 is_big_little="true"
 
@@ -122,7 +122,7 @@ function verify_param()
 	if [ "$action" = "powersave" ]; then
 		expected_value="70 460000:41 844000:56 1209000:67 1516000:74 2188000:85"
 	elif [ "$action" = "balance" ]; then
-		expected_value="40 307000:45 691200:60 979000:75 1209000:85 1440000:90 2188000:97"
+		expected_value="60 307000:14 460000:19 614000:22 768000:24 844000:27 902000:31 979000:35 1056000:37 1132000:41 1209000:44 1286000:49 1363000:57 1440000:63 1516000:67 1593000:72 2188000:78"
 	elif [ "$action" = "performance" ]; then
 		expected_value="40 460000:23 844000:31 1209000:37 1516000:49 2188000:62"
 	elif [ "$action" = "fast" ]; then
@@ -142,7 +142,7 @@ function get_mode()
     expected_target=${C0_GOVERNOR_DIR}/target_loads
 	case "`cat ${expected_target}`" in
 		"70 460000:41 844000:56 1209000:67 1516000:74 2188000:85" ) echo "powersave OK" ;;
-		"40 307000:45 691200:60 979000:75 1209000:85 1440000:90 2188000:97" ) echo "balance OK" ;;
+		"60 307000:14 460000:19 614000:22 768000:24 844000:27 902000:31 979000:35 1056000:37 1132000:41 1209000:44 1286000:49 1363000:57 1440000:63 1516000:67 1593000:72 2188000:78" ) echo "balance OK" ;;
 		"40 460000:23 844000:31 1209000:37 1516000:49 2188000:62" ) echo "performance OK" ;;
 		"(fast_tload)" ) echo "fast OK" ;;
 	esac
@@ -189,6 +189,7 @@ if [ "$action" = "debug" ]; then
 else
 	before_modify
 	if [ "$action" = "powersave" ]; then
+		echo "applying powersave"
 		set_param_all boostpulse_duration 25000
 		set_param_all boost 1
 		set_param_all timer_rate 24000
@@ -206,27 +207,30 @@ else
 		set_param_little target_loads "70 460000:41 844000:56 1209000:67 1516000:74 2188000:85"
 
 	elif [ "$action" = "balance" ]; then
-		set_param_all boostpulse_duration 7000
+		echo "applying balance"
+		set_param_all boostpulse_duration 15000
 		set_param_all boost 1
-		set_param_all timer_rate 28000
-		set_param_all timer_slack 10000
-		set_param_all min_sample_time 4000
-		set_param_all max_freq_hysteresis 1000
+		set_param_all timer_rate 20000
+		set_param_all timer_slack 140000
+		set_param_all min_sample_time 3000
+		set_param_all align_windows 0
+		set_param_all max_freq_hysteresis 38000
 		set_param_all enable_prediction 0
 		set_param_all io_is_busy 0
 		set_param_all ignore_hispeed_on_notif 0
-		set_param_all use_sched_load 1
-		set_param_all use_migration_notif 1
-		set_param_big go_hispeed_load 75
-		set_param_little go_hispeed_load 60
-		set_param_big hispeed_freq 902000
-		set_param_little hispeed_freq 691200
-		set_param_big above_hispeed_delay "7000 844000:39000 1209000:51000 1670000:64000 1900000:76000 2150000:88000 2342000:95000"
-		set_param_little above_hispeed_delay "7000 844000:37000 1209000:51000 1440000:62000 1516000:79000 2100000:89000"
-		set_param_big target_loads "55 307000:45 691200:60 979000:75 1209000:80 1440000:82 1670000:89 1900000:91 2150000:95 2342000:97"
-		set_param_little target_loads "40 307000:45 691200:60 979000:75 1209000:85 1440000:90 2188000:97"
+		set_param_all use_sched_load 0
+		set_param_all use_migration_notif 0
+		set_param_big go_hispeed_load 31
+		set_param_little go_hispeed_load 31
+		set_param_big hispeed_freq 1056000
+		set_param_little hispeed_freq 768000
+		set_param_big above_hispeed_delay "15000 1747000:15000"
+		set_param_little above_hispeed_delay "15000 1132000:17000"
+		set_param_big target_loads "85 307000:15 460000:18 614000:21 768000:25 844000:27 979000:29 1056000:31 1132000:35 1209000:39 1286000:41 1363000:43 1440000:48 1747000:63 1824000:69 1900000:73 1977000:79 2054000:83 2150000:88 2246000:92 2342000:96"
+		set_param_little target_loads "60 307000:14 460000:19 614000:22 768000:24 844000:27 902000:31 979000:35 1056000:37 1132000:41 1209000:44 1286000:49 1363000:57 1440000:63 1516000:67 1593000:72 2188000:78"
 
 	elif [ "$action" = "performance" ]; then
+		echo "applying performance"
 		set_param_all boostpulse_duration 7000
 		set_param_all boost 1
 		set_param_all timer_rate 10000
@@ -244,6 +248,7 @@ else
 		set_param_little target_loads "40 460000:23 844000:31 1209000:37 1516000:49 2188000:62"
 
 	elif [ "$action" = "fast" ]; then
+		echo "applying fast"
 		:
 	fi
 	after_modify
