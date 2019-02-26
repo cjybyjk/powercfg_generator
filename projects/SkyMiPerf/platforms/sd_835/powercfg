@@ -6,7 +6,7 @@ project_name="星空调度"
 prj_ver="(prj_ver)"
 project_author="星空未来 @ coolapk"
 soc_model="sd_835"
-generate_date="Thu Feb 21 22:44:28 CST 2019"
+generate_date="Tue Feb 26 23:18:15 CST 2019"
 
 is_big_little="true"
 
@@ -89,7 +89,7 @@ function before_modify()
 	set_param_all ignore_hispeed_on_notif 1
 	lock_value 441600 ${C0_CPUFREQ_DIR}/scaling_min_freq
 	lock_value 300000 ${C1_CPUFREQ_DIR}/scaling_min_freq
-	if [ "balance" = "$mode" ]; then
+	if [ "balance" = "$action" ]; then
 	    set_param_HMP sched_upmigrate 65
 	    set_param_HMP sched_downmigrate 50
 	    set_param_HMP sched_group_upmigrate 97
@@ -104,7 +104,7 @@ function before_modify()
 	    set_value "0-2" /dev/cpuset/system-background/cpus
 	    set_value "0-3,4-7" /dev/cpuset/foreground/boost/cpus
 	    set_value "0-3,4-7" /dev/cpuset/foreground/cpus
-	elif [ "powersave" = "$mode" ]; then
+	elif [ "powersave" = "$action" ]; then
 	    set_param_HMP sched_upmigrate 83
 	    set_param_HMP sched_downmigrate 75
 	    set_param_HMP sched_group_upmigrate 97
@@ -119,7 +119,7 @@ function before_modify()
 	    set_value "0-2" /dev/cpuset/system-background/cpus
 	    set_value "0-3,4-7" /dev/cpuset/foreground/boost/cpus
 	    set_value "0-3,4-7" /dev/cpuset/foreground/cpus
-	elif [ "performance" = "$mode" ]; then
+	elif [ "performance" = "$action" ]; then
 	    set_param_HMP sched_upmigrate 65
 	    set_param_HMP sched_downmigrate 50
 	    set_param_HMP sched_group_upmigrate 97
