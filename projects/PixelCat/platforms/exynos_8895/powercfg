@@ -6,7 +6,7 @@ project_name="橘猫调度"
 prj_ver="(prj_ver)"
 project_author="橘猫520 @ coolapk"
 soc_model="exynos_8895"
-generate_date="2019年 02月 09日 星期六 11:40:34 CST"
+generate_date="Sat Mar  2 02:04:54 CST 2019"
 
 is_big_little="true"
 
@@ -189,8 +189,10 @@ if [ "$action" = "debug" ]; then
 else
 	before_modify
 	if [ "$action" = "powersave" ]; then
+		echo "applying powersave"
 		:
 	elif [ "$action" = "balance" ]; then
+		echo "applying balance"
 		set_param_all boostpulse_duration 4000
 		set_param_all boost 1
 		set_param_all timer_rate 20000
@@ -208,8 +210,10 @@ else
 		set_param_little target_loads "58 598000:48 832000:68 949000:81 1248000:92 1690000:100"
 
 	elif [ "$action" = "performance" ]; then
+		echo "applying performance"
 		:
 	elif [ "$action" = "fast" ]; then
+		echo "applying fast"
 		:
 	fi
 	after_modify
