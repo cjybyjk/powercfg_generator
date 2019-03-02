@@ -150,7 +150,7 @@ function project_manager()
         fi
 	    cd $basepath
 	    if yesNo "移动卡刷包?" ; then
-            mv projects/$project_id projects/$project_id_new
+            mv flashable/$project_id flashable/$project_id_new
             sed -i "/^|${project_id}|/d" $basepath/flashable/README.md
 	    fi
         echo "$project_id_new" > $config_path/project_pointer
