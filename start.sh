@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # powercfg_generator
 # by cjybyjk @ coolapk
 # License: GPL v3
