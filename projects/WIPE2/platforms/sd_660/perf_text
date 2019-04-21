@@ -22,7 +22,7 @@ above_hispeed_delay=
 big=198000
 target_loads=
 big=44 1401000:94 1747000:99
-timee_rate=20000
+timer_rate=20000
 [HMP]
 sched_downmigrate=97
 sched_upmigrate=97
@@ -30,6 +30,6 @@ sched_ravg_hist_size=3
 sched_window_stats_policy=2
 [before_modify]
 lock_value 1500 /sys/module/cpu_boost/parameters/input_boost_ms
-lock_value "0:1401000 4:1113000" /sys/module/msm_performance/parameters/touchboost
+lock_value "0:1401000 4:1113000" /sys/module/cpu_boost/parameters/input_boost_freq
 
 

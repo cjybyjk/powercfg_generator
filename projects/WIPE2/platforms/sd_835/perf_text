@@ -30,6 +30,6 @@ sched_ravg_hist_size=3
 sched_window_stats_policy=2
 [before_modify]
 lock_value 1700 /sys/module/cpu_boost/parameters/input_boost_ms
-lock_value "0:518000 4:345000" /sys/module/msm_performance/parameters/touchboost
+lock_value "0:518000 4:345000" /sys/module/cpu_boost/parameters/input_boost_freq
 
 

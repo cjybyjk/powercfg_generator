@@ -6,7 +6,7 @@ project_name="WIPE2"
 prj_ver="(prj_ver)"
 project_author="yc9559"
 soc_model="sd_835"
-generate_date="Mon Apr 22 02:05:30 CST 2019"
+generate_date="Mon Apr 22 02:43:50 CST 2019"
 
 is_big_little="true"
 
@@ -76,7 +76,7 @@ function before_modify()
 		chmod 0666 ${C1_GOVERNOR_DIR}/*
 	fi
 	lock_value 1700 /sys/module/cpu_boost/parameters/input_boost_ms
-	lock_value "0:518000 4:345000" /sys/module/msm_performance/parameters/touchboost
+	lock_value "0:518000 4:345000" /sys/module/cpu_boost/parameters/input_boost_freq
 
 }
 

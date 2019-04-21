@@ -6,7 +6,7 @@ project_name="WIPE2"
 prj_ver="(prj_ver)"
 project_author="yc9559"
 soc_model="sd_660"
-generate_date="Mon Apr 22 02:05:24 CST 2019"
+generate_date="Mon Apr 22 02:43:45 CST 2019"
 
 is_big_little="true"
 
@@ -76,7 +76,7 @@ function before_modify()
 		chmod 0666 ${C1_GOVERNOR_DIR}/*
 	fi
 	lock_value 1500 /sys/module/cpu_boost/parameters/input_boost_ms
-	lock_value "0:1401000 4:1113000" /sys/module/msm_performance/parameters/touchboost
+	lock_value "0:1401000 4:1113000" /sys/module/cpu_boost/parameters/input_boost_freq
 
 }
 
@@ -211,7 +211,7 @@ else
 		set_param_big max_freq_hysteresis 18000
 		set_param_big above_hispeed_delay 198000
 		set_param_big target_loads "44 1401000:94 1747000:99"
-		set_param_all timee_rate 20000
+		set_param_all timer_rate 20000
 
 	elif [ "$action" = "performance" ]; then
 		echo "applying performance"
