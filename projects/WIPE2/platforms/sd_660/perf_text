@@ -23,6 +23,7 @@ big=198000
 target_loads=
 big=44 1401000:94 1747000:99
 timer_rate=20000
+ignore_above_hispeed_delay=0
 [HMP]
 sched_downmigrate=97
 sched_upmigrate=97

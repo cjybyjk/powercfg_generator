@@ -13,4 +13,4 @@
 |xga2|西瓜调度|老特写 @ coolapk|xga2_190206|exynos_7420 exynos_8890 exynos_8895 kirin_950 sd_425 sd_430 sd_625 sd_630 sd_636 sd_650 sd_660 sd_801 sd_835|
 |SkyMiPerf|星空调度|星空未来 @ coolapk|9.1.12|sd_835|
 |PixelCat|橘猫调度|橘猫520 @ coolapk|190422|exynos_8895 exynos_9810 sd_625 sd_630 sd_636 sd_650 sd_660 sd_810 sd_820 sd_821 sd_835|
-|WIPE2|WIPE2|yc9559|190422.1|sd_660 sd_820 sd_835|
+|WIPE2|WIPE2|yc9559|190422.2|sd_660 sd_820 sd_835|
