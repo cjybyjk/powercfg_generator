@@ -6,7 +6,7 @@ project_name="橘猫调度"
 prj_ver="(prj_ver)"
 project_author="橘猫520 @ coolapk"
 soc_model="sd_630"
-generate_date="Mon Apr 22 02:19:37 CST 2019"
+generate_date="Tue Apr 23 23:27:03 CST 2019"
 
 is_big_little="true"
 
@@ -63,6 +63,7 @@ function before_modify()
 {
 	# disable hotplug to switch governor
 	set_value 0 /sys/module/msm_thermal/core_control/enabled
+	set_value disable > /sys/devices/soc/soc:qcom,bcl/mode
 	set_value N /sys/module/msm_thermal/parameters/enabled
 	# Exynos hotplug
 	lock_value 0 /sys/power/cpuhotplug/enabled
@@ -75,6 +76,8 @@ function before_modify()
 		chown 0.0 ${C1_GOVERNOR_DIR}/*
 		chmod 0666 ${C1_GOVERNOR_DIR}/*
 	fi
+	# Perfd, nothing to worry about, if error the script will continue
+	stop perfd
 	# before_modify_params
 }
 
