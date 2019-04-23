@@ -6,7 +6,7 @@ project_name="WIPE2"
 prj_ver="(prj_ver)"
 project_author="yc9559"
 soc_model="sd_660"
-generate_date="Mon Apr 22 22:11:26 CST 2019"
+generate_date="Tue Apr 23 12:02:48 CST 2019"
 
 is_big_little="true"
 
@@ -212,7 +212,7 @@ else
 		set_param_big above_hispeed_delay 198000
 		set_param_big target_loads "44 1401000:94 1747000:99"
 		set_param_all timer_rate 20000
-		set_param_all ignore_above_hispeed_delay 0
+		set_param_all ignore_hispeed_on_notif 0
 
 	elif [ "$action" = "performance" ]; then
 		echo "applying performance"
