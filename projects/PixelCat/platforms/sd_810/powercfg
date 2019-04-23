@@ -6,7 +6,7 @@ project_name="橘猫调度"
 prj_ver="(prj_ver)"
 project_author="橘猫520 @ coolapk"
 soc_model="sd_810"
-generate_date="Tue Apr 23 23:27:17 CST 2019"
+generate_date="Wed Apr 24 01:23:27 CST 2019"
 
 is_big_little="true"
 
@@ -63,7 +63,7 @@ function before_modify()
 {
 	# disable hotplug to switch governor
 	set_value 0 /sys/module/msm_thermal/core_control/enabled
-	set_value disable > /sys/devices/soc/soc:qcom,bcl/mode
+	set_value disable /sys/devices/soc/soc:qcom,bcl/mode
 	set_value N /sys/module/msm_thermal/parameters/enabled
 	# Exynos hotplug
 	lock_value 0 /sys/power/cpuhotplug/enabled
@@ -170,10 +170,14 @@ if $is_big_little; then
 	if [ -f "$C0_CORECTL_DIR/min_cpus" ]; then
 		C0_CORECTL_MINCPUS=`cat $C0_CORECTL_DIR/min_cpus`
 		cat $C0_CORECTL_DIR/max_cpus > $C0_CORECTL_DIR/min_cpus
+	else
+		C0_CORECTL_MINCPUS=0
 	fi
 	if [ -f "$C1_CORECTL_DIR/min_cpus" ]; then
 		C1_CORECTL_MINCPUS=`cat $C1_CORECTL_DIR/min_cpus`
 		cat $C1_CORECTL_DIR/max_cpus > $C1_CORECTL_DIR/min_cpus
+	else
+		C1_CORECTL_MINCPUS=0
 	fi
 	set_value 1 /sys/devices/system/cpu/cpu0/online
 	set_value 1 /sys/devices/system/cpu/cpu4/online
