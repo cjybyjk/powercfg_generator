@@ -24,6 +24,8 @@ target_loads=
 big=44 1401000:94 1747000:99
 timer_rate=20000
 ignore_hispeed_on_notif=0
+use_migration_notif=1
+use_sched_load=1
 [HMP]
 sched_downmigrate=97
 sched_upmigrate=97
