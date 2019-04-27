@@ -159,10 +159,15 @@ if [ ! -f /dev/perf_runonce ]; then
 	# HMP_params
 	# runonce_params
 fi
-
-action=$1
+if [ "-s" = "$1" ]; then
+	action=$2
+	echo $action > /data/perf_mode
+	echo "set:apply $action during system boot"
+else
+	action=$1
+fi
 if [ ! -n "$action" ]; then
-    action="balance"
+	action="balance"
 fi
 
 # wake up clusters
