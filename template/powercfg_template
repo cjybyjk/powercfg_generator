@@ -7,6 +7,7 @@ prj_ver="(prj_ver)"
 project_author="cjybyjk"
 soc_model=""
 generate_date=""
+mode_list=""
 
 is_big_little=true
 
@@ -135,6 +136,9 @@ function verify_param()
 		echo "${action} OK"
 	elif [ "${expected_value}" = "(${action}_tload)" ]; then
 		echo "${action} not included"
+		if $booting_flag ; then
+			powercfg balance
+		fi
 	else
 		echo "${action} FAIL"
 	fi
@@ -151,41 +155,73 @@ function get_mode()
 	esac
 }
 
-# RunOnce
-if [ ! -f /dev/perf_runonce ]; then
-	# set flag
-	touch /dev/perf_runonce
-	
-	# HMP_params
-	# runonce_params
-fi
+function cluster_ctrl() 
+{
+	if [ "1" = "$1" ]; then
+		# wake up clusters
+		if $is_big_little; then
+			if [ -f "$C0_CORECTL_DIR/min_cpus" ]; then
+				C0_CORECTL_MINCPUS=`cat $C0_CORECTL_DIR/min_cpus`
+				cat $C0_CORECTL_DIR/max_cpus > $C0_CORECTL_DIR/min_cpus
+			else
+				C0_CORECTL_MINCPUS=0
+			fi
+			if [ -f "$C1_CORECTL_DIR/min_cpus" ]; then
+				C1_CORECTL_MINCPUS=`cat $C1_CORECTL_DIR/min_cpus`
+				cat $C1_CORECTL_DIR/max_cpus > $C1_CORECTL_DIR/min_cpus
+			else
+				C1_CORECTL_MINCPUS=0
+			fi
+			set_value 1 /sys/devices/system/cpu/cluster_0/online
+			set_value 1 /sys/devices/system/cpu/cluster_1/online
+		fi
+	elif [ "2" = "$1" ]; then
+		if $is_big_little; then
+			set_value $C0_CORECTL_MINCPUS $C0_CORECTL_DIR/min_cpus
+			set_value $C1_CORECTL_MINCPUS $C1_CORECTL_DIR/min_cpus
+		fi
+	fi
+}
+
+cluster_ctrl 1
+booting_flag=false
 if [ "-s" = "$1" ]; then
 	action=$2
 	echo $action > /data/perf_mode
 	echo "set:apply $action during system boot"
+elif [ "-b" = "$1" ]; then
+	action=$2
+	booting_flag=true
+elif [ "-h" = "$1" ]; then
+	action=""
+elif [ "-c" = "$1" ]; then
+	get_mode
+	cluster_ctrl 2
+	exit 0
 else
 	action=$1
 fi
 if [ ! -n "$action" ]; then
-	action="balance"
-fi
-
-# wake up clusters
-if $is_big_little; then
-	if [ -f "$C0_CORECTL_DIR/min_cpus" ]; then
-		C0_CORECTL_MINCPUS=`cat $C0_CORECTL_DIR/min_cpus`
-		cat $C0_CORECTL_DIR/max_cpus > $C0_CORECTL_DIR/min_cpus
-	else
-		C0_CORECTL_MINCPUS=0
-	fi
-	if [ -f "$C1_CORECTL_DIR/min_cpus" ]; then
-		C1_CORECTL_MINCPUS=`cat $C1_CORECTL_DIR/min_cpus`
-		cat $C1_CORECTL_DIR/max_cpus > $C1_CORECTL_DIR/min_cpus
-	else
-		C1_CORECTL_MINCPUS=0
-	fi
-	set_value 1 /sys/devices/system/cpu/cluster_0/online
-	set_value 1 /sys/devices/system/cpu/cluster_1/online
+	echo "$project_name"
+	echo "Version: $prj_ver"
+	echo "Author: $project_author"
+	echo "Platform: $soc_model"
+	echo "Generated at $generate_date"
+	echo ""
+	echo "Usage:"
+	echo "powercfg [option] [mode]"
+	echo ""
+	echo "options:"
+	echo "    -h    Show this message"
+	echo "    -s    Apply [mode] during boot"
+	echo "    -b    Set booting flag"
+	echo "    -c    Show current mode"
+	echo ""
+	echo "modes:"
+	echo "    $mode_list"
+	echo ""
+	cluster_ctrl 2
+	exit 0
 fi
 
 if [ "$action" = "debug" ]; then
@@ -199,6 +235,14 @@ if [ "$action" = "debug" ]; then
 	print_param target_loads
 	get_mode
 else
+	# RunOnce
+	if [ ! -f /dev/perf_runonce ]; then
+		# set flag
+		touch /dev/perf_runonce
+	
+		# HMP_params
+		# runonce_params
+	fi
 	before_modify
 	if [ "$action" = "powersave" ]; then
 		echo "applying powersave"
@@ -216,9 +260,6 @@ else
 	after_modify
 fi
 
-if $is_big_little; then
-	set_value $C0_CORECTL_MINCPUS $C0_CORECTL_DIR/min_cpus
-	set_value $C1_CORECTL_MINCPUS $C1_CORECTL_DIR/min_cpus
-fi
+cluster_ctrl 2
 
 exit 0

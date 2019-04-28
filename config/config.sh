@@ -1,4 +1,4 @@
-VER="1.2.9"
+VER="1.2.10"
 project_id="(unknown)"
 project_name="(未指定项目)"
 project_author="(unknown)"

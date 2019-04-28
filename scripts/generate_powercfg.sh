@@ -59,6 +59,7 @@ function savemode()
 				echo "$templateText" >> ./powercfg
 			fi
 		done < ./powercfg_template
+		[ "HMP" != "$mode" ] && [[ ! "$mode" =~ "modify" ]] && tmp_mode_list="${tmp_mode_list}$mode    "
 		modeText=""
 		rm powercfg_template
 		mv powercfg powercfg_template
@@ -87,6 +88,8 @@ rm ./powercfg
 [ "true" != "$2" ] && $text_editor ./perf_text
 
 mode="balance"
+tmp_modes_list=""
+
 OLD_IFS="$IFS" 
 IFS="="
 while read -r lineinText
@@ -143,12 +146,9 @@ write_value "generate_date" "`date`" powercfg
 write_value "project_name" "$project_name" powercfg
 write_value "project_author" "$project_author" powercfg
 write_value "DEBUG_FLAG" "$powercfg_debug_flag" powercfg
+write_value "mode_list" "$tmp_mode_list" powercfg
 sed -i "s/cluster_0/$cluster_0/g" powercfg
 sed -i "s/cluster_1/$cluster_1/g" powercfg
-sed -i "s/# balance_params/:/g" powercfg
-sed -i "s/# powersave_params/:/g" powercfg
-sed -i "s/# performance_params/:/g" powercfg
-sed -i "s/# fast_params/:/g" powercfg
 
 echo ""
 [ "true" != "$2" ] && pause
