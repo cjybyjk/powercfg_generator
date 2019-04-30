@@ -93,8 +93,9 @@ tmp_modes_list=""
 OLD_IFS="$IFS" 
 IFS="="
 while read -r lineinText
-do 
-	[ -z "$lineinText" ] && continue
+do
+	lineinText="`trim \"$lineinText\"`"
+	[ -z "$lineinText" ] && continue	
 	# cut string like [mode]
 	if [ "${lineinText:0:1}" = "[" ] && [ "${lineinText:0-1:1}" = "]" ]; then
 		modeTmp=${lineinText#[}
