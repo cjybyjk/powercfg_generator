@@ -153,7 +153,7 @@ if [ -d "./platforms/$platform/" ]; then
 		mkdir -p ./magisk/system/bin/
 		cp ./platforms/$platform/powercfg ./magisk/system/bin/powercfg
 		ui_print "  Running install script"
-		sh ./magisk_install/magisk-script $1 $2 $3 $PWD
+		sh ./magisk/module_installer.sh $1 $2 $3 $platform
 		exitcode=$?
 		if [ 0 -ne $exitcode ]; then
 		    ui_print "! WARNING: Magisk install script return $exitcode"
