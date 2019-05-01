@@ -37,10 +37,9 @@ ui_print " "
 
 TMPDIR=/dev/tmp
 
-ui_print "- Mounting /system, /vendor and /data"
+ui_print "- Mounting /system, /vendor"
 mount /system
 mount /vendor
-mount /data
 
 ui_print "- Extracting files"
 mkdir -p $TMPDIR
