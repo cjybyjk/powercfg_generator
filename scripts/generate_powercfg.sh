@@ -94,10 +94,10 @@ OLD_IFS="$IFS"
 IFS="="
 while read -r lineinText
 do
-	lineinText="`trim \"$lineinText\"`"
 	[ -z "$lineinText" ] && continue	
 	# cut string like [mode]
-	if [ "${lineinText:0:1}" = "[" ] && [ "${lineinText:0-1:1}" = "]" ]; then
+	modeTmp="`trim \"$lineinText\"`"
+	if [ "${modeTmp:0:1}" = "[" ] && [ "${modeTmp:0-1:1}" = "]" ]; then
 		modeTmp=${lineinText#[}
 		modeTmp=${modeTmp%]}
 	    savemode
