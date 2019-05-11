@@ -1,0 +1,6 @@
+# 这是调速器参数与sysfs文件路径的映射表
+# 同时可以包含调速器参数格式的正则表达式(egrep格式)
+# 格式: param_name:path_to_file:regex
+# 示例: go_hispeed_load:${C0_GOVERNOR_DIR}/go_hispeed_load:^(\\d|[1-9]\\d|100)$
+
+

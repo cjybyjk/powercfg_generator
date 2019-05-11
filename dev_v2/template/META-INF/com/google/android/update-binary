@@ -1,0 +1,203 @@
+#!/sbin/sh
+# Author: cjybyjk (cjybyjk@gmail.com)
+# auto-chosen script for include powercfg script to your device
+
+OUTFD=$2
+ZIP=$3
+exitcode=0
+
+# Detect whether in boot mode
+ps | grep zygote | grep -v grep >/dev/null && BOOTMODE=true || BOOTMODE=false
+$BOOTMODE || ps -A 2>/dev/null | grep zygote | grep -v grep >/dev/null && BOOTMODE=true
+$BOOTMODE || id | grep -q 'uid=0' || BOOTMODE=true
+
+ui_print() {
+	$BOOTMODE && echo "$1" || echo -e "ui_print $1\nui_print" >> /proc/self/fd/$OUTFD
+}
+
+# $1:file $2:add head
+boot_write() {
+	writefile=$1
+	if [ "$2" == "1" ]; then
+		echo "#!/system/bin/sh" > "$writefile"
+		chmod 0755 "$writefile"
+	fi
+	cat ./common/runPerf.sh >> "$writefile"
+}
+
+ui_print " "
+ui_print "****************************"
+ui_print "  (project_name) installer"
+ui_print "  Author: "
+ui_print "    project: (project_author)"
+ui_print "    scripts: cjybyjk"
+ui_print "  "
+ui_print "****************************"
+ui_print " "
+
+TMPDIR=/dev/tmp
+
+ui_print "- Mounting /system, /vendor"
+mount /system
+mount /vendor
+
+ui_print "- Extracting files"
+mkdir -p $TMPDIR
+cd $TMPDIR
+unzip -o "$ZIP" > /dev/null
+
+# get platform
+ui_print "- Checking platform"
+platform="unsupported"
+for tmpPlatform in $(echo `grep "Hardware" /proc/cpuinfo | awk '{print $NF}' ; getprop "ro.product.board" ; getprop "ro.board.platform"` | tr '[A-Z]' '[a-z]') 
+do
+	if [ "unsupported" = "$platform" ]; then
+		while read -r soctext
+		do
+			if [ "`echo $tmpPlatform | egrep $(echo $soctext | cut -d : -f 1)`" != "" ]; then
+				platform=$(echo $soctext | cut -d : -f 2)
+			fi
+		done < ./common/list_of_socs
+	fi
+done
+[ -f "/perf_soc_model" ] && platform="`cat /perf_soc_model`"
+ui_print "   Platform: $platform"
+
+if [ -d "./platforms/$platform/" ]; then
+	# Show notice when flashing
+	if [ -f "./platforms/$platform/NOTICE" ]; then
+		ui_print "- NOTICE:"
+		ui_print "  `cat ./platforms/$platform/NOTICE`"
+	fi
+
+	# powercfg linkto
+	[ -f "./platforms/$platform/linkto" ] && plarform=`cat "./platforms/$platform/linkto"`
+
+	# start!
+	ui_print "- Installing..."
+	ui_print "- Checking Magisk Framework"
+	magiskFlag=0
+	[ -d "/data/adb/magisk" ] && magiskFlag=1
+	[ -f "/data/magisk.img" ] && magiskFlag=2
+	[ -f "/data/adb/magisk.img" ] && magiskFlag=3
+	[ -f "/perf_no_magisk" ] && magiskFlag=0
+	ui_print "  Magisk flag: $magiskFlag"
+	if [ 0 -eq $magiskFlag ]; then
+		flagBootApply=0
+		flagApplyOnce=true
+		[ -f "/perf_no_apply_once" ] && flagApplyOnce=false
+		mkdir ./mountimg
+		while read -r lineinText
+		do 
+			fileFormat=`echo $lineinText | awk '{print \$1}'`
+			pathtofile=`echo $lineinText | awk -F \" '{print \$2}'`
+			bootinIMG=`echo $lineinText | awk -F \" '{print \$4}'`
+			pathinIMG=`echo $lineinText | awk -F \" '{print \$6}'`
+			case "$fileFormat" in
+			"[D]" )
+				if [ -d "$pathtofile" ]; then
+					ui_print "  $pathtofile found, creating file on it..."
+					boot_write "$pathtofile/99perf" 1
+					let flagBootApply=flagBootApply+1
+					ui_print "  copying powercfg to system/bin"
+					cp ./platforms/$platform/powercfg /system/bin/powercfg
+					chmod 0755 /system/bin/powercfg
+					$flagApplyOnce && break
+				fi
+			;;
+			"[F]" )
+				if [ -f "$pathtofile" ]; then
+					# restore backup
+					if [ -f "$pathtofile.perfbak" ]; then
+						rm -f "$pathtofile"
+						cp "$pathtofile.perfbak" "$pathtofile"
+					else
+						cp "$pathtofile" "$pathtofile.perfbak"
+					fi
+					ui_print "  $pathtofile found, adding lines to it..."
+					boot_write "$pathtofile" 0
+					let flagBootApply=flagBootApply+1
+					ui_print "  copying powercfg to system/bin"
+					cp ./platforms/$platform/powercfg /system/bin/powercfg
+					chmod 0755 /system/bin/powercfg
+					$flagApplyOnce && break
+				fi
+			;;
+			"[I]" )
+				if [ -f "$pathtofile" ]; then
+					ui_print "  $pathtofile found, mounting..."
+					mount "$pathtofile" ./mountimg
+					if [ -d ./mountimg/$pathinIMG ]; then
+						ui_print "  copying powercfg to $pathinIMG..."
+						cp ./platforms/$platform/powercfg ./mountimg/$pathinIMG/powercfg
+						chmod 0755  ./mountimg/$pathinIMG/powercfg
+					else
+						ui_print "  copying powercfg to /system/bin"
+						cp ./platforms/$platform/powercfg /system/bin/powercfg
+					    chmod 0755 /system/bin/powercfg
+					fi
+					ui_print "  creating file on $bootinIMG..."
+					boot_write "./mountimg/$bootinIMG/99perf" 1
+					let flagBootApply=flagBootApply+1
+					ui_print "  Unmounting $pathtofile"
+					umount ./mountimg
+					$flagApplyOnce && break
+				fi
+			;;
+			esac
+		done < ./common/list_of_bootable
+		[ 0 -eq $flagBootApply ] && ui_print "! WARNING: No method to apply on boot!"
+	else
+		ui_print "- Magisk Framework found"
+		ui_print "  Copying files..."
+		mkdir -p ./magisk/system/bin/
+		cp ./platforms/$platform/powercfg ./magisk/system/bin/powercfg
+		ui_print "  Running install script"
+		sh ./magisk/module_installer.sh $1 $2 $3 $platform
+		exitcode=$?
+		if [ 0 -ne $exitcode ]; then
+		    ui_print "! WARNING: Magisk install script return $exitcode"
+		fi
+	fi
+	# check Vboot & Scene and link powercfg
+	ui_print "- Checking Vboot & Scene"
+	if [ -d "/data/data/com.omarea.vboot" ]; then
+		ui_print " found:Vboot"
+		if [ ! -f "/data/powercfg" ]; then
+			ui_print "link: /data/powercfg <- /system/bin/powercfg"
+			ln -s /system/bin/powercfg /data/powercfg
+		fi
+	fi
+	if [ -d "/data/data/com.omarea.vtools" ]; then
+		ui_print " found:Scene"
+		if [ ! -f "/data/powercfg.sh" ]; then
+			ui_print "link: /data/powercfg.sh <- /system/bin/powercfg"
+			ln -s /system/bin/powercfg /data/powercfg.sh
+		fi
+	fi
+	ui_print "- Default mode: balance"
+	[ ! -f "/data/perf_mode" ] && echo "balance" > /data/perf_mode
+	ui_print "- You can choose mode by using this two ways:"
+	ui_print "  1. Enter powercfg \$MODE in terminal"
+	ui_print "  2. Modify /data/perf_mode and reboot"
+else
+	ui_print "! Unsupported device!"
+	if [ "unsupported" = "$platform" ]; then
+		ui_print "  platform info:"
+		ui_print "    is_big_little=$is_big_little"
+		ui_print "    hardware=`grep 'Hardware' /proc/cpuinfo | awk '{print $NF}'`"
+		ui_print "    board=`getprop ro.product.board`"
+		ui_print "    platform=`getprop ro.board.platform`"
+	fi
+fi
+
+ui_print "- Cleaning files"
+cd /
+rm -rf $TMPDIR
+
+ui_print "- Unmouting /system, /vendor"
+umount /system
+umount /vendor
+
+ui_print "- Done!"
+exit $exitcode

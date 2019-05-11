@@ -1,0 +1,265 @@
+#!/system/bin/sh
+# powercfg template by cjybyjk & yc9559
+# License: GPL V3
+
+project_name="template"
+prj_ver="(prj_ver)"
+project_author="cjybyjk"
+soc_model=""
+generate_date=""
+mode_list=""
+
+is_big_little=true
+
+DEBUG_FLAG=false
+
+C0_GOVERNOR_DIR="/sys/devices/system/cpu/cluster_0/cpufreq/interactive"
+C1_GOVERNOR_DIR="/sys/devices/system/cpu/cluster_1/cpufreq/interactive"
+C0_CPUFREQ_DIR="/sys/devices/system/cpu/cluster_0/cpufreq"
+C1_CPUFREQ_DIR="/sys/devices/system/cpu/cluster_1/cpufreq"
+C0_CORECTL_DIR="/sys/devices/system/cpu/cluster_0/core_ctl"
+C1_CORECTL_DIR="/sys/devices/system/cpu/cluster_1/core_ctl"
+
+if ! $is_big_little ; then
+	C0_GOVERNOR_DIR="/sys/devices/system/cpu/cpufreq/interactive"
+fi
+
+# $1:timer_rate $2:value
+function set_param_little() 
+{
+	$DEBUG_FLAG && echo "little: set ${1} into ${2}"
+	echo ${2} > ${C0_GOVERNOR_DIR}/${1}
+}
+
+function set_param_big() 
+{
+	$DEBUG_FLAG && echo "big: set ${1} into ${2}"
+	echo ${2} > ${C1_GOVERNOR_DIR}/${1}
+}
+
+function set_param_all() 
+{
+	set_param_little ${1} "${2}"
+	$is_big_little && set_param_big ${1} "${2}"
+}
+
+function set_param_HMP()
+{
+	$DEBUG_FLAG && echo "HMP: set ${1} into ${2}"
+	echo ${2} > /proc/sys/kernel/${1}
+}
+
+# $1:timer_rate
+function print_param() 
+{
+	if $is_big_little ; then
+		print_value "LITTLE: ${1}" ${C0_GOVERNOR_DIR}/${1}
+		print_value "big: ${1}" ${C1_GOVERNOR_DIR}/${1}
+	else
+		print_value "${1}" ${C0_GOVERNOR_DIR}/${1}
+	fi
+}
+
+function before_modify()
+{
+	# disable hotplug to switch governor
+	set_value 0 /sys/module/msm_thermal/core_control/enabled
+	set_value disable /sys/devices/soc/soc:qcom,bcl/mode
+	set_value N /sys/module/msm_thermal/parameters/enabled
+	# Exynos hotplug
+	lock_value 0 /sys/power/cpuhotplug/enabled
+	lock_value 0 /sys/devices/system/cpu/cpuhotplug/enabled
+	lock_value "interactive" ${C0_CPUFREQ_DIR}/scaling_governor
+	chown 0.0 ${C0_GOVERNOR_DIR}/*
+	chmod 0666 ${C0_GOVERNOR_DIR}/*
+	if $is_big_little ; then
+		lock_value "interactive" ${C1_CPUFREQ_DIR}/scaling_governor
+		chown 0.0 ${C1_GOVERNOR_DIR}/*
+		chmod 0666 ${C1_GOVERNOR_DIR}/*
+	fi
+	# Perfd, nothing to worry about, if error the script will continue
+	stop perfd
+	# before_modify_params
+}
+
+function after_modify()
+{
+	chmod 0444 ${C0_GOVERNOR_DIR}/*
+	$is_big_little && chmod 0444 ${C1_GOVERNOR_DIR}/*
+	# after_modify_params
+	verify_param
+}
+
+# $1:value $2:file path
+function set_value() 
+{
+	if [ -f $2 ]; then
+		$DEBUG_FLAG && echo "set ${2} into ${1}"
+		echo $1 > $2
+	fi
+}
+
+# $1:value $2:file path
+function lock_value()
+{
+	if [ -f $2 ]; then
+		# chown 0.0 $2
+		chmod 0666 $2
+		echo $1 > $2
+		chmod 0444 $2
+		$DEBUG_FLAG && echo "lock ${2} into ${1}"
+	fi                                                  
+}
+
+# $1:display-name $2:file path
+function print_value() 
+{
+	if [ -f $2 ]; then
+		echo -n "$1: "
+		cat $2
+	fi
+}
+
+function verify_param() 
+{
+	expected_target=${C0_GOVERNOR_DIR}/target_loads
+	if [ "$action" = "powersave" ]; then
+		expected_value="(powersave_tload)"
+	elif [ "$action" = "balance" ]; then
+		expected_value="(balance_tload)"
+	elif [ "$action" = "performance" ]; then
+		expected_value="(performance_tload)"
+	elif [ "$action" = "fast" ]; then
+		expected_value="(fast_tload)"
+	fi
+	if [ "`cat ${expected_target}`" = "${expected_value}" ]; then
+		echo "${action} OK"
+	elif [ "${expected_value}" = "(${action}_tload)" ]; then
+		echo "${action} not included"
+		if $booting_flag ; then
+			powercfg balance
+		fi
+	else
+		echo "${action} FAIL"
+	fi
+}
+
+function get_mode()
+{
+    expected_target=${C0_GOVERNOR_DIR}/target_loads
+	case "`cat ${expected_target}`" in
+		"(powersave_tload)" ) echo "powersave OK" ;;
+		"(balance_tload)" ) echo "balance OK" ;;
+		"(performance_tload)" ) echo "performance OK" ;;
+		"(fast_tload)" ) echo "fast OK" ;;
+	esac
+}
+
+function cluster_ctrl() 
+{
+	if [ "1" = "$1" ]; then
+		# wake up clusters
+		if $is_big_little; then
+			if [ -f "$C0_CORECTL_DIR/min_cpus" ]; then
+				C0_CORECTL_MINCPUS=`cat $C0_CORECTL_DIR/min_cpus`
+				cat $C0_CORECTL_DIR/max_cpus > $C0_CORECTL_DIR/min_cpus
+			else
+				C0_CORECTL_MINCPUS=0
+			fi
+			if [ -f "$C1_CORECTL_DIR/min_cpus" ]; then
+				C1_CORECTL_MINCPUS=`cat $C1_CORECTL_DIR/min_cpus`
+				cat $C1_CORECTL_DIR/max_cpus > $C1_CORECTL_DIR/min_cpus
+			else
+				C1_CORECTL_MINCPUS=0
+			fi
+			set_value 1 /sys/devices/system/cpu/cluster_0/online
+			set_value 1 /sys/devices/system/cpu/cluster_1/online
+		fi
+	elif [ "2" = "$1" ]; then
+		if $is_big_little; then
+			set_value $C0_CORECTL_MINCPUS $C0_CORECTL_DIR/min_cpus
+			set_value $C1_CORECTL_MINCPUS $C1_CORECTL_DIR/min_cpus
+		fi
+	fi
+}
+
+cluster_ctrl 1
+booting_flag=false
+if [ "-s" = "$1" ]; then
+	action=$2
+	echo $action > /data/perf_mode
+	echo "set:apply $action during system boot"
+elif [ "-b" = "$1" ]; then
+	action=$2
+	booting_flag=true
+elif [ "-h" = "$1" ]; then
+	action=""
+elif [ "-c" = "$1" ]; then
+	get_mode
+	cluster_ctrl 2
+	exit 0
+else
+	action=$1
+fi
+if [ ! -n "$action" ]; then
+	echo "$project_name"
+	echo "Version: $prj_ver"
+	echo "Author: $project_author"
+	echo "Platform: $soc_model"
+	echo "Generated at $generate_date"
+	echo ""
+	echo "Usage:"
+	echo "powercfg [option] [mode]"
+	echo ""
+	echo "options:"
+	echo "    -h    Show this message"
+	echo "    -s    Apply [mode] during boot"
+	echo "    -b    Set booting flag"
+	echo "    -c    Show current mode"
+	echo ""
+	echo "modes:"
+	echo "    $mode_list"
+	echo ""
+	cluster_ctrl 2
+	exit 0
+fi
+
+if [ "$action" = "debug" ]; then
+	echo "$project_name"
+	echo "Version: $prj_ver"
+	echo "Author: $project_author"
+	echo "Platform: $soc_model"
+	echo "Generated at $generate_date"
+	echo ""
+	print_param above_hispeed_delay
+	print_param target_loads
+	get_mode
+else
+	# RunOnce
+	if [ ! -f /dev/perf_runonce ]; then
+		# set flag
+		touch /dev/perf_runonce
+	
+		# HMP_params
+		# runonce_params
+	fi
+	before_modify
+	if [ "$action" = "powersave" ]; then
+		echo "applying powersave"
+		# powersave_params
+	elif [ "$action" = "balance" ]; then
+		echo "applying balance"
+		# balance_params
+	elif [ "$action" = "performance" ]; then
+		echo "applying performance"
+		# performance_params
+	elif [ "$action" = "fast" ]; then
+		echo "applying fast"
+		# fast_params
+	fi
+	after_modify
+fi
+
+cluster_ctrl 2
+
+exit 0
