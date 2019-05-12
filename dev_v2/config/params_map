@@ -3,7 +3,7 @@
 # 格式: 
 #      param_name:path_to_file
 #         参数名称:文件路径
-# 下面的示例创建了 go_hispeed_load 参数的映射,[GOVERNOR_DIR]在输入参数时会自动替换:
+# 下面的示例创建了 go_hispeed_load 参数的映射, [GOVERNOR_DIR]在输入参数时会自动替换为调速器目录:
 #      go_hispeed_load:"[GOVERNOR_DIR]/go_hispeed_load"
 #
 

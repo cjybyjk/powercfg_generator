@@ -7,17 +7,18 @@ prj_ver=""
 project_author="yc9559 & cjybyjk"
 generate_date=""
 
+in_powercfg=true
+
 CUR_LEVEL_FILE="/dev/perf_cur_level"
 PARAM_BAK_FILE="/dev/perf_param_bak"
 
 [SOC_INFO]
 
-[GLOBAL_DIRS]
-
 # const variables
 PARAM_NUM=0
 
 # sysfs_obj
+[GLOBAL_DIRS]
 [sysfs_obj]
 
 # LEVEL 0
@@ -36,7 +37,6 @@ PARAM_NUM=0
 [level6]
 
 # global variables
-HAS_BAK=0
 NOT_MATCH_NUM=0
 
 # $1:value $2:file path
@@ -44,6 +44,7 @@ lock_value()
 {
     if [ -f ${2} ]; then
         chmod 0666 ${2}
+
         echo ${1} > ${2}
         chmod 0444 ${2}
     fi
@@ -52,8 +53,6 @@ lock_value()
 # $1:level_number
 apply_level() 
 {
-    # 0. SELinux permissive
-    setenforce 0
     # 1. backup
     backup_default
     # 2. apply modification
@@ -161,7 +160,7 @@ if [ "$action" = "debug" ]; then
     echo "$project_name"
 	echo "Version: $prj_ver"
 	echo "Author: $project_author"
-	echo "Platform: $soc_model"
+	echo "Platform: $soc_name"
 	echo "Generated at $generate_date"
     echo ""
     # perform parameter verification
@@ -183,25 +182,25 @@ fi
 if [ "$action" = "powersave" ]; then
     echo "Applying powersave..."
     apply_level 5
-    echo "Applying powersave done."
+    echo "powersave applied."
 fi
 
 if [ "$action" = "balance" ]; then
     echo "Applying balance..."
     apply_level 3
-    echo "Applying balance done."
+    echo "balance applied."
 fi
 
 if [ "$action" = "performance" ]; then
     echo "Applying performance..."
     apply_level 1
-    echo "Applying performance done."
+    echo "performance applied."
 fi
 
 if [ "$action" = "fast" ]; then
     echo "Applying fast..."
     apply_level 0
-    echo "Applying fast done."
+    echo "fast applied."
 fi
 
 if [ "$action" = "level" ]; then
@@ -209,7 +208,7 @@ if [ "$action" = "level" ]; then
     if [ "${level}" -ge "0" ] && [ "${level}" -le "6" ]; then
         echo "Applying level ${level}..."
         apply_level ${level}
-        echo "Applying level ${level} done."
+        echo "level ${level} applied."
     else
         echo "Level ${level} not supported."
     fi
