@@ -292,8 +292,9 @@ function generate_powercfg()
 {
     local soc_name="$1"
     [ -z "$soc_name" ] && read -p "输入SoC型号: " soc_name
-    local soc_maxfreq=${soc_name##*:}
+    local soc_maxfreq=${soc_name#*:}
     soc_name=${soc_name%:*}
+    [ "$soc_maxfreq" == "$soc_name" ] && soc_maxfreq=""
     if [ -z "$soc_name" ]; then
         echo "错误：输入不能为空"
 		pause
@@ -309,12 +310,12 @@ function generate_powercfg()
         tmp_path="$project_path/platforms/$soc_name"
     fi
     mkdir "$tmp_path"
-    rm "$tmp_path/powercfg"
-    rm "$tmp_path/perf_text.tmp"
-    $replace_perf_text && rm "$tmp_path/perf_text"
     cd "$tmp_path"
+    rm powercfg
+    rm perf_text.tmp
+    $replace_perf_text && rm perf_text
     cp "$template_path/powercfg_template.sh" powercfg
-    cp "$template_path/perf_text_template" perf_text
+    $replace_perf_text && cp "$template_path/perf_text_template" perf_text
     $text_editor perf_text
     local cluster_x
     . "$config_path/soc/$soc_name/socinfo.sh"
