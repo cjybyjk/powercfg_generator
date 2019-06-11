@@ -1,18 +1,18 @@
-# 这是输入参数的模板文件
-# 格式：
+# this is template of perf_text
+# format：
 #     [level X]
 #     param_name,cluster=value
 #  	  path/to/file=value
 #
-# 示例：
+# example：
 #     [level 5]
 #     /sys/power/cpuhotplug/enabled=0
 #     go_hispeed_load,0=99
 #     go_hispeed_load,1=90
 #     scaling_min_freq,1=300000
 #
-# 注意：各个level的参数顺序必须一致，否则应用时会出现错误
-#     如果某个level的参数个数小于第一个level，则不会被应用
+# Note: The order of the parameters of each level must be the same, otherwise there will be an error when applied.
+#     If the number of parameters of a level is less than the first level, it will not be applied.
 # 
 
 # fast
