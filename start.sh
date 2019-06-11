@@ -316,6 +316,7 @@ function generate_powercfg()
     $replace_perf_text && rm perf_text
     cp "$template_path/powercfg_template.sh" powercfg
     $replace_perf_text && cp "$template_path/perf_text_template" perf_text
+    [ ! -f perf_text ] && cp "$template_path/perf_text_template" perf_text
     $text_editor perf_text
     local cluster_x
     . "$config_path/soc/$soc_name/socinfo.sh"
