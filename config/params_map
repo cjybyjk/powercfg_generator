@@ -7,6 +7,9 @@
 #      go_hispeed_load="[GOVERNOR_DIR]/go_hispeed_load"
 #
 
+# CPU
+online="[CPU_DIR]/online"
+
 # interactive
 above_hispeed_delay="[GOVERNOR_DIR]/above_hispeed_delay"
 align_windows="[GOVERNOR_DIR]/align_windows"

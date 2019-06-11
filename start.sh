@@ -3,7 +3,7 @@
 # Author: cjybyjk @ coolapk
 # Licence: GPL v3
 
-version="2.0.3"
+version="2.0.4"
 
 # $1:name $2:value [$3:conf_file]
 function write_value()
@@ -327,7 +327,7 @@ function generate_powercfg()
     do
         eval cluster_x="$"cluster_${n}
         global_dirs="${global_dirs}\nC${n}_DIR=\"/sys/devices/system/cpu/$cluster_x\"\nC${n}_GOVERNOR_DIR=\"\$C${n}_DIR/cpufreq/$governor\""
-        GLOBAL_PARAMS_ADD="${GLOBAL_PARAMS_ADD}\n\${C$n_DIR}/online=1\n\${C$n_DIR}/cpufreq/scaling_governor=\"$governor\""
+        GLOBAL_PARAMS_ADD="${GLOBAL_PARAMS_ADD}\nonline,$n=1\nscaling_governor,$n=\"$governor\""
     done
     replace_line "[GLOBAL_DIRS]" "$global_dirs" powercfg
     
@@ -379,7 +379,7 @@ function generate_powercfg()
                 obj_tmp=${obj_tmp//"[GOVERNOR_DIR]"/"\$C${arr_name[1]}_GOVERNOR_DIR"}
                 obj_tmp=${obj_tmp//"[CPU_DIR]"/"\$C${arr_name[1]}_DIR"}
             fi
-            sysfs_obj="${sysfs_obj}\n\$sysfs_obj$param_num=\"$obj_tmp\""
+            sysfs_obj="${sysfs_obj}\nsysfs_obj$param_num=\"$obj_tmp\""
             IFS="="
         fi
         param_vals="${param_vals}level${level}_val$param_num=${arr_param[1]}\n"
