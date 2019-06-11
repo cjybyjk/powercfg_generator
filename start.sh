@@ -3,7 +3,7 @@
 # Author: cjybyjk @ coolapk
 # Licence: GPL v3
 
-version="2.0.2"
+version="2.0.3"
 
 # $1:name $2:value [$3:conf_file]
 function write_value()
@@ -291,9 +291,9 @@ function replace_line()
 function generate_powercfg()
 {
     local soc_name="$1"
+    [ -z "$soc_name" ] && read -p "输入SoC型号: " soc_name
     local soc_maxfreq=${soc_name##*:}
     soc_name=${soc_name%:*}
-    [ -z "$soc_name" ] && read -p "输入SoC型号: " soc_name
     if [ -z "$soc_name" ]; then
         echo "错误：输入不能为空"
 		pause
@@ -394,6 +394,7 @@ function generate_powercfg()
     else
         write_value "soc_name" "$soc_name" powercfg
     fi
+    echo "$soc_name 生成完毕"
 }
 
 function mainMenu()
@@ -412,11 +413,8 @@ s) 设置
 x) 退出" "g r l z m s x"
         case $selectedKey in
             "g") 
-                check_proj
-                if [ $? -eq 0 ]; then
-                    generate_powercfg
-                    pause
-                fi
+                check_proj && generate_powercfg
+                [ $? -eq 0 ] && pause
             ;;
             "r") check_proj
                 if [ $? -eq 0 ]; then
