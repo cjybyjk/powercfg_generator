@@ -23,3 +23,5 @@ bash + zip
 - ![alipay](./qrcode/alipay.png)
 - 微信 
 - ![wechat](qrcode/wechat.png)
+- QQ 
+- ![QQ](qrcode/qq.png)
