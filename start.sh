@@ -3,7 +3,7 @@
 # Author: cjybyjk @ coolapk
 # Licence: GPL v3
 
-version="2.0.0"
+version="2.0.1"
 
 # $1:name $2:value [$3:conf_file]
 function write_value()
@@ -308,8 +308,10 @@ function generate_powercfg()
     else
         tmp_path="$project_path/platforms/$soc_name"
     fi
-    rm -rf "$tmp_path"
     mkdir "$tmp_path"
+    rm "$tmp_path/powercfg"
+    rm "$tmp_path/perf_text.tmp"
+    $replace_perf_text && rm "$tmp_path/perf_text"
     cd "$tmp_path"
     cp "$template_path/powercfg_template.sh" powercfg
     cp "$template_path/perf_text_template" perf_text
@@ -446,11 +448,12 @@ function settingsMenu()
 e) 编辑参数映射表
 g) 修改调速器: $governor
 l) 使用中文版template: $use_template_cn
+r) 生成时覆盖perf_text: $replace_perf_text
 o) zip卡刷包输出路径: $zip_flashable_outpath
 b) 编辑附加启动列表
 p) 编辑powercfg模板
 v) 修改文本编辑器: $text_editor
-x) 返回" "e g l o b p v x"
+x) 返回" "e g l r o b p v x"
         case $selectedKey in
             "e") $text_editor "$config_path/params_map" ;;
             "g") 
@@ -459,6 +462,9 @@ x) 返回" "e g l o b p v x"
             "l")
                  use_template_cn=$(toggle_boolean $use_template_cn)
                  write_value "use_template_cn" $use_template_cn ;;
+            "r")
+                 replace_perf_text=$(toggle_boolean $replace_perf_text)
+                 write_value "replace_perf_text" $replace_perf_text ;;
             "o") 
                  zip_flashable_outpath=$(readDefault "生成目录" $zip_flashable_outpath)
                  write_value "zip_flashable_outpath" $zip_flashable_outpath ;;
