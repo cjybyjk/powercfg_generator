@@ -1,0 +1,107 @@
+#!/sbin/sh
+# Author: cjybyjk (cjybyjk@gmail.com)
+# script for removing (project_name)
+
+OUTFD=$2
+ZIP=$3
+
+# Detect whether in boot mode
+ps | grep zygote | grep -v grep >/dev/null && BOOTMODE=true || BOOTMODE=false
+$BOOTMODE || ps -A 2>/dev/null | grep zygote | grep -v grep >/dev/null && BOOTMODE=true
+$BOOTMODE || id | grep -q 'uid=0' || BOOTMODE=true
+
+ui_print() {
+	$BOOTMODE && echo "$1" || echo -e "ui_print $1\nui_print" >> /proc/self/fd/$OUTFD
+}
+
+ui_print " "
+ui_print "**************************"
+ui_print "  (project_name)  卸载器"
+ui_print "  作者: cjybyjk"
+ui_print "**************************"
+ui_print " "
+
+TMPDIR=/dev/tmp
+
+ui_print "- 挂载 /system, /vendor, /data"
+mount /system
+mount /vendor
+mount /data
+
+ui_print "- 提取文件"
+mkdir -p $TMPDIR
+cd $TMPDIR
+unzip -o "$ZIP" > /dev/null
+
+ui_print "- 删除文件"
+rm -f /system/xbin/powercfg
+rm -f /system/bin/powercfg
+rm -f /system/bin/autoperf
+mkdir ./mountimg
+while read -r lineinText
+do 
+    fileFormat=`echo $lineinText | awk '{print \$1}'`
+    pathtofile=`echo $lineinText | awk -F \" '{print \$2}'`
+    bootinIMG=`echo $lineinText | awk -F \" '{print \$4}'`
+    pathinIMG=`echo $lineinText | awk -F \" '{print \$6}'`
+    case "$fileFormat" in
+    "[D]" )
+        if [ -d "$pathtofile" ]; then
+            ui_print "  $pathtofile found, removing files..."
+            rm -f "$pathtofile/99perf"
+        fi
+    ;;
+    "[F]" )
+        if [ -f "$pathtofile" ]; then
+            # restore backup
+            if [ -f "$pathtofile.perfbak" ]; then
+                ui_print "  backup of $pathtofile found,restoring"
+                rm -f "$pathtofile"
+                mv "$pathtofile.perfbak" "$pathtofile"
+            fi
+        fi
+    ;;
+    "[I]" )
+        if [ -f "$pathtofile" ]; then
+            ui_print "  正在挂载 $pathtofile ..."
+            mount "$pathtofile" ./mountimg
+            ui_print "  删除文件..."
+            if [ -d ./mountimg/$pathinIMG ]; then
+                rm ./mountimg/$pathinIMG/powercfg
+                rm ./mountimg/$pathinIMG/autoperf
+            fi
+            rm -f "./mountimg/$bootinIMG/99perf"
+            ui_print "  卸载 $pathtofile"
+            umount ./mountimg
+        fi
+    ;;
+    esac
+done < ./list_of_bootable
+
+mkdir magisk
+magiskFlag=false
+if [ -f "/data/magisk.img" ]; then
+    mount /data/magisk.img magisk
+elif [ -f "/data/adb/magisk.img"]; then
+    mount /data/adb/magisk.img magisk
+fi
+ui_print "  移除 Magisk 模块 (id:(project_id))"
+rm -rf magisk/(project_id)
+rm -rf /data/adb/modules/(project_id)
+umount magisk
+
+ui_print "  删除 perf_mode"
+rm -f /data/perf_mode
+ui_print "  删除 /data/powercfg"
+rm -f /data/powercfg
+
+ui_print "- 清理文件..."
+cd /
+rm -rf $TMPDIR
+
+ui_print "- 卸载 /system, /vendor"
+umount /system
+umount /vendor
+
+ui_print "- 完成!"
+exit 0

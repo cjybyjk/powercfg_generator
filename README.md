@@ -14,14 +14,12 @@
 bash + zip
 
 ## 使用方法
-1. clone 这个repo
-2. 执行 start.sh
-3. 新建一个项目（id需要符合这个正则表达式: `^[a-zA-Z][a-zA-Z0-9\._-]+$` ）
+- 请查看 [使用说明](guide/guide.md)
 
-## 选项说明
-- [生成powercfg](guide/powercfg.md)
-- [共用powercfg](guide/linkto.md)
-- [制作卡刷包](guide/pack.md)
-- [SoC支持列表](guide/socs.md)
-- [旧版生成器兼容性](guide/compat_perf.md)
-- [EX Kernel Manager 配置文件转换](guide/exkernel_profile.md)
+## (不要脸地求捐赠～
+- 支付宝红包码 
+- ![alipay_redpack](./qrcode/alipay_redpack.png)
+- 支付宝 
+- ![alipay](./qrcode/alipay.png)
+- 微信 
+- ![wechat](qrcode/wechat.png)

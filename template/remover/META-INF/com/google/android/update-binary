@@ -76,7 +76,7 @@ do
     ;;
     esac
 done < ./list_of_bootable
-ui_print "  Mounting magisk.img"
+
 mkdir magisk
 magiskFlag=false
 if [ -f "/data/magisk.img" ]; then
@@ -84,22 +84,16 @@ if [ -f "/data/magisk.img" ]; then
 elif [ -f "/data/adb/magisk.img"]; then
     mount /data/adb/magisk.img magisk
 fi
+
 ui_print "  Removing magisk module (id:(project_id))"
 rm -rf magisk/(project_id)
+rm -rf /data/adb/modules/(project_id)
 umount magisk
 
 ui_print "  Removing perf_mode"
 rm -f /data/perf_mode
-
-if [ -L "/data/powercfg" ]; then
-    ui_print "  Removing powercfg (symbol link) on /data"
-    rm /data/powercfg
-fi
-
-if [ -L "/data/powercfg.sh" ]; then
-    ui_print "  Removing powercfg.sh (symbol link) on /data"
-    rm /data/powercfg
-fi
+ui_print "  Removing /data/powercfg"
+rm -f /data/powercfg
 
 ui_print "- Cleaning files"
 cd /

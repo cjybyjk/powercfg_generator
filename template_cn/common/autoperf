@@ -1,0 +1,224 @@
+#!/system/bin/sh
+
+CONF_FILE=/data/autoperf.conf
+APP_LIST=/data/autoperf.apps
+CMD_FILE=/tmp/autoperf.cmd
+
+show_help()
+{
+echo "autoperf
+
+Author: cjybyjk @ coolapk
+License: GPL v3
+
+使用方法: autoperf [start|stop|选项]
+
+性能等级: -1(忽略) 0(低延迟) 1(性能) 2 3(均衡) 4 5(省电) 6
+
+选项:
+    -p   | --package        设置指定app的性能等级
+    -d   | --default        设置默认性能等级
+    -o   | --onscroff       设置屏幕关闭后的性能等级
+    -s   | --set            修改配置文件
+    -h   | --help           显示该帮助信息
+
+示例: 
+    autoperf -p klb.android.lovelive 1
+    autoperf -o 5
+    autoperf -d 3 -a com.tencent.mm 2
+    autoperf -s sleep_time 3
+"
+}
+
+# $1:text
+function logadd()
+{
+    $debug_log && log -p i -t "autoperf" "$1"
+}
+
+# $1:name $2:value [$3:conf_file]
+function write_value()
+{
+    [ -z "$1" ] && return 1
+    [ -z "$2" ] && return 1
+    local configFile=$3
+    [ -z "$configFile" ] && configFile=$CONF_FILE
+    logadd "set $1 to $2 in $configFile"
+    
+    local tmp=$(grep "^$1=" $configFile)
+    if [ -z "$tmp" ]; then
+        echo "$1=\"$2\"" >> $configFile
+    else
+        sed -i "s#^$tmp#$1=\"$2\"#g" $configFile
+    fi
+    return $?
+}
+
+# $1:packagename $2:level
+package_manage()
+{
+    local val_name="${1//./_}"
+    write_value "$val_name" "$2" $APP_LIST
+}
+
+main_loop()
+{
+    local scroff_flag=false
+    local scroff_timer=0
+    local cmd=""
+    local scroff_test=""
+    local old_level=""
+    local dumpsys_info=""
+    
+    while :
+    do
+        if [ -f $CMD_FILE ]; then
+            cmd="`cat $CMD_FILE`"
+            rm $CMD_FILE
+            logadd "got command: $cmd"
+            case $cmd in
+                "stop" )
+                    logadd "stopped"
+                    break
+                    ;;
+                "update-conf" )
+                    logadd "update config file"
+                    readconf
+                    ;;
+                * )
+                    logadd "unkonwn command: $cmd"
+                    ;;
+            esac
+        fi
+        
+        dumpsys_info=$(dumpsys window)
+        scroff_test=$(echo $dumpsys_info | fgrep "mScreenOnFully=true")
+        if [ ! -z $scroff_test ]; then
+            scroff_flag=false
+            scroff_timer=0
+            pkg=$(echo $dumpsys_info | fgrep "mCurrentFocus")
+            [ "$pkg" = "  mCurrentFocus=null" ] && continue
+            if [ "$pkg" != "$old_pkg" ]; then
+                old_pkg="$pkg"
+                pkg=${pkg##*\ }
+                pkg=${pkg%/*}
+                pkg=${pkg%\}}
+                logadd "app changed: $pkg"
+                level=""
+                eval level="$"${pkg//./_}
+                if [ -z "$level" ]; then
+                    level="$default_level"
+                    logadd "set default level to $pkg"
+                elif [ "-1" = "$level" ]; then
+                    logadd "skipped: $pkg"
+                    continue
+                fi
+                if [ "$level" -ne "$old_level" ]; then
+                    logadd "set level $level to $pkg"
+                    logadd "powercfg: `powercfg level $level`"
+                    old_level="$level"
+                fi
+            fi
+        else
+            if  ! $scroff_flag && [ $scroff_wait_time -le $scroff_timer ] ; then
+                logadd "powercfg: `powercfg level $scroff_level`"
+                scroff_flag=true
+                old_pkg=""
+                old_level="$scroff_level"
+            else
+                let "scroff_timer+=$sleep_time"
+                # logadd "scroff_timer: $scroff_timer"
+            fi
+        fi
+        if $scroff_flag ; then
+            sleep $scroff_sleep_time
+        else
+            sleep $sleep_time
+        fi
+    done
+}
+
+readconf()
+{
+    if [ -f $CONF_FILE ]; then
+        source $CONF_FILE
+    else
+        echo '# autoperf config file
+default_level="3"
+sleep_time="3"
+scroff_level="5"
+scroff_wait_time="30"
+scroff_sleep_time="8"
+debug_log="false"' > $CONF_FILE
+        source $CONF_FILE
+    fi
+    if [ -f $APP_LIST ]; then
+        source $APP_LIST
+    else
+        echo '# app list
+com_android_systemui="-1"
+com_android_packageinstaller="0"
+StatusBar="-1"' > $APP_LIST
+        source $APP_LIST
+    fi
+}
+
+readconf
+
+if [ "$1" = "start" ]; then
+    echo "stop" > $CMD_FILE
+    sleep $sleep_time
+    rm $CMD_FILE
+    logadd "started!"
+    main_loop
+elif [ "$1" = "stop" ]; then
+    echo "stop" > $CMD_FILE
+else
+    while :
+    do
+        test_result=$( echo " -h -l -p -o -d -s " | grep " $1 " )
+        if [ ! -z "$test_result" ]; then
+            option="$1"
+            [ ! -z "$option" ] && shift
+        elif [ -z "$1" ]; then
+            break
+        fi
+        case $option in
+            "-h" | "--help" )
+                show_help
+                exit 0
+                ;;
+            "-l" | "--list" )
+                list_apps
+                exit 0
+                ;;
+            "-p" | "--package" )
+                package="$1"
+                shift
+                level="$1"
+                package_manage "$package" "$level"
+                shift
+                ;;
+            "-d" | "--default" )
+                write_value "default_level" "$1"
+                shift
+                ;;
+            "-o" | "--onscroff" )
+                write_value "scroff_level" "$1"
+                shift
+                ;;
+            "-s" | "--set" )
+                sopt="$1"
+                shift
+                write_value "$sopt" "$1"
+                shift
+                ;;
+            * ) 
+                break
+                ;;
+        esac
+        echo "update-conf" > $CMD_FILE
+    done
+fi
+
+exit 0

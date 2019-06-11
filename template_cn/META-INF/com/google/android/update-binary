@@ -1,0 +1,283 @@
+#!/sbin/sh
+# Author: cjybyjk (cjybyjk@gmail.com)
+# auto-chosen script for include powercfg script to your device
+
+OUTFD=$2
+ZIP=$3
+exitcode=0
+
+# Detect whether in boot mode
+ps | grep zygote | grep -v grep >/dev/null && BOOTMODE=true || BOOTMODE=false
+$BOOTMODE || ps -A 2>/dev/null | grep zygote | grep -v grep >/dev/null && BOOTMODE=true
+$BOOTMODE || id | grep -q 'uid=0' || BOOTMODE=true
+
+ui_print() {
+	$BOOTMODE && echo "$1" || echo -e "ui_print $1\nui_print" >> /proc/self/fd/$OUTFD
+}
+
+# $1:file $2:add head
+boot_write() {
+	writefile=$1
+	if [ "$2" == "1" ]; then
+		echo "#!/system/bin/sh" > "$writefile"
+		chmod 0755 "$writefile"
+	fi
+	cat ./common/runPerf.sh >> "$writefile"
+}
+
+cp_powercfg()
+{
+	ui_print "  正在将 powercfg 复制到 system/bin"
+	cp ./platforms/$platform/powercfg /system/bin/powercfg
+	$autoperf_install_flag && cp ./common/autoperf /system/bin/autoperf
+	chmod 0755 /system/bin/powercfg
+}
+
+ui_print " "
+ui_print "****************************"
+ui_print "  (project_name) 安装器"
+ui_print "  作者: "
+ui_print "    项目: (project_author)"
+ui_print "    powercfg 脚本: yc9559 & cjybyjk"
+ui_print "    autoperf: cjybyjk"
+ui_print "  "
+ui_print "****************************"
+ui_print " "
+
+TMPDIR=/dev/tmp
+
+ui_print "- 挂载 /system, /vendor"
+mount /system
+mount /vendor
+
+ui_print "- 正在释放文件"
+mkdir -p $TMPDIR
+cd $TMPDIR
+unzip -o "$ZIP" > /dev/null
+
+
+# 准备进行音量键安装
+# Keycheck binary by someone755 @Github, idea for code below by Zappo @xda-developers
+KEYCHECK=$INSTALLER/common/keycheck
+chmod 755 $KEYCHECK
+
+keytest() {
+  ui_print "- 音量键测试 -"
+  ui_print "   请按下 [音量+] 键："
+  ui_print "   无反应或传统模式无法正确安装时，请触摸一下屏幕后继续"
+  (/system/bin/getevent -lc 1 2>&1 | /system/bin/grep VOLUME | /system/bin/grep " DOWN" > $INSTALLER/events) || return 1
+  return 0
+}
+
+chooseport() {
+  #note from chainfire @xda-developers: getevent behaves weird when piped, and busybox grep likes that even less than toolbox/toybox grep
+  while (true); do
+    /system/bin/getevent -lc 1 2>&1 | /system/bin/grep VOLUME | /system/bin/grep " DOWN" > $INSTALLER/events
+    if (`cat $INSTALLER/events 2>/dev/null | /system/bin/grep VOLUME >/dev/null`); then
+      break
+    fi
+  done
+  if (`cat $INSTALLER/events 2>/dev/null | /system/bin/grep VOLUMEUP >/dev/null`); then
+    return 0
+  else
+    return 1
+  fi
+}
+
+chooseportold() {
+  # Calling it first time detects previous input. Calling it second time will do what we want
+  $KEYCHECK
+  $KEYCHECK
+  SEL=$?
+  if [ "$1" == "UP" ]; then
+    UP=$SEL
+  elif [ "$1" == "DOWN" ]; then
+    DOWN=$SEL
+  elif [ $SEL -eq $UP ]; then
+    return 0
+  elif [ $SEL -eq $DOWN ]; then
+    return 1
+  else
+    abort "   未检测到音量键!"
+  fi
+}
+
+# 测试音量键
+if keytest; then
+	VOLKEY_FUNC=chooseport
+	ui_print "*******************************"
+else
+	VOLKEY_FUNC=chooseportold
+	ui_print "*******************************"
+	ui_print "- 检测到遗留设备！使用旧的 keycheck 方案 -"
+	ui_print "- 进行音量键录入 -"
+	ui_print "   录入：请按下 [音量+] 键："
+	$VOLKEY_FUNC "UP"
+	ui_print "   已录入 [音量+] 键。"
+	ui_print "   录入：请按下 [音量-] 键："
+	$VOLKEY_FUNC "DOWN"
+	ui_print "   已录入 [音量-] 键。"
+ui_print "*******************************"
+fi
+
+# get platform
+ui_print "- 获取设备信息..."
+platform="unsupported"
+for tmpPlatform in $(echo `grep "Hardware" /proc/cpuinfo | awk '{print $NF}' ; getprop "ro.product.board" ; getprop "ro.board.platform"` | tr '[A-Z]' '[a-z]') 
+do
+	if [ "unsupported" = "$platform" ]; then
+		while read -r soctext
+		do
+			if [ "`echo $tmpPlatform | egrep $(echo $soctext | cut -d : -f 1)`" != "" ]; then
+				platform=$(echo $soctext | cut -d : -f 2)
+			fi
+		done < ./common/list_of_socs
+	fi
+done
+soc_maxfreq=`cat /sys/devices/system/cpu/cpu$(echo $soctext | cut -d : -f 3)/cpufreq/cpuinfo_max_freq`
+[ -f "/perf_soc_model" ] && platform="`cat /perf_soc_model`"
+ui_print "   Platform: $platform"
+
+[ -d "./platforms/$platform:$soc_maxfreq/" ] && plarform="$platform:$soc_maxfreq"
+if [ -d "./platforms/$platform/" ]; then
+	# Show notice when flashing
+	if [ -f "./platforms/$platform/NOTICE" ]; then
+		ui_print "- NOTICE:"
+		ui_print "  `cat ./platforms/$platform/NOTICE`"
+	fi
+
+	# powercfg linkto
+	[ -f "./platforms/$platform/linkto" ] && plarform=`cat "./platforms/$platform/linkto"`
+
+	ui_print "安装 autoperf?"
+	ui_print "说明: autoperf 是一个自动为不同应用设置 powercfg level 的程序"
+	ui_print "    请在安装后执行 autoperf -h 获取更多信息"
+	ui_print "  - 请按音量键选择 -"
+    ui_print "   [音量+]：安装"
+    ui_print "   [音量-]：不安装"
+	if $VOLKEY_FUNC ; then
+		autoperf_install_flag=true
+	else
+		autoperf_install_flag=false
+	fi
+	# start!
+	ui_print "- 安装中..."
+	ui_print "- 检查 Magisk Framework"
+	magiskFlag=0
+	[ -d "/data/adb/magisk" ] && magiskFlag=1
+	[ -f "/data/magisk.img" ] && magiskFlag=2
+	[ -f "/data/adb/magisk.img" ] && magiskFlag=3
+	[ -f "/perf_no_magisk" ] && magiskFlag=0
+	ui_print "  Magisk flag: $magiskFlag"
+	if [ 0 -eq $magiskFlag ]; then
+		flagBootApply=0
+		flagApplyOnce=true
+		[ -f "/perf_no_apply_once" ] && flagApplyOnce=false
+		mkdir ./mountimg
+		while read -r lineinText
+		do 
+			fileFormat=`echo $lineinText | awk '{print \$1}'`
+			pathtofile=`echo $lineinText | awk -F \" '{print \$2}'`
+			bootinIMG=`echo $lineinText | awk -F \" '{print \$4}'`
+			pathinIMG=`echo $lineinText | awk -F \" '{print \$6}'`
+			case "$fileFormat" in
+			"[D]" )
+				if [ -d "$pathtofile" ]; then
+					ui_print "  在 $pathtofile 中创建文件..."
+					boot_write "$pathtofile/99perf" 1
+					let flagBootApply=flagBootApply+1
+					cp_powercfg
+					$flagApplyOnce && break
+				fi
+			;;
+			"[F]" )
+				if [ -f "$pathtofile" ]; then
+					# restore backup
+					if [ -f "$pathtofile.perfbak" ]; then
+						rm -f "$pathtofile"
+						cp "$pathtofile.perfbak" "$pathtofile"
+					else
+						cp "$pathtofile" "$pathtofile.perfbak"
+					fi
+					ui_print "  正在附加到 $pathtofile ..."
+					boot_write "$pathtofile" 0
+					let flagBootApply=flagBootApply+1
+					cp_powercfg
+					$flagApplyOnce && break
+				fi
+			;;
+			"[I]" )
+				if [ -f "$pathtofile" ]; then
+					ui_print "  找到 $pathtofile , 正在挂载..."
+					mount "$pathtofile" ./mountimg
+					if [ -d ./mountimg/$pathinIMG ]; then
+						ui_print "  复制 powercfg 到 $pathinIMG..."
+						cp ./platforms/$platform/powercfg ./mountimg/$pathinIMG/powercfg
+						chmod 0755  ./mountimg/$pathinIMG/powercfg
+					else
+						cp_powercfg
+					fi
+					ui_print "  在 $bootinIMG 中创建文件..."
+					boot_write "./mountimg/$bootinIMG/99perf" 1
+					let flagBootApply=flagBootApply+1
+					ui_print "  卸载 $pathtofile"
+					umount ./mountimg
+					$flagApplyOnce && break
+				fi
+			;;
+			esac
+		done < ./common/list_of_bootable
+		[ 0 -eq $flagBootApply ] && ui_print "! 警告: 无法在启动时应用!"
+	else
+		ui_print "- 发现 Magisk Farmework"
+		ui_print "  复制文件..."
+		mkdir -p ./magisk/system/bin/
+		cp ./platforms/$platform/powercfg ./magisk/system/bin/powercfg
+		$autoperf_install_flag && cp ./common/autoperf ./magisk/system/bin/autoperf
+		ui_print "  Running install script"
+		sh ./magisk/module_installer.sh $1 $2 $3 $platform
+		exitcode=$?
+		if [ 0 -ne $exitcode ]; then
+		    ui_print "! 警告: Magisk 安装程序返回了代码 $exitcode"
+		fi
+	fi
+	# check Vboot & Scene and link powercfg
+	ui_print "- 检查是否安装了 Vboot 及 Scene"
+	if [ -d "/data/data/com.omarea.vboot" ]; then
+		ui_print " 找到了: Vboot"
+		if [ ! -f "/data/powercfg" ]; then
+			ui_print "link: /data/powercfg <- /system/bin/powercfg"
+			ln -s /system/bin/powercfg /data/powercfg
+		fi
+	fi
+	if [ -d "/data/data/com.omarea.vtools" ]; then
+		ui_print " 找到了: Scene"
+		if [ ! -f "/data/powercfg.sh" ]; then
+			ui_print "link: /data/powercfg.sh <- /system/bin/powercfg"
+			ln -s /system/bin/powercfg /data/powercfg.sh
+		fi
+	fi
+	ui_print "- 默认模式: balance"
+	[ ! -f "/data/perf_mode" ] && echo "balance" > /data/perf_mode
+	ui_print "- 你可以执行 powercfg -h 获取更多信息"
+else
+	ui_print "! 设备不受支持!"
+	if [ "unsupported" = "$platform" ]; then
+		ui_print "  platform info:"
+		ui_print "    is_big_little=$is_big_little"
+		ui_print "    hardware=`grep 'Hardware' /proc/cpuinfo | awk '{print $NF}'`"
+		ui_print "    board=`getprop ro.product.board`"
+		ui_print "    platform=`getprop ro.board.platform`"
+	fi
+fi
+
+ui_print "- 清理文件"
+cd /
+rm -rf $TMPDIR
+
+ui_print "- 卸载 /system, /vendor"
+umount /system
+umount /vendor
+
+ui_print "- 完成!"
+exit $exitcode

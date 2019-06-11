@@ -1,0 +1,58 @@
+# 这是调速器参数到sysfs文件路径的映射表
+#
+# 格式:
+#      param_name=path_to_file
+#         参数名称=文件路径
+# 下面的示例创建了 go_hispeed_load 参数的映射, [GOVERNOR_DIR]在输入参数时会自动替换为调速器目录:
+#      go_hispeed_load="[GOVERNOR_DIR]/go_hispeed_load"
+#
+
+# interactive
+above_hispeed_delay="[GOVERNOR_DIR]/above_hispeed_delay"
+align_windows="[GOVERNOR_DIR]/align_windows"
+boost="[GOVERNOR_DIR]/boost"
+boostpulse="[GOVERNOR_DIR]/boostpulse"
+boostpulse_duration="[GOVERNOR_DIR]/boostpulse_duration"
+enable_prediction="[GOVERNOR_DIR]/enable_prediction"
+fast_ramp_down="[GOVERNOR_DIR]/fast_ramp_down"
+go_hispeed_load="[GOVERNOR_DIR]/go_hispeed_load"
+hispeed_freq="[GOVERNOR_DIR]/hispeed_freq"
+ignore_hispeed_on_notif="[GOVERNOR_DIR]/ignore_hispeed_on_notif"
+io_is_busy="[GOVERNOR_DIR]/io_is_busy"
+max_freq_hysteresis="[GOVERNOR_DIR]/max_freq_hysteresis"
+min_sample_time="[GOVERNOR_DIR]/min_sample_time"
+sampling_down_factor="[GOVERNOR_DIR]/sampling_down_factor"
+sync_freq="[GOVERNOR_DIR]/sync_freq"
+target_loads="[GOVERNOR_DIR]/target_loads"
+timer_rate="[GOVERNOR_DIR]/timer_rate"
+timer_slack="[GOVERNOR_DIR]/timer_slack"
+up_threshold_any_cpu_freq="[GOVERNOR_DIR]/up_threshold_any_cpu_freq"
+up_threshold_any_cpu_load="[GOVERNOR_DIR]/up_threshold_any_cpu_load"
+use_migration_notif="[GOVERNOR_DIR]/use_migration_notif"
+use_sched_load="[GOVERNOR_DIR]/use_sched_load"
+sleep_timer_rate="[GOVERNOR_DIR]/sleep_timer_rate"
+powersave_bias="[GOVERNOR_DIR]/powersave_bias"
+fastlane_threshold="[GOVERNOR_DIR]/fastlane_threshold"
+fastlane="[GOVERNOR_DIR]/fastlane"
+screen_off_maxfreq="[GOVERNOR_DIR]/screen_off_maxfreq"
+
+# FREQ
+scaling_governor="[CPU_DIR]/cpufreq/scaling_governor"
+scaling_max_freq="[CPU_DIR]/cpufreq/scaling_max_freq"
+scaling_min_freq="[CPU_DIR]/cpufreq/scaling_min_freq"
+
+# HMP
+sched_group_downmigrate="${SCHED_DIR}/sched_group_downmigrate"
+sched_freq_inc_notify="${SCHED_DIR}/sched_freq_inc_notify"
+sched_freq_dec_notify="${SCHED_DIR}/sched_freq_dec_notify"
+sched_spill_nr_run="${SCHED_DIR}/sched_spill_nr_run"
+sched_spill_load="${SCHED_DIR}/sched_spill_load"
+sched_restrict_cluster_spill="${SCHED_DIR}/sched_restrict_cluster_spill"
+sched_prefer_sync_wakee_to_waker="${SCHED_DIR}/sched_prefer_sync_wakee_to_waker"
+sched_upmigrate="${SCHED_DIR}/sched_upmigrate"
+sched_downmigrate="${SCHED_DIR}/sched_downmigrate"
+sched_window_stats_policy="${SCHED_DIR}/sched_window_stats_policy"
+sched_ravg_hist_size="${SCHED_DIR}/sched_ravg_hist_size"
+sched_boost="${SCHED_DIR}/sched_boost"
+
+# others
