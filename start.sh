@@ -3,7 +3,7 @@
 # Author: cjybyjk @ coolapk
 # Licence: GPL v3
 
-version="2.0.1"
+version="2.0.2"
 
 # $1:name $2:value [$3:conf_file]
 function write_value()
@@ -325,6 +325,7 @@ function generate_powercfg()
     do
         eval cluster_x="$"cluster_${n}
         global_dirs="${global_dirs}\nC${n}_DIR=\"/sys/devices/system/cpu/$cluster_x\"\nC${n}_GOVERNOR_DIR=\"\$C${n}_DIR/cpufreq/$governor\""
+        GLOBAL_PARAMS_ADD="${GLOBAL_PARAMS_ADD}\n\${C$n_DIR}/online=1\n\${C$n_DIR}/cpufreq/scaling_governor=\"$governor\""
     done
     replace_line "[GLOBAL_DIRS]" "$global_dirs" powercfg
     
