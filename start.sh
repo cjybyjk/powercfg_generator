@@ -3,7 +3,7 @@
 # Author: cjybyjk @ coolapk
 # Licence: GPL v3
 
-version="2.0.4"
+version="2.0.5"
 
 # $1:name $2:value [$3:conf_file]
 function write_value()
@@ -372,10 +372,10 @@ function generate_powercfg()
         if ! $param_flag ; then
             IFS=","
             arr_name=(${arr_param[0]})
-            eval obj_tmp="$"${arr_name[0]}
-            if [ "${obj_tmp:0:1}" = "$" ]; then
+            if [ "${arr_name[0]:0:1}" = "$" ]; then
                 obj_tmp=${arr_name[0]}
             else
+                eval obj_tmp="$"${arr_name[0]}
                 obj_tmp=${obj_tmp//"[GOVERNOR_DIR]"/"\$C${arr_name[1]}_GOVERNOR_DIR"}
                 obj_tmp=${obj_tmp//"[CPU_DIR]"/"\$C${arr_name[1]}_DIR"}
             fi
