@@ -3,7 +3,7 @@
 # Author: cjybyjk @ coolapk
 # Licence: GPL v3
 
-version="2.0.6"
+version="2.0.7"
 
 # $1:name $2:value [$3:conf_file]
 function write_value()
@@ -154,7 +154,7 @@ function project_manager()
     elif [ "toggle" = "$1" ]; then
         if [ -f "$projects_path/$project_id_new/project_config.sh" ]; then
             echo "$project_id_new" > "$config_path/project_pointer"
-            init
+            generator_init
         else
             echo "错误: 项目不存在!"
             pause
@@ -194,7 +194,7 @@ function project_manager()
         write_value "project_author" "$project_author_new" "$conf_file"
         write_value "project_id" "$project_id_new" "$conf_file"
     fi
-    init
+    generator_init
     return 0
 }
 
@@ -443,6 +443,7 @@ function settingsMenu()
 {
     while true
     do
+	generator_init
         showMenu "
 设置
 
@@ -506,7 +507,7 @@ x) 返回" "t i n d c r x"
     done
 }
 
-function init()
+function generator_init()
 {
     config_path="$basepath/config"
     . "$config_path/config.sh"
@@ -532,7 +533,7 @@ License: GPL v3
 
 basepath="$(cd $(dirname $0); pwd)"
 cd "$basepath"
-init
+generator_init
 
 mainMenu
 
