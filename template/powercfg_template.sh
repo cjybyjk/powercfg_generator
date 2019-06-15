@@ -6,7 +6,7 @@ project_name="template"
 prj_ver="(prj_ver)"
 project_author="yc9559 & cjybyjk"
 generate_date=""
-soc_name=“template”
+soc_name="template"
 
 project_info="$project_name
 Version: $prj_ver
@@ -164,9 +164,7 @@ action=$1
 if [ "$action" = "-h" ]; then
     echo "$project_info"
     echo "
-
 Usage: powercfg [options]
-
 options:
     -h                  Show this message
     -s [mode]           Apply [mode] during boot
@@ -177,7 +175,6 @@ options:
     balance             Equals \"level 3\"
     performance         Equals \"level 1\"
     fast                Equals \"level 0\"
-
 "
 fi
 

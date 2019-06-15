@@ -3,7 +3,7 @@
 # Author: cjybyjk @ coolapk
 # Licence: GPL v3
 
-version="2.0.5"
+version="2.0.6"
 
 # $1:name $2:value [$3:conf_file]
 function write_value()

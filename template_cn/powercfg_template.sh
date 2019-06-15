@@ -6,7 +6,7 @@ project_name="template"
 prj_ver="(prj_ver)"
 project_author="yc9559 & cjybyjk"
 generate_date=""
-soc_name=“template”
+soc_name="template"
 
 project_info="$project_name
 Version: $prj_ver
@@ -164,9 +164,7 @@ action=$1
 if [ "$action" = "-h" ]; then
     echo "$project_info"
     echo "
-
 用法: powercfg [选项]
-
 选项:
     -h                  显示这条帮助信息
     -s [mode]           在启动时应用指定的 [mode]
@@ -177,7 +175,6 @@ if [ "$action" = "-h" ]; then
     balance             均衡模式,等同于 \"level 3\"
     performance         性能模式,等同于 \"level 1\"
     fast                低延迟模式,等同于 \"level 0\"
-
 "
 fi
 
