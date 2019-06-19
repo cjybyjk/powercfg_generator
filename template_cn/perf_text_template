@@ -11,13 +11,9 @@
 #     go_hispeed_load,1=90
 #     scaling_min_freq,1=300000
 #
-# [global] 段的内容会被附加到所有 [level] 段前 
-#
 # 注意：各个level的参数顺序必须一致，否则应用时会出现错误
 #     如果某个level的参数个数小于第一个level，则不会被应用
 # 
-
-[global]
 
 # fast
 [level 0]
