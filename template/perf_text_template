@@ -11,9 +11,13 @@
 #     go_hispeed_load,1=90
 #     scaling_min_freq,1=300000
 #
+# The contents of the [global] section will be appended to all [level]s' head
+#
 # Note: The order of the parameters of each level must be the same, otherwise there will be an error when applied.
 #     If the number of parameters of a level is less than the first level, it will not be applied.
 # 
+
+[global]
 
 # fast
 [level 0]

@@ -3,7 +3,7 @@
 # Author: cjybyjk @ coolapk
 # Licence: GPL v3
 
-version="2.0.7"
+version="2.0.8"
 
 # $1:name $2:value [$3:conf_file]
 function write_value()
@@ -330,12 +330,6 @@ function generate_powercfg()
         GLOBAL_PARAMS_ADD="${GLOBAL_PARAMS_ADD}\nonline,$n=1\nscaling_governor,$n=\"$governor\""
     done
     replace_line "[GLOBAL_DIRS]" "$global_dirs" powercfg
-    
-    cp perf_text perf_text.tmp
-    for n in $(seq 0 6)
-    do
-        replace_line "[level $n]" "[level $n]\n$GLOBAL_PARAMS_ADD" perf_text.tmp
-    done
 
     local sysfs_obj
     local param_num=0
@@ -347,6 +341,27 @@ function generate_powercfg()
     local level=-1
     local OLD_IFS="$IFS" 
     IFS="="
+
+    # read [global] section 
+    while read -r lineinText
+    do
+        [ -z "$lineinText" ] && continue
+        [ "${lineinText:0:1}" = "#" ] && continue
+        lineinText="`trim \"$lineinText\"`"
+        if [ "$lineinText" = "[global]" ]; then
+            level="$lineinText"
+        elif [ "$level" = "[global]" ]; then
+            GLOBAL_PARAMS_ADD="${GLOBAL_PARAMS_ADD}\n$lineinText"
+        elif [ "${lineinText:0:1}" = "[" ] && [ "${lineinText:0-1:1}" = "]" ]; then
+            level="${lineinText:0-2:1}"
+        fi
+    done < ./perf_text
+
+    cp ./perf_text ./perf_text_tmp
+    for n in $(seq 0 6)
+    do
+        replace_line "[level $n]" "[level $n]\n$GLOBAL_PARAMS_ADD" perf_text_tmp
+    done
 
     while read -r lineinText
     do
@@ -383,10 +398,10 @@ function generate_powercfg()
             IFS="="
         fi
         param_vals="${param_vals}level${level}_val$param_num=${arr_param[1]}\n"
-    done < ./perf_text.tmp
+    done < ./perf_text_tmp
     replace_line "[levels]" "$param_vals" powercfg
     IFS="$OLD_IFS"
-    rm ./perf_text.tmp
+    rm ./perf_text_tmp
     
     write_value "project_name" "$project_name" powercfg
     write_value "project_author" "$project_author" powercfg
