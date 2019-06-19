@@ -320,7 +320,6 @@ function generate_powercfg()
     $text_editor perf_text
     local cluster_x
     . "$config_path/soc/$soc_name/socinfo.sh"
-    . "$config_path/params_map"
     local global_dirs="SCHED_DIR=\"$SCHED_DIR\""
     let "cluster_num-=1"
     for n in $(seq 0 $cluster_num)
@@ -526,6 +525,7 @@ function generator_init()
 {
     config_path="$basepath/config"
     . "$config_path/config.sh"
+    . "$config_path/params_map"
     projects_path="$basepath/projects"
     project_id="(未指定)"
     [ -f "$config_path/project_pointer" ] && prjPtr=$(cat $config_path/project_pointer)
@@ -536,9 +536,11 @@ function generator_init()
     else
         template_path="$basepath/template"
     fi
-    generatorInfo="powercfg_generator version:$version
+    generatorInfo="powercfg_generator
 by cjybyjk @ coolapk
 License: GPL v3
+Version of generator:${version}
+Version of parameters map:${params_map_ver}
 
 当前项目: $project_id
   项目名称：$project_name

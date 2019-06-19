@@ -7,6 +7,9 @@
 #      go_hispeed_load='[GOVERNOR_DIR]/go_hispeed_load'
 #
 
+# version
+params_map_ver='190619.1'
+
 # CPU
 online='[CPU_DIR]/online'
 
