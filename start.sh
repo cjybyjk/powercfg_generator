@@ -3,7 +3,7 @@
 # Author: cjybyjk @ coolapk
 # Licence: GPL v3
 
-version="2.0.7"
+version="2.0.8"
 
 # $1:name $2:value [$3:conf_file]
 function write_value()
@@ -276,16 +276,9 @@ function make_flashable_zip()
 function replace_line()
 {
     local templateText
-    mv "$3" "${3}.tmp"
-    while read -r templateText
-	do
-		if [ "$templateText" == "$1" ]; then
-			echo -e "$2" >> "$3"
-		else
-			echo "$templateText" >> "$3"
-		fi
-	done < "${3}.tmp"
-    rm "${3}.tmp"
+    local line_num=$(egrep -n "^$1\$" "$3")
+    line_num=${line_num%%:*}
+    sed -i "${line_num}c $2" "$3"
 }
 
 function generate_powercfg()
@@ -328,12 +321,12 @@ function generate_powercfg()
         global_dirs="${global_dirs}\nC${n}_DIR=\"/sys/devices/system/cpu/$cluster_x\"\nC${n}_GOVERNOR_DIR=\"\$C${n}_DIR/cpufreq/$governor\""
         GLOBAL_PARAMS_ADD="${GLOBAL_PARAMS_ADD}\nonline,$n=1\nscaling_governor,$n=\"$governor\""
     done
-    replace_line "[GLOBAL_DIRS]" "$global_dirs" powercfg
+    replace_line "\[GLOBAL_DIRS\]" "$global_dirs" powercfg
     
     cp perf_text perf_text.tmp
     for n in $(seq 0 6)
     do
-        replace_line "[level $n]" "[level $n]\n$GLOBAL_PARAMS_ADD" perf_text.tmp
+        replace_line "\[level $n\]" "[level $n]\n$GLOBAL_PARAMS_ADD" perf_text.tmp
     done
 
     local sysfs_obj
@@ -357,12 +350,12 @@ function generate_powercfg()
         if [ "${lineinText:0:1}" = "[" ] && [ "${lineinText:0-1:1}" = "]" ]; then
             level="${lineinText:0-2:1}"
             if ! $param_flag && [ "$param_num" -gt 0 ] ; then
-                replace_line "[sysfs_obj]" "$sysfs_obj" powercfg
+                replace_line "\[sysfs_obj\]" "$sysfs_obj" powercfg
                 sysfs_obj=""
                 write_value "PARAM_NUM" "$param_num" powercfg
                 param_flag=true
             fi
-            param_vals="${param_vals}\n"
+            [ ! -z "$param_vals" ] && param_vals="${param_vals}\n"
             param_num=0
             continue
         fi
@@ -371,19 +364,20 @@ function generate_powercfg()
         if ! $param_flag ; then
             IFS=","
             arr_name=(${arr_param[0]})
-            if [ "${arr_name[0]:0:1}" = "$" ]; then
+            if [ "${arr_name[0]:0:1}" = "/" ]; then
                 obj_tmp=${arr_name[0]}
             else
                 eval obj_tmp="$"${arr_name[0]}
                 obj_tmp=${obj_tmp//"[GOVERNOR_DIR]"/"\$C${arr_name[1]}_GOVERNOR_DIR"}
                 obj_tmp=${obj_tmp//"[CPU_DIR]"/"\$C${arr_name[1]}_DIR"}
             fi
-            sysfs_obj="${sysfs_obj}\nsysfs_obj$param_num=\"$obj_tmp\""
+            [ ! -z "$sysfs_obj" ] && sysfs_obj="${sysfs_obj}\n"
+            sysfs_obj="${sysfs_obj}sysfs_obj$param_num=\"$obj_tmp\""
             IFS="="
         fi
         param_vals="${param_vals}level${level}_val$param_num=${arr_param[1]}\n"
     done < ./perf_text.tmp
-    replace_line "[levels]" "$param_vals" powercfg
+    replace_line "\[levels\]" "$param_vals" powercfg
     IFS="$OLD_IFS"
     rm ./perf_text.tmp
     
