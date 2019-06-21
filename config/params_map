@@ -8,7 +8,7 @@
 #
 
 # version
-params_map_ver='190619.1'
+params_map_ver='190621.1'
 
 # CPU
 online='[CPU_DIR]/online'
@@ -60,5 +60,6 @@ sched_downmigrate='${SCHED_DIR}/sched_downmigrate'
 sched_window_stats_policy='${SCHED_DIR}/sched_window_stats_policy'
 sched_ravg_hist_size='${SCHED_DIR}/sched_ravg_hist_size'
 sched_boost='${SCHED_DIR}/sched_boost'
+sched_freq_aggregate='${SCHED_DIR}/sched_freq_aggregate'
 
 # others
