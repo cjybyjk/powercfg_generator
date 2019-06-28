@@ -3,7 +3,7 @@
 # Author: cjybyjk @ coolapk
 # Licence: GPL v3
 
-version="2.0.8"
+version="2.0.9"
 
 # $1:name $2:value [$3:conf_file]
 function write_value()
@@ -330,7 +330,9 @@ function generate_powercfg()
     done
 
     local sysfs_obj
+    local sysfs_obj_bak
     local param_num=0
+    local param_num_bak=0
     local param_flag=false
     local arr_param
     local arr_name
@@ -349,12 +351,12 @@ function generate_powercfg()
         lineinText="`trim \"$lineinText\"`"
         if [ "${lineinText:0:1}" = "[" ] && [ "${lineinText:0-1:1}" = "]" ]; then
             level="${lineinText:0-2:1}"
-            if ! $param_flag && [ "$param_num" -gt 0 ] ; then
-                replace_line "\[sysfs_obj\]" "$sysfs_obj" powercfg
-                sysfs_obj=""
+            if [ $param_num_bak -lt $param_num ] && [ $param_num -gt 0 ] ; then
                 write_value "PARAM_NUM" "$param_num" powercfg
-                param_flag=true
+                param_num_bak=$param_num
+                sysfs_obj_bak="$sysfs_obj"
             fi
+            sysfs_obj=""
             [ ! -z "$param_vals" ] && param_vals="${param_vals}\n"
             param_num=0
             continue
@@ -378,6 +380,8 @@ function generate_powercfg()
         param_vals="${param_vals}level${level}_val$param_num=${arr_param[1]}\n"
     done < ./perf_text.tmp
     replace_line "\[levels\]" "$param_vals" powercfg
+    [ $param_num_bak -gt $param_num ] && sysfs_obj="$sysfs_obj_bak"
+    replace_line "\[sysfs_obj\]" "$sysfs_obj" powercfg
     IFS="$OLD_IFS"
     rm ./perf_text.tmp
     
