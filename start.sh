@@ -243,7 +243,7 @@ function make_flashable_zip()
         if [ -d $soc_name ]; then
             . "$config_path/soc/$soc_name/socinfo.sh"
             let "cluster_num-=1"
-            echo "$soc_model:$soc_name:$cluster_num" >> ../common/list_of_soc
+            echo "$soc_model:$soc_name:$cluster_num" >> ../common/list_of_socs
         fi
     done
     cd $tmpdir
