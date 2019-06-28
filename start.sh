@@ -278,7 +278,9 @@ function replace_line()
     local templateText
     local line_num=$(egrep -n "^$1\$" "$3")
     line_num=${line_num%%:*}
+    [ -z "$line_num" ] && return 1
     sed -i "${line_num}c $2" "$3"
+    return $?
 }
 
 function generate_powercfg()
