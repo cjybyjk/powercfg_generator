@@ -3,7 +3,7 @@
 # Author: cjybyjk @ coolapk
 # Licence: GPL v3
 
-version="2.0.9"
+version="2.0.10"
 
 # $1:name $2:value [$3:conf_file]
 function write_value()
@@ -220,7 +220,7 @@ function do_linkto()
 
 function make_flashable_zip()
 {
-    local tmpdir=$basepath/tmp
+    local tmpdir="$basepath/zip_tmp"
     local project_version
     local project_version_code
     read -p "请输入版本号:" project_version
@@ -234,8 +234,8 @@ function make_flashable_zip()
     echo "复制文件..."
     mkdir $tmpdir
     cd $tmpdir
-    cp -r "$template_path/*" ./
-    cp -r "$project_path/*" ./
+    cp -r $template_path/* ./
+    cp -r $project_path/* ./
     cd ./platforms/
     local soc_name=""
     for soc_name in $(ls)
@@ -246,7 +246,7 @@ function make_flashable_zip()
             echo "$soc_model:$soc_name:$cluster_num" >> ../common/list_of_soc
         fi
     done
-    cd ../
+    cd $tmpdir
     cp "$config_path/list_of_bootable" ./common/
     echo "写入相关信息..."
     sed -i "s/(project_author)/$project_author/g" `grep "(project_author)" -rl .`
