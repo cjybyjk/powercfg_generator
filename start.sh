@@ -321,7 +321,7 @@ function generate_powercfg()
     do
         eval cluster_x="$"cluster_${n}
         global_dirs="${global_dirs}\nC${n}_DIR=\"/sys/devices/system/cpu/$cluster_x\"\nC${n}_GOVERNOR_DIR=\"\$C${n}_DIR/cpufreq/$governor\""
-        GLOBAL_PARAMS_ADD="${GLOBAL_PARAMS_ADD}\nonline,$n=1\nscaling_governor,$n=\"$governor\""
+        GLOBAL_PARAMS_ADD="${GLOBAL_PARAMS_ADD}\nonline,$n=1\nscaling_governor,$n=$governor"
     done
     replace_line "\[GLOBAL_DIRS\]" "$global_dirs" powercfg
     
@@ -379,7 +379,7 @@ function generate_powercfg()
             sysfs_obj="${sysfs_obj}sysfs_obj$param_num=\"$obj_tmp\""
             IFS="="
         fi
-        param_vals="${param_vals}level${level}_val$param_num=${arr_param[1]}\n"
+        param_vals="${param_vals}level${level}_val$param_num=\"${arr_param[1]}\"\n"
     done < ./perf_text.tmp
     replace_line "\[levels\]" "$param_vals" powercfg
     [ $param_num_bak -gt $param_num ] && sysfs_obj="$sysfs_obj_bak"
