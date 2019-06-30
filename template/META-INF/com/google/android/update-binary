@@ -29,7 +29,6 @@ cp_powercfg()
 {
 	ui_print "  copying powercfg to system/bin"
 	cp ./platforms/$platform/powercfg /system/bin/powercfg
-	$autoperf_install_flag && cp ./common/autoperf /system/bin/autoperf
 	chmod 0755 /system/bin/powercfg
 }
 
@@ -39,7 +38,6 @@ ui_print "  (project_name) installer"
 ui_print "  Author: "
 ui_print "    project: (project_author)"
 ui_print "    powercfg scripts: yc9559 & cjybyjk"
-ui_print "    autoperf: cjybyjk"
 ui_print "  "
 ui_print "****************************"
 ui_print " "
@@ -54,64 +52,6 @@ ui_print "- Extracting files"
 mkdir -p $TMPDIR
 cd $TMPDIR
 unzip -o "$ZIP" > /dev/null
-
-keytest() {
-  ui_print " - Vol Key Test -"
-  ui_print "   Press Vol Up:"
-  (/system/bin/getevent -lc 1 2>&1 | /system/bin/grep VOLUME | /system/bin/grep " DOWN" > $TMPDIR/events) || return 1
-  return 0
-}
-
-chooseport() {
-  #note from chainfire @xda-developers: getevent behaves weird when piped, and busybox grep likes that even less than toolbox/toybox grep
-  while (true); do
-    /system/bin/getevent -lc 1 2>&1 | /system/bin/grep VOLUME | /system/bin/grep " DOWN" > $TMPDIR/events
-    if (`cat $TMPDIR/events 2>/dev/null | /system/bin/grep VOLUME >/dev/null`); then
-      break
-    fi
-  done
-  if (`cat $TMPDIR/events 2>/dev/null | /system/bin/grep VOLUMEUP >/dev/null`); then
-    return 0
-  else
-    return 1
-  fi
-}
-
-chooseportold() {
-  # Calling it first time detects previous input. Calling it second time will do what we want
-  $KEYCHECK
-  $KEYCHECK
-  SEL=$?
-  if [ "$1" == "UP" ]; then
-    UP=$SEL
-  elif [ "$1" == "DOWN" ]; then
-    DOWN=$SEL
-  elif [ $SEL -eq $UP ]; then
-    return 0
-  elif [ $SEL -eq $DOWN ]; then
-    return 1
-  else
-    ui_print "   Vol key not detected!"
-    abort "   Use name change method in TWRP"
-  fi
-}
-
-# Keycheck binary by someone755 @Github, idea for code below by Zappo @xda-developers
-KEYCHECK=$TMPDIR/keycheck
-chmod 755 $KEYCHECK
-
-if keytest; then
-  VOLKEY_FUNC=chooseport
-else
-  VOLKEY_FUNC=chooseportold
-  ui_print "   ! Legacy device detected! Using old keycheck method"
-  ui_print " "
-  ui_print "- Vol Key Programming -"
-  ui_print "   Press Vol Up Again:"
-  $VOLKEY_FUNC "UP"
-  ui_print "   Press Vol Down"
-  $VOLKEY_FUNC "DOWN"
-fi
 
 # get platform
 ui_print "- Checking platform"
@@ -142,17 +82,6 @@ if [ -d "./platforms/$platform/" ]; then
 	# powercfg linkto
 	[ -f "./platforms/$platform/linkto" ] && plarform=`cat "./platforms/$platform/linkto"`
 
-	ui_print "Install autoperf?"
-	ui_print "Autoperf is a program that automatically sets the powercfg level for different applications."
-	ui_print "    Run 'autoperf -h' after installation for more information."
-	ui_print "  - Press the volume button to select -"
-    ui_print "   [VOL UP]：Yes"
-    ui_print "   [VOL DOWN]：No"
-	if $VOLKEY_FUNC ; then
-		autoperf_install_flag=true
-	else
-		autoperf_install_flag=false
-	fi
 	# start!
 	ui_print "- Installing..."
 	ui_print "- Checking Magisk Framework"
@@ -226,7 +155,6 @@ if [ -d "./platforms/$platform/" ]; then
 		ui_print "  Copying files..."
 		mkdir -p ./magisk/system/bin/
 		cp ./platforms/$platform/powercfg ./magisk/system/bin/powercfg
-		$autoperf_install_flag && cp ./common/autoperf ./magisk/system/bin/autoperf
 		ui_print "  Running install script"
 		sh ./magisk/module_installer.sh $1 $2 $3 $platform
 		exitcode=$?
