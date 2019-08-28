@@ -354,7 +354,6 @@ function generate_powercfg()
         if [ "${lineinText:0:1}" = "[" ] && [ "${lineinText:0-1:1}" = "]" ]; then
             level="${lineinText:0-2:1}"
             if [ $param_num_bak -lt $param_num ] && [ $param_num -gt 0 ] ; then
-                write_value "PARAM_NUM" "$param_num" powercfg
                 param_num_bak=$param_num
                 sysfs_obj_bak="$sysfs_obj"
             fi
@@ -384,6 +383,7 @@ function generate_powercfg()
     replace_line "\[levels\]" "$param_vals" powercfg
     [ $param_num_bak -gt $param_num ] && sysfs_obj="$sysfs_obj_bak"
     replace_line "\[sysfs_obj\]" "$sysfs_obj" powercfg
+    write_value "PARAM_NUM" "$param_num" powercfg
     IFS="$OLD_IFS"
     rm ./perf_text.tmp
     
