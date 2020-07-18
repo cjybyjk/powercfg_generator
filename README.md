@@ -15,13 +15,3 @@ bash + zip
 
 ## 使用方法
 - 请查看 [使用说明](guide/guide.md)
-
-## (不要脸地求捐赠～
-- 支付宝红包码 
-- ![alipay_redpack](./qrcode/alipay_redpack.png)
-- 支付宝 
-- ![alipay](./qrcode/alipay.png)
-- 微信 
-- ![wechat](qrcode/wechat.png)
-- QQ 
-- ![QQ](qrcode/qq.png)
